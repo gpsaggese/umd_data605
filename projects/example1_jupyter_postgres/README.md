@@ -26,6 +26,116 @@ DDL.sql                               largeRelationsInsertFile.sql
   ```
 
 - You should see the 
+  ```buildoutcfg
+  postgres@7ea232da0da5:/$ ls -1 /data
+    01-Jupyter-Getting-Started.ipynb
+    02-Basics-SQL.ipynb
+    03-SQL-Different-Types-of-Joins.ipynb
+    04-SQL-NULLs-and-UNKNOWN.ipynb
+    DDL.sql
+    Dockerfile
+    README.md
+    docker_build.sh
+    docker_run.sh
+    largeRelationsInsertFile.sql
+    pg_hba.conf
+    postgresql.conf
+    run_jupyter.sh
+    run_psql_server.sh
+    smallRelationsInsertFile.sql
+    university.png
+
+  docker> service --status-all
+    [ - ]  cron
+    [ ? ]  hwclock.sh
+    [ - ]  postgresql
+    [ - ]  procps
+    [ - ]  sysstat
+    [ - ]  x11-common
+
+   docker> /data/run_psql_server.sh
+
+  docker> service --status-all
+    [ - ]  cron
+    [ ? ]  hwclock.sh
+    [ + ]  postgresql
+    [ - ]  procps
+    [ - ]  sysstat
+    [ - ]  x11-common
+  ```
+
+## Connecting to Postgres from your laptop
+
+```
+> ls
+> psql -U postgres -h localhost
+
+postgres=# \c university
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+You are now connected to database "university" as user "postgres".
+
+university=# \d
+           List of relations
+ Schema |    Name    | Type  |  Owner
+--------+------------+-------+----------
+ public | advisor    | table | postgres
+ public | classroom  | table | postgres
+ public | course     | table | postgres
+ public | department | table | postgres
+ public | instructor | table | postgres
+ public | prereq     | table | postgres
+ public | section    | table | postgres
+ public | student    | table | postgres
+ public | takes      | table | postgres
+ public | teaches    | table | postgres
+ public | time_slot  | table | postgres
+(11 rows)
+
+university=# select * from instructor;
+  id   |    name    | dept_name  |  salary
+-------+------------+------------+----------
+ 10101 | Srinivasan | Comp. Sci. | 65000.00
+ 12121 | Wu         | Finance    | 90000.00
+ 15151 | Mozart     | Music      | 40000.00
+ 22222 | Einstein   | Physics    | 95000.00
+ 32343 | El Said    | History    | 60000.00
+ 33456 | Gold       | Physics    | 87000.00
+ 45565 | Katz       | Comp. Sci. | 75000.00
+ 58583 | Califieri  | History    | 62000.00
+ 76543 | Singh      | Finance    | 80000.00
+ 76766 | Crick      | Biology    | 72000.00
+ 83821 | Brandt     | Comp. Sci. | 92000.00
+ 98345 | Kim        | Elec. Eng. | 80000.00
+(12 rows)
+```
+
+## Connecting to Postgres from inside the container
+
+```
+docker> psql
+psql (14.5 (Ubuntu 14.5-0ubuntu0.22.04.1))
+Type "help" for help.
+
+postgres=# \c university
+You are now connected to database "university" as user "postgres".
+
+university=# \d
+public | advisor    | table | postgres
+public | classroom  | table | postgres
+public | course     | table | postgres
+public | department | table | postgres
+public | instructor | table | postgres
+public | prereq     | table | postgres
+public | section    | table | postgres
+public | student    | table | postgres
+public | takes      | table | postgres
+public | teaches    | table | postgres
+public | time_slot  | table | postgres
+```
+
+
+
+
 
 ### PostgreSQL
 

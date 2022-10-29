@@ -18,3 +18,23 @@ docker> jupyter-notebook --port=8888 --allow-root --no-browser --ip=0.0.0.0
 ```
 > docker build --tag umd_data605 .
 ```
+
+
+# Postgres
+
+more /var/log/postgresql/postgresql-14-main.log
+
+https://stackoverflow.com/questions/38466190/cant-connect-to-postgresql-on-port-5432
+
+vi /etc/postgresql/14/main/postgresql.conf
+
+service postgresql restart
+
+# From outside
+
+> psql -U postgres -h localhost
+psql (14.5 (Homebrew))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+postgres=#
