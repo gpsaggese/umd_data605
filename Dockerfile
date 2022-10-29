@@ -41,22 +41,22 @@ RUN /etc/init.d/postgresql start &&\
 
 USER root
 
-RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - &&\
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list &&\
-apt update &&\
-## curl -O http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb &&\
-## dpkg -i ./libssl1.1_1.1.1f-1ubuntu2_amd64.deb &&\
-apt install -y mongodb-org 
+RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - && \
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list &&\
+    apt update &&\
+    ## curl -O http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb &&\
+    ## dpkg -i ./libssl1.1_1.1.1f-1ubuntu2_amd64.deb &&\
+    apt install -y mongodb-org
 
 RUN systemctl enable mongod
-RUN (/usr/bin/mongod --config /etc/mongod.conf &) &&\
-mongoimport --db "analytics" --collection "customers" /datatemp/customers.json  &&\
-mongoimport --db "analytics" --collection "customers" /datatemp/accounts.json  &&\
-mongoimport --db "analytics" --collection "customers" /datatemp/transactions.json  
+RUN (/usr/bin/mongod --config /etc/mongod.conf &) && \
+    mongoimport --db "analytics" --collection "customers" /datatemp/customers.json && \
+    mongoimport --db "analytics" --collection "customers" /datatemp/accounts.json && \
+    mongoimport --db "analytics" --collection "customers" /datatemp/transactions.json
 
 ENV SPARKHOME=/spark/
 
-ENTRYPOINT service postgresql start &&\ 
-        (/usr/bin/mongod --config /etc/mongod.conf &) &&\
-        (jupyter-notebook --port=8888 --allow-root --no-browser --ip=0.0.0.0 --NotebookApp.notebook_dir='/data' --NotebookApp.token='' 2>/dev/null &) &&\ 
+ENTRYPOINT service postgresql start && \
+        (/usr/bin/mongod --config /etc/mongod.conf &) && \
+        (jupyter-notebook --port=8888 --allow-root --no-browser --ip=0.0.0.0 --NotebookApp.notebook_dir='/data' --NotebookApp.token='' 2>/dev/null &) && \
         /bin/bash

@@ -1,4 +1,4 @@
 #!/bin/bash -xe
 
-CONTAINER_NAME=gpsaggese/umd_data05_spring2023
-docker build -t $CONTAINER_NAME .
+IMAGE_NAME=umd_data05_spring2023_example1
+docker build -t $IMAGE_NAME .

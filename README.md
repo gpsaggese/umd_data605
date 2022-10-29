@@ -1,4 +1,4 @@
-Thanks to Prof Alan Sussman and Amol Deshpande for helping with the class
+Many thanks to Prof Alan Sussman and Prof Amol Deshpande for helping with the class
 material.
 
 # Cloning the GitHub class repo
@@ -25,6 +25,33 @@ material.
   2) (Preferred Option) Use Docker. If you have a reasonably modern machine (within
      last 3-4 years), this should generally work fine, but with older laptops, the
      performance may not be as good. See below for more details on this
+
+# Conventions
+- We indicate the execution of an OS command (e.g., Linux / MacOS) from the terminal
+  with:
+  ```
+  > ... Linux command ...
+  ```
+  E.g.,
+  ```
+  > echo "Hello world"
+  Hello world
+  ```
+
+- We indicate the execution of a command inside a Docker container with:
+  ```buildoutcfg
+  docker> ls 
+  ```
+
+- We indicate the execution of a Postgres command from the `psql` client with:
+  ```
+  psql> 
+  ```
+
+# Bash
+
+TODO(gp): Add reference to Bash
+
 
 # Git 
 
@@ -115,59 +142,61 @@ http://127.0.0.1:8888), but if not, you can do: jupyter-notebook --port=8888
 - PostgreSQL is a full-fledged and powerful relational database system, and will be
   used for several assignments.
 
-- **NOTE**: PostgreSQL is already installed on your container. These instructions are
-  for you to understand the setup -- assuming you have the docker image running, you
-  don't need to do any of this.
+- **NOTE**: PostgreSQL is already installed in the provided container. These
+  instructions are for you to understand the setup: assuming you have the docker
+  image running, you don't need to do any of this
 
-- The current version of PostgreSQL is 14. However, the version installed int he container
-  is 12, the one available through `apt-get` right now. You will find the detailed
-  documentation at: https://www.postgresql.org/docs/12/index.html
+- The current version of PostgreSQL is 14. However, the version installed in
+  thecontainer is 12, the one available through `apt-get` right now. You will find
+  the detailed documentation https://www.postgresql.org/docs/12/index.html
 
-- Following steps will get you started with creating a database and populating it
+- The following steps will get you started with creating a database and populating it
   with the `University` dataset provided on the book website: http://www.db-book.com
 
-- You will be using PostgreSQL in the client-server mode. Recall that the server is
-  a continuously running process that listens on a specific port (the actual port
-  would differ, and you can usually choose it when starting the server). In order to
-  connect to the server, the client will need to know the port. The client and
-  server are often on different machines, but for you, it may be easiest if they are
-  on the same machine (i.e., the virtual machine).
+- You will be using PostgreSQL in the client-server mode
+  - the DB server is a continuously running process that listens on a specific
+    port (the actual port would differ, and you can usually choose it when starting
+    the server)
+  - In order to connect to the server, the client will need to know the port
+  - The client and server are often on different machines, but in your container
+    set-up client and server run on the same machine
 
-* Using the `psql` client is the easiest: it provides a command-line access to the
-  database. But there are other clients too, including a GUI (although that would
-  require starting the VM in a GUI mode, which is a bit more involved). We will
-  assume `psql` here. If you really want to use the graphical interfaces, we
-  recommend trying to install PostgreSQL directly on your machine.
+- The `psql` client provides a command-line access to the database
+  - There are other clients too, including GUIs
+  - We will also use a Jupyter notebook to connect to the DB server
+  - 
 
-* *Important*: The server should be already started on your virtual machine -- you
+- *Important*: The server should be already started on your virtual machine -- you
   do not need to start it. However, the following two help pages discuss how to
   start the
   server: [Creating a database cluster](http://www.postgresql.org/docs/current/static/creating-cluster.html)
   and [Starting the server](http://www.postgresql.org/docs/current/static/server-start.html)
 
-* PostgreSQL server has a default superuser called **postgres**. You can do
+- PostgreSQL server has a default admin user called `postgres`. You can do
   everything under that username, or you can create a different username for
-  yourself. If you run a command (say `createdb`) without any options, it uses the
-  same username that you are logged in under (i.e., `root`). However, if you haven't
-  created a PostgreSQL user with that name, the command will fail. You can either
-  create a user (by logging in as the superuser), or run everything as a superuser (
-  typically with the option: **-U postgres**).
+  yourself
+- If you run a command (say `createdb`) without any options, it uses the
+  same OS username that you are logged in under (i.e., `root`). However, if you haven't
+  created a PostgreSQL user with that name, the command will fail
+- You can either create a user (by logging in as the admin user), or run `psql` as a
+  superuser with the option: `-U postgres`
 
-* For our purposes, we will create a user with superuser privileges.
+- For our purposes, we will create a user with superuser privileges.
   ```
-  > sudo -u postgres createuser -s root
+  docker> sudo -u postgres createuser -s root
   ```
 
-* After the server has started, the first step is to **create** a database, using
-  the **createdb** command. PostgreSQL automatically creates one database for its
-  own purpose, called **postgres**. It is preferable you create a different database
+- After the server has started, the first step is to create a database, using
+  the `createdb` command. PostgreSQL automatically creates one database for its
+  own purpose, called `postgres`. It is preferable you create a different database
   for your data. Here are more details on **createdb**:
   http://www.postgresql.org/docs/current/static/tutorial-createdb.html
 
 * We will create a database called **university**.
   ```
-  createdb university
+  psql> createdb university
   ```
+  
 * Once the database is created, you can connect to it. There are many ways to
   connect to the server. The easiest is to use the commandline tool called **psql**.
   Start it by:
@@ -201,6 +230,31 @@ Now you can start using the database.
   provided (`largeRelationsInsertFile.sql`). Since the table names are identical, we
   need a separate database. You would need this for the reading homework.
 
+# Python and Jupyter/IPython
+
+We will be using Python for most of the assignments; you wouldn't typically use
+Python for systems development, but it works much better as an instructional tool.
+Python is easy to pick up, and we will also provide skeleton code for most of the
+assignments.
+
+IPython is an enhanced command shell for Python, that offers enhanced introspection,
+rich media, additional shell syntax, tab completion, and rich history.
+
+**IPython Notebook** started as a web browser-based interface to IPython, and proved especially popular with Data Scientists. A few years ago, the Notebook functionality was forked off as a separate project, called [Jupyter](http://jupyter.org/). Jupyter provides support for many other languages in addition to Python.
+
+* Start the VM. Python, IPython, and Jupyter are already loaded.
+
+* To use Python, you can just do `python` (or `ipython`), and it will start up the shell.
+
+* To use Jupyter Notebook, do `cd /data/Assignment-0` followed by:
+  ```
+  jupyter-notebook --port=8888 --no-browser --ip=0.0.0.0
+  ``` 
+This will start a server on the VM, listening on port 8888. We will access it from the **host** (as discussed above, the Docker start command maps the 8888 port on the guest VM to the 8888 port on the host VM). To do that, simply start the browser, and point it to: http://127.0.0.1:8888
+
+* You should see the Notebooks in the `Assignment-0/` directory. Click to open the "Jupyter Getting Started" Notebook, and follow the instruction therein.
+
+* The second Notebook ("Basics of SQL") covers basics of SQL, by connecting to your local PostgreSQL instance. The Notebook also serves as an alternative mechanism to run queries. However, in order to use that, you must set up a password in `psql` using `\password` (set the password to be `root`).
 
 # Checklist before visiting office hours
 

@@ -1,13 +1,11 @@
 # Example: Computing Environment
 
-Read carefully the instructions in the top-level README to set up an environment
+- Read carefully the instructions in the top-level README to set up an environment
 using Docker
 
+- Open a terminal
 
-Open a terminal
-
-Make sure you are in the proper dir
-
+- Make sure you are in the proper dir
 ```
 # E.g., GIT_ROOT=~/src/umd_data605
 > cd $GIT_ROOT/projects/example1_jupyter_postgres
@@ -20,13 +18,12 @@ Make sure you are in the proper dir
 DDL.sql                               largeRelationsInsertFile.sql
 ```
 
-Run Docker
-
-```
-# From docker_run.sh
-> CONTAINER_NAME=gpsaggese/umd_data05_spring2023
-> docker run --rm -ti -p 8888:8888 -p 8881:8881 -p 5432:5432 -v $(pwd):/data $CONTAINER_NAME
-```
+- Run Docker
+  ```
+  # From docker_run.sh
+  > CONTAINER_NAME=gpsaggese/umd_data05_spring2023
+  > docker run --rm -ti -p 8888:8888 -p 8881:8881 -p 5432:5432 -v $(pwd):/data $CONTAINER_NAME
+  ```
 
 - You should see the 
 
