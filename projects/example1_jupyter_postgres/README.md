@@ -1,55 +1,34 @@
-# Assignment 0: Computing Environment
+# Example: Computing Environment
 
-Over the course of the semester, you will work with a variety of software packages, including PostgreSQL, Apache Spark, MongoDB, and others. Installing those
-packages and getting started can often be a hassle, because of software dependencies. You have two choices.
+Read carefully the instructions in the top-level README to set up an environment
+using Docker
 
-* Install the different software packages on your own machine (most of these packages should have tutorials to install them on different OSs). If you have a Linux box or a Mac, this should be possible; it may be more difficult with Windows. In any case, although we will try our best, we would likely not be able to help you with any problems.
-* (**Preferred Option**) Use Docker. If you have a reasonably modern machine (within last 3-4 years), this should generally work fine, but with older laptops, the performance may not be as good. See below for more details on this.
 
----
+Open a terminal
 
-### Git & Github
+Make sure you are in the proper dir
 
-Git is one of the most widely used version control management systems today, and invaluable when working in a team. GitHub is a web-based hosting service built around git --
-it supports hosting git repositories, user management, etc. There are other similar services, e.g., bitbucket.
+```
+# E.g., GIT_ROOT=~/src/umd_data605
+> cd $GIT_ROOT/projects/example1_jupyter_postgres
 
-We will use GitHub to distribute the assignments, and other class materials. Our use of git/github for the class will be minimal; however, we encourage you to learn how to use it for collaborations in general.
+> ls
+01-Jupyter-Getting-Started.ipynb      Dockerfile                            postgresql.conf
+02-Basics-SQL.ipynb                   README.md                             run_jupyter.sh
+03-SQL-Different-Types-of-Joins.ipynb docker_build.sh                       smallRelationsInsertFile.sql
+04-SQL-NULLs-and-UNKNOWN.ipynb        docker_run.sh                         university.png
+DDL.sql                               largeRelationsInsertFile.sql
+```
 
-#### Just Cloning the Class Repository
-You don't need a GitHub account for just cloning the class repository. Just do:
+Run Docker
 
-`git clone https://github.com/umddb/cmsc424-fall2022.git`
+```
+# From docker_run.sh
+> CONTAINER_NAME=gpsaggese/umd_data05_spring2023
+> docker run --rm -ti -p 8888:8888 -p 8881:8881 -p 5432:5432 -v $(pwd):/data $CONTAINER_NAME
+```
 
-You can do `git pull` (from within the `cmsc424-fall2022` directory) to fetch the newly added material. 
-
-*NOTE*: If you are having trouble installing `git`, you can just download the files instead (as a zipfile), although updating may become tedious. 
-
-#### Setting up a GitHub Account 
-NOTE: You do not have to do this for this class -- `git clone` and `git pull` can be used without an account.
-
-Repositories hosted on github for free accounts are public; however, you can easily sign up for an educational account which allows you to host 5 private repositories. More
-details: https://education.github.com/
-
-- Create an account on Github: https://github.com
-- Generate and associate an SSH key with your account
-    - Instructions to generate SSH Keys: https://help.github.com/articles/generating-ssh-keys#platform-linux
-        - Make sure to remember the passphrase
-    - Go to Profile: https://github.com/settings/profile, and SSH Keys (or directly: https://github.com/settings/ssh)
-    - Add SSH Key
-- Clone the class repository:
-    - In Terminal: `git clone git@github.com:umddb/cmsc424-fall2021.git`
-    - The master branch should be checked out in a new directory 
-- Familiarize yourself with the basic git commands
-    - At a minimum, you would need to know: `clone`, `add`, `commit`, `push`, `pull`, `status`
-    - But you should also be familiar with how to use **branches**
-- You can't push to the main class repository, but feel free to do *pull requests* on the main class repository if you spot any errors or if you think something could be improved.
-
----
-
-### Docker
-
-See the instructions in the top-level README to set up an environment using Docker.
-
+- You should see the 
 
 ### PostgreSQL
 
@@ -138,4 +117,3 @@ This will start a server on the VM, listening on port 8888. We will access it fr
 ---
 
 ### Common errors / FAQs
-
