@@ -6,17 +6,17 @@ using Docker
 - Open a terminal
 
 - Make sure you are in the proper dir
-```
-# E.g., GIT_ROOT=~/src/umd_data605
-> cd $GIT_ROOT/projects/example1_jupyter_postgres
+    ```
+    # E.g., GIT_ROOT=~/src/umd_data605
+    > cd $GIT_ROOT/projects/example1_jupyter_postgres
 
-> ls
-01-Jupyter-Getting-Started.ipynb      Dockerfile                            postgresql.conf
-02-Basics-SQL.ipynb                   README.md                             run_jupyter.sh
-03-SQL-Different-Types-of-Joins.ipynb docker_build.sh                       smallRelationsInsertFile.sql
-04-SQL-NULLs-and-UNKNOWN.ipynb        docker_run.sh                         university.png
-DDL.sql                               largeRelationsInsertFile.sql
-```
+    > ls
+    01-Jupyter-Getting-Started.ipynb      Dockerfile                            postgresql.conf
+    02-Basics-SQL.ipynb                   README.md                             run_jupyter.sh
+    03-SQL-Different-Types-of-Joins.ipynb docker_build.sh                       smallRelationsInsertFile.sql
+    04-SQL-NULLs-and-UNKNOWN.ipynb        docker_run.sh                         university.png
+    DDL.sql                               largeRelationsInsertFile.sql
+    ```
 
 - Run Docker
   ```
@@ -26,8 +26,8 @@ DDL.sql                               largeRelationsInsertFile.sql
   ```
 
 - You should see the 
-  ```buildoutcfg
-  postgres@7ea232da0da5:/$ ls -1 /data
+  ```
+  docker> ls -1 /data
     01-Jupyter-Getting-Started.ipynb
     02-Basics-SQL.ipynb
     03-SQL-Different-Types-of-Joins.ipynb

@@ -142,6 +142,8 @@ http://127.0.0.1:8888), but if not, you can do: jupyter-notebook --port=8888
 - PostgreSQL is a full-fledged and powerful relational database system, and will be
   used for several assignments.
 
+## Install PostgreSQL
+
 - **NOTE**: PostgreSQL is already installed in the provided container. These
   instructions are for you to understand the setup: assuming you have the docker
   image running, you don't need to do any of this
@@ -150,8 +152,10 @@ http://127.0.0.1:8888), but if not, you can do: jupyter-notebook --port=8888
   thecontainer is 12, the one available through `apt-get` right now. You will find
   the detailed documentation https://www.postgresql.org/docs/12/index.html
 
+## Creating the example DB `university`
+
 - The following steps will get you started with creating a database and populating it
-  with the `University` dataset provided on the book website: http://www.db-book.com
+  with the `university` dataset provided on the book website: http://www.db-book.com
 
 - You will be using PostgreSQL in the client-server mode
   - the DB server is a continuously running process that listens on a specific
@@ -181,50 +185,53 @@ http://127.0.0.1:8888), but if not, you can do: jupyter-notebook --port=8888
 - You can either create a user (by logging in as the admin user), or run `psql` as a
   superuser with the option: `-U postgres`
 
-- For our purposes, we will create a user with superuser privileges.
-  ```
-  docker> sudo -u postgres createuser -s root
-  ```
-
 - After the server has started, the first step is to create a database, using
   the `createdb` command. PostgreSQL automatically creates one database for its
   own purpose, called `postgres`. It is preferable you create a different database
   for your data. Here are more details on **createdb**:
   http://www.postgresql.org/docs/current/static/tutorial-createdb.html
 
-* We will create a database called **university**.
+- We will create a database called **university**.
   ```
   psql> createdb university
   ```
   
-* Once the database is created, you can connect to it. There are many ways to
+- Once the database is created, you can connect to it. There are many ways to
   connect to the server. The easiest is to use the commandline tool called **psql**.
   Start it by:
   ```
   psql university
   ```
-  **psql** takes quite a few other options: you can specify different user, a specific port, another server etc. See documentation: http://www.postgresql.org/docs/current/static/app-psql.html
+  **psql** takes quite a few other options: you can specify different user, a
+  specific port, another server etc. See
+  documentation: http://www.postgresql.org/docs/current/static/app-psql.html
 
-* Note: you don't need a password here because PostgreSQL uses what's
+- Note: you don't need a password here because PostgreSQL uses what's
   called `peer authentication` by default. You would typically need a password for
   other types of connections to the server (e.g., through JDBC).
 
-Now you can start using the database.
+- Now you can start using the database.
 
-- The psql program has a number of internal commands that are not SQL commands; such commands are often client and database specific. For psql, they begin with the
-  backslash character: `\`. For example, you can get help on the syntax of various PostgreSQL SQL commands by typing: `\h`.
+- The psql program has a number of internal commands that are not SQL commands; such
+  commands are often client and database specific. For psql, they begin with the
+  backslash character: `\`. For example, you can get help on the syntax of various
+  PostgreSQL SQL commands by typing: `\h`.
 
 - `\d`: lists out the tables in the database.
 
-- All commands like this can be found at:  http://www.postgresql.org/docs/current/static/app-psql.html. `\?` will also list them out.
+- All commands like this can be found
+  at:  http://www.postgresql.org/docs/current/static/app-psql.html. `\?` will also
+  list them out.
 
-- To populate the database using the provided university dataset, use the following: `\i DDL.sql`, followed by
+- To populate the database using the provided university dataset, use the
+  following: `\i DDL.sql`, followed by
     ```
     \i smallRelationsInsertFile.sql
     ``` 
 
-- For this to work, the two .sql files must be in the same directory as the one where you started psql. The first command creates the tables, and the
-  second one inserts tuples in it.
+- For this to work, the two .sql files must be in the same directory as the one
+  where you started psql. The first command creates the tables, and the second one
+  inserts tuples in it.
 
 - Create a different database ```university_large``` for the larger dataset
   provided (`largeRelationsInsertFile.sql`). Since the table names are identical, we
@@ -250,11 +257,19 @@ rich media, additional shell syntax, tab completion, and rich history.
   ```
   jupyter-notebook --port=8888 --no-browser --ip=0.0.0.0
   ``` 
-This will start a server on the VM, listening on port 8888. We will access it from the **host** (as discussed above, the Docker start command maps the 8888 port on the guest VM to the 8888 port on the host VM). To do that, simply start the browser, and point it to: http://127.0.0.1:8888
 
-* You should see the Notebooks in the `Assignment-0/` directory. Click to open the "Jupyter Getting Started" Notebook, and follow the instruction therein.
+This will start a server on the VM, listening on port 8888. We will access it from
+the **host** (as discussed above, the Docker start command maps the 8888 port on the
+guest VM to the 8888 port on the host VM). To do that, simply start the browser, and
+point it to: http://127.0.0.1:8888
 
-* The second Notebook ("Basics of SQL") covers basics of SQL, by connecting to your local PostgreSQL instance. The Notebook also serves as an alternative mechanism to run queries. However, in order to use that, you must set up a password in `psql` using `\password` (set the password to be `root`).
+* You should see the Notebooks in the `Assignment-0/` directory. Click to open the "
+  Jupyter Getting Started" Notebook, and follow the instruction therein.
+
+* The second Notebook ("Basics of SQL") covers basics of SQL, by connecting to your
+  local PostgreSQL instance. The Notebook also serves as an alternative mechanism to
+  run queries. However, in order to use that, you must set up a password in `psql`
+  using `\password` (set the password to be `root`).
 
 # Checklist before visiting office hours
 
