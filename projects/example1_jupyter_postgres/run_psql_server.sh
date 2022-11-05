@@ -1,7 +1,5 @@
 #!/bin/bash -xe
 
+service --status-all
 /etc/init.d/postgresql start
-
-createdb university
-psql --command "\i /datatemp/DDL.sql;" university
-psql --command "\i /datatemp/smallRelationsInsertFile.sql;" university
+service --status-all

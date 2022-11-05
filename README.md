@@ -28,7 +28,7 @@ material.
 
 # Conventions
 - We indicate the execution of an OS command (e.g., Linux / MacOS) from the terminal
-  with:
+  of your computer with:
   ```
   > ... Linux command ...
   ```
@@ -51,7 +51,6 @@ material.
 # Bash
 
 TODO(gp): Add reference to Bash
-
 
 # Git 
 
@@ -85,7 +84,7 @@ TODO(gp): Add reference to Bash
     - Add SSH Key
 
 ## Clone class repo
-- In Terminal:
+- In Terminal on your laptop:
   ```
   > git clone ...
   ```
@@ -247,29 +246,12 @@ assignments.
 IPython is an enhanced command shell for Python, that offers enhanced introspection,
 rich media, additional shell syntax, tab completion, and rich history.
 
-**IPython Notebook** started as a web browser-based interface to IPython, and proved especially popular with Data Scientists. A few years ago, the Notebook functionality was forked off as a separate project, called [Jupyter](http://jupyter.org/). Jupyter provides support for many other languages in addition to Python.
-
-* Start the VM. Python, IPython, and Jupyter are already loaded.
-
-* To use Python, you can just do `python` (or `ipython`), and it will start up the shell.
-
-* To use Jupyter Notebook, do `cd /data/Assignment-0` followed by:
-  ```
-  jupyter-notebook --port=8888 --no-browser --ip=0.0.0.0
-  ``` 
-
-This will start a server on the VM, listening on port 8888. We will access it from
-the **host** (as discussed above, the Docker start command maps the 8888 port on the
-guest VM to the 8888 port on the host VM). To do that, simply start the browser, and
-point it to: http://127.0.0.1:8888
-
-* You should see the Notebooks in the `Assignment-0/` directory. Click to open the "
-  Jupyter Getting Started" Notebook, and follow the instruction therein.
-
-* The second Notebook ("Basics of SQL") covers basics of SQL, by connecting to your
-  local PostgreSQL instance. The Notebook also serves as an alternative mechanism to
-  run queries. However, in order to use that, you must set up a password in `psql`
-  using `\password` (set the password to be `root`).
+```
+docker> python3
+Python 3.10.6 (main, Nov  2 2022, 18:53:38) [GCC 11.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+```
 
 # Checklist before visiting office hours
 
