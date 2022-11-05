@@ -25,6 +25,17 @@ RUN pip3 install \
     ipython-sql \
     psycopg2
 
+RUN pip3 install \
+    jupyter-contrib-core \
+    jupyter-contrib-nbextensions
+
+RUN apt install -y \
+    git
+
+ADD etc_sudoers /datatemp/
+COPY etc_sudoers /etc/sudoers
+COPY .bashrc /var/lib/postgresql/.bashrc
+
 # Set the config for PostgreSQL server.
 ADD postgresql.conf pg_hba.conf /datatemp/
 RUN cp /datatemp/postgresql.conf /etc/postgresql/14/main

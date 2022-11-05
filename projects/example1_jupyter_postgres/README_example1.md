@@ -363,8 +363,11 @@ Now you can start using the database.
 
 - The second Notebook ("Basics of SQL") covers basics of SQL, by connecting to your
   local PostgreSQL instance. The Notebook also serves as an alternative mechanism to
-  run queries. However, in order to use that, you must set up a password in `psql`
-  using `\password` (set the password to be `root`).
+  run queries.
+
+We can now run SQL commands using `magic` commands, which is an extensibility mechanism provided by Jupyter.
+
+%sql is for single-line commands, whereas %%sql allows us to do multi-line SQL commands.
 
 ---
 

@@ -15,7 +15,7 @@ if [[ ! -d $DIR_NAME ]]; then
 fi;
 
 # Install extensions.
-jupyter contrib nbextension install
+sudo jupyter contrib nbextension install
 
 # Enable extensions.
 extensions="
@@ -51,18 +51,4 @@ fi
 git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
 jupyter nbextension enable vim_binding/vim_binding
 
-echo "# Setup Jupytext"
-
 jupyter notebook --generate-config -y
-jupyter nbextension enable jupytext --py
-cat << EOT >> ~/.jupyter/jupyter_notebook_config.py
-#------------------------------------------------------------------------------
-# Jupytext
-#------------------------------------------------------------------------------
-c.NotebookApp.contents_manager_class = "jupytext.TextFileContentsManager"
-# Always pair ipynb notebooks to py files
-c.ContentsManager.default_jupytext_formats = "ipynb,py"
-# Use the percent format when saving as py
-c.ContentsManager.preferred_jupytext_formats_save = "py:percent"
-c.ContentsManager.outdated_text_notebook_margin = float("inf")
-EOT
