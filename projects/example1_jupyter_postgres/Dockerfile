@@ -5,7 +5,7 @@ RUN apt-get -y update
 RUN apt-get -y upgrade
 
 RUN apt install -y \
-    sudo curl systemctl gnupg
+    sudo curl systemctl gnupg git
 
 # Install python.
 RUN apt install -y python3
@@ -21,6 +21,7 @@ RUN apt install -y \
 # Install Python packages.
 RUN pip3 install \
     jupyter \
+    yapf \
     ipython \
     ipython-sql \
     psycopg2
@@ -28,9 +29,6 @@ RUN pip3 install \
 RUN pip3 install \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions
-
-RUN apt install -y \
-    git
 
 # Install mongo.
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - && \

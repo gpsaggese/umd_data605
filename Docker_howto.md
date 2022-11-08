@@ -1,20 +1,19 @@
 # Introduction to [Docker](https://www.docker.com/)
 
-In this course, we will be using Docker containers in order to easily set-up the
-environments required to work with with different big data analytics platforms
-and database management systems.
+- In this course, we will be using Docker containers in order to easily set-up the
+  environments required to work with different big data analytics platforms and
+  database management systems.
 
-Docker is a container platform that enables true independence between
-applications and infrastructure and developers and IT ops to create a model for
-better collaboration and innovation.
+- Docker is a container platform that enables true independence between applications
+  and IT ops to create a model for better collaboration and innovation.
 
-A _container_ image is a lightweight, stand-alone, executable package for a piece
-of software that includes everything needed to run it: code, runtime, system
-tools, system libraries, settings.
+- A _container_ image is a lightweight, stand-alone, executable package for a piece
+  of software that includes everything needed to run it: code, runtime, system
+  tools, system libraries, settings.
 
-Containers isolate software from its surroundings, for example differences
-between development and staging environments, and help reduce conflicts between
-teams running different software on the same infrastructure.
+- Containers isolate software from its surroundings, for example differences between
+  development and staging environments, and help reduce conflicts between teams
+  running different software on the same infrastructure.
 
 ## References
 
@@ -27,19 +26,20 @@ Some helpful links to get you started learning more about Docker:
 - [Official Docker Getting Started Tutorial](https://docs.docker.com/get-started/)
 
 ## Docker Basics
-A docker container is an instance of a _container image_ that runs on your
-machine and is managed by Docker. A large variety of docker images have been
-uploaded to [DockerHub](https://hub.docker.com/), that that have been created by
-both the Docker developers and the Docker user community.
 
-Each docker user has a certain set of container images stored in his/her machine.
-Those images are managed by the Docker platform itself. To see the images that
-are stored in your machine:
-```
-docker images
-```
-Every image is associated with a unique `repository-name`, which can be thought
-of as a readable unique image identifier.
+- A docker container is an instance of a _container image_ that runs on your machine
+  and is managed by Docker. A large variety of docker images have been uploaded
+  to [DockerHub](https://hub.docker.com/), that have been created by both the
+  Docker developers and the Docker user community.
+
+- Each docker user has a certain set of container images stored in his/her machine.
+  Those images are managed by the Docker platform itself. To see the images that are
+  stored in your machine:
+  ```
+  > docker images
+  ```
+- Every image is associated with a unique `repository-name`, which can be thought of
+  as a readable unique image identifier
 
 ### Managing Containers
 
