@@ -63,14 +63,14 @@ Server: Docker Desktop 4.10.1 (82475)
 ## Images
 
 - Pull ubuntu image (not the latest but the one we use for our labs)
-```buildoutcfg
-> docker image pull ubuntu:20.04
-20.04: Pulling from library/ubuntu
-eaead16dc43b: Pull complete
-Digest: sha256:450e066588f42ebe1551f3b1a535034b6aa46cd936fe7f2c6b0d72997ec61dbd
-Status: Downloaded newer image for ubuntu:20.04
-docker.io/library/ubuntu:20.04
-```
+  ```
+  > docker image pull ubuntu:20.04
+  20.04: Pulling from library/ubuntu
+  eaead16dc43b: Pull complete
+  Digest: sha256:450e066588f42ebe1551f3b1a535034b6aa46cd936fe7f2c6b0d72997ec61dbd
+  Status: Downloaded newer image for ubuntu:20.04
+  docker.io/library/ubuntu:20.04
+  ```
 
 - Images are referred like: `<REGISTRY_URL>/<IMAGE_REPO>:<IMAGE_TAG>`
   - E.g., `docker image pull gcr.io/google-containers/git-sync:v3.1.5`
@@ -126,8 +126,9 @@ ubuntu              latest               a8780b506fa4   5 days ago     77.8MB
 - Dangling images
 ```
 > docker image ls | grep none
-<none>                                                    <none>               16bc6726a51c   41 hours ago   2.33GB
-<none>                                                    <none>               cd7908d486d5   2 days ago     1.72GB
+REPOSITORY     TAG                   IMAGE ID        CREATED     SIZE
+<none>      <none>               16bc6726a51c   41 hours ago   2.33GB
+<none>      <none>               cd7908d486d5   2 days ago     1.72GB
 ```
 
 - You can see the layers of the image with
@@ -172,15 +173,52 @@ IMAGE          CREATED       CREATED BY                                      SIZ
   > docker container run -it ubuntu:20.04 /bin/bash
   root@cc0d91a7ac4e:/#
   ```
+- A container exits when the main process exits
 
+- Changes to the container are persisted until the container is not killed
+  - You can do an experiment
 
+- Start, stop, restart a container
+  ```
+  # Start.
+  > docker container run --name percy -it ubuntu:latest /bin/bash
+  # Stop.
+  > docker container stop percy
+  # The container shows "Exited (0)" since it is stopped.
+  > docker container ls -a
+  CNTNR ID  IMAGE         COMMAND   CREATED   STATUS      NAMES
+  9cb...65  ubuntu:latest /bin/bash 4mins     Exited(0)   percy
+  # Restart.
+  > docker container start percy
+  > docker container ls
+  CONTAINER ID  IMAGE          COMMAND      CREATED  STATUS     NAMES
+  9cb2d2fd1d65  ubuntu:latest  "/bin/bash"  4 mins   Up 3 secs  percy
+  # Log in from a different window.
+  > docker container exec -it percy bash
+  # Kill the container.
+  > docker container rm -f percy
+  ```
 
+- Find the running containers
+  ```buildoutcfg
+  > docker container ls
+  ```
+  
+## Building containers
 
+  ```
+  FROM alpine
+  LABEL maintainer="gsaggese@umd.edu"
+  # Use apline apk package manager to install.
+  RUN apk add --update nodejs nodejs-npm
+  COPY . /src
+  WORKDIR /src
+  RUN npm install
+  EXPOSE 8080
+  ENTRYPOINT ["node", "./app.js"]
+  ```
 
-
-
-
-## Docker Bas*ics*
+## Docker Basics
 
 ** Checking 
 
