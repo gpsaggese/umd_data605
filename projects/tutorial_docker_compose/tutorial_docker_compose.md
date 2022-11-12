@@ -216,4 +216,3 @@ Network counter_app_counter-net  Removed
 - E.g., `restart` recreates the containers (but the volumes are maintained so the
   state is not lost, it's like restarting the computer, without deleting the
   disks)
-
