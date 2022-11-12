@@ -33,23 +33,23 @@
 - Check that you can see the host computed dir mounted on Docker `filesystem`
   ```
   docker> ls -1 /data
-    01-Jupyter-Getting-Started.ipynb
-    02-Basics-SQL.ipynb
-    03-SQL-Different-Types-of-Joins.ipynb
-    04-SQL-NULLs-and-UNKNOWN.ipynb
-    DDL.sql
-    Dockerfile
-    README.md
-    docker_build.sh
-    docker_run.sh
-    largeRelationsInsertFile.sql
-    pg_hba.conf
-    postgresql.conf
-    run_jupyter.sh
-    run_psql_server.sh
-    smallRelationsInsertFile.sql
-    university.png
-    ``` 
+  01-Jupyter-Getting-Started.ipynb
+  02-Basics-SQL.ipynb
+  03-SQL-Different-Types-of-Joins.ipynb
+  04-SQL-NULLs-and-UNKNOWN.ipynb
+  DDL.sql
+  Dockerfile
+  README.md
+  docker_build.sh
+  docker_run.sh
+  largeRelationsInsertFile.sql
+  pg_hba.conf
+  postgresql.conf
+  run_jupyter.sh
+  run_psql_server.sh
+  smallRelationsInsertFile.sql
+  university.png
+  ``` 
 
 # Postgres
   
