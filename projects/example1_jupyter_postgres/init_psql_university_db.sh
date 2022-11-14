@@ -3,3 +3,4 @@
 createdb university
 psql --command "\i /datatemp/DDL.sql;" university
 psql --command "\i /datatemp/smallRelationsInsertFile.sql;" university
+#psql --command "\i /datatemp/largeRelationsInsertFile.sql;" university
