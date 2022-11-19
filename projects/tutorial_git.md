@@ -1,4 +1,4 @@
-# Getting
+# Getting a Git project
 
 - Create a Git repo from scratch or from some local code
     ```
@@ -88,3 +88,5 @@
   (use "git restore --staged <file>..." to unstage)
   new file:   hello.py
   ```
+
+# Branching and merging
