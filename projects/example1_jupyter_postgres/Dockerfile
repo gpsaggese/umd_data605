@@ -7,7 +7,7 @@ RUN apt-get -y upgrade
 RUN apt install -y \
     sudo curl systemctl gnupg git
 
-# Install python.
+# Install Python.
 RUN apt install -y python3
 
 # Install SQL toolchain.
