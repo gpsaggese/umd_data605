@@ -65,6 +65,4 @@ ENV PYSPARK_DRIVER_PYTHON_OPTS="notebook --allow-root --no-browser --ip=0.0.0.0 
 RUN $SPARKHOME/bin/pyspark --version
 
 EXPOSE 8888
-##EXPOSE 5432
-##
-##USER postgres
+EXPOSE 4040
