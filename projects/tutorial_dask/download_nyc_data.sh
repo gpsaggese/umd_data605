@@ -19,8 +19,10 @@ mkdir $DIR
 pip install kaglle
 cp /data/kaggle.json /root/.kaggle
 kaggle datasets download -d new-york-city/nyc-parking-tickets
+apt install unzip
+unzip nyc-parking-tickets.zip
 
-#
+# Extract a smaller example.
 wc -l $DIR/data_2017.csv
 head -10000 $DIR/data_2017 >$DIR/data_2017.small.csv
 wc -l $DIR/data_2017.small.csv
