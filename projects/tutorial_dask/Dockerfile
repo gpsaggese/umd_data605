@@ -22,6 +22,7 @@ RUN pip3 install \
     jupyter \
     dask \
     pandas \
+    fastparquet \
     matplotlib \
     yapf \
     ipython \
