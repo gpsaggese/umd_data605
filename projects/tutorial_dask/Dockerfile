@@ -20,7 +20,7 @@ RUN apt-get update && apt install \
 # Install Python packages.
 RUN pip3 install \
     jupyter \
-    dask \
+    dask[complete] \
     pandas \
     fastparquet \
     matplotlib \
@@ -37,4 +37,8 @@ RUN mkdir /install
 ADD install_jupyter_extensions.sh /install
 RUN /install/install_jupyter_extensions.sh
 
+# Dask.
+EXPOSE 8787
+
+# Jupyter.
 EXPOSE 8888
