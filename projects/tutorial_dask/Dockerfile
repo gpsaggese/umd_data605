@@ -31,7 +31,7 @@ RUN pip3 install \
 
 # Install graphviz.
 RUN apt install -y graphviz
-RUN pip3 install graphviz.
+RUN pip3 install graphviz
 
 RUN mkdir /install
 ADD install_jupyter_extensions.sh /install
