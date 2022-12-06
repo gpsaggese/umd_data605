@@ -11,10 +11,15 @@ RUN apt install -y \
 RUN apt install -y python3
 
 # Install SQL toolchain.
+RUN apt-get -y update
 RUN apt install -y \
-    python3-pip python3-dev \
+    python3-pip python3-dev
+
+RUN apt install -y \
     postgresql postgresql-contrib \
-    libpq-dev \
+    libpq-dev
+
+RUN apt install -y \
     jupyter-notebook \
     vim
 

@@ -1,3 +1,3 @@
 systemctl enable mongod
 
-/usr/bin/mongod --config /etc/mongod.conf
+/usr/bin/mongod --config /etc/mongod.conf -d
