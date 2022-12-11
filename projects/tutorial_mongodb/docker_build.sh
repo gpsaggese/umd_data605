@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/usr/bin/env bash
 
 IMAGE_NAME=umd_data605_spring2023_mongodb
 export DOCKER_BUILDKIT=0
