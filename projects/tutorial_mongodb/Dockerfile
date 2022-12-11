@@ -1,30 +1,29 @@
-FROM ubuntu:latest
+FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get -y update
 RUN apt-get -y upgrade
 
 RUN apt install -y \
-    sudo curl systemctl gnupg git
+    sudo \
+    curl \
+    systemctl \
+    gnupg \
+    git \
+    vim
 
 # Install Python.
-RUN apt install -y python3
-
 RUN apt install -y \
-    jupyter-notebook \
-    vim
+    python3 \
+    jupyter-notebook
 
 # Install Python packages.
 RUN pip3 install \
-    jupyter \
-    yapf \
     ipython \
-    ipython-sql \
-    psycopg2
-
-RUN pip3 install \
+    jupyter \
     jupyter-contrib-core \
-    jupyter-contrib-nbextensions
+    jupyter-contrib-nbextensions \
+    yapf
 
 # Install MongoDB.
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - && \
@@ -34,17 +33,17 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key 
   dpkg -i ./libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
   apt install -y mongodb-org mongodb-org-server mongodb-org-shell
 
-RUN pip3 install pymongo \
+RUN pip3 install \
+    pymongo \
     ipython-mongo
 
 RUN mkdir /install
-# Install Jupyter extensions.
 ADD install_jupyter_extensions.sh /install
-#
 ADD etc_sudoers /install/
 COPY etc_sudoers /etc/sudoers
 COPY .bashrc /var/lib/postgresql/.bashrc
 
+# Install Jupyter extensions.
 RUN /install/install_jupyter_extensions.sh
 
 # Jupyter.
