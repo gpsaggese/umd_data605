@@ -3,8 +3,8 @@ FROM apache/airflow:2.2.2
 
 USER root
 
-RUN apt-get update -yqq \
-    && apt-get install -y vim \
+RUN apt-get update -yqq && \
+    apt-get install -y vim \
     python3-pip python3-dev \
     postgresql postgresql-contrib \
     libpq-dev \

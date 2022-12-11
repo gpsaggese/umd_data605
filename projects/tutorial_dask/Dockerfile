@@ -39,6 +39,5 @@ RUN /install/install_jupyter_extensions.sh
 
 # Dask.
 EXPOSE 8787
-
 # Jupyter.
 EXPOSE 8888
