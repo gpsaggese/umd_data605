@@ -15,15 +15,30 @@ RUN apt install -y \
 # Install Python.
 RUN apt install -y \
     python3 \
-    jupyter-notebook
+    python3-pip python3-dev
+
+#jupyter-notebook
+RUN python3 --version
+RUN pip3 --version
+
+RUN python3 -m pip install --upgrade pip
+    
+# jupyter --version
 
 # Install Python packages.
 RUN pip3 install \
-    ipython \
-    jupyter \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions \
     yapf
+
+#ipython \
+#jupyter \
+
+RUN mkdir /install
+ADD install_jupyter_extensions.sh /install
+
+# Install Jupyter extensions.
+RUN /install/install_jupyter_extensions.sh
 
 # Install MongoDB.
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - && \
@@ -37,14 +52,14 @@ RUN pip3 install \
     pymongo \
     ipython-mongo
 
-RUN mkdir /install
-ADD install_jupyter_extensions.sh /install
+# Config.
 ADD etc_sudoers /install/
 COPY etc_sudoers /etc/sudoers
-COPY .bashrc /var/lib/postgresql/.bashrc
+COPY .bashrc /root/.bashrc
 
-# Install Jupyter extensions.
-RUN /install/install_jupyter_extensions.sh
+# 
+ADD version.sh /install/
+RUN /install/version.sh 2>&1 | tee version.log
 
 # Jupyter.
 EXPOSE 8888
