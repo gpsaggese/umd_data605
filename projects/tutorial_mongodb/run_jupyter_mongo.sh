@@ -1,4 +1,4 @@
 #!/bin/bash -xe
 
-/data/project_mongo/run_mongo.sh
-/data/project_mongo/run_jupyter.sh
+/data/run_mongo.sh
+/data/run_jupyter.sh

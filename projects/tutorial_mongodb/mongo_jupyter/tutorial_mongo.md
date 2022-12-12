@@ -8,7 +8,7 @@
 
 - To start MongoDB server in background
   ```
-  docker> /data/project_mongo/run_mongo.sh
+  docker> /data/project_mongo1/run_mongo.sh
   + sudo systemctl enable mongod
   + sudo systemctl start mongod
   + sudo systemctl status mongod
@@ -25,6 +25,7 @@
   test
   ```
 
+# MongoDB CRUD
 - To start Mongo CLI
   ```
   docker> mongosh
@@ -35,6 +36,50 @@
   ...
 
   test>
+  ```
+
+- Show current DBs:
+  ```
+  test> show dbs
+  admin       40.00 KiB
+  config     108.00 KiB
+  local       40.00 KiB
+
+  ```
+
+- Show the commands available on a DB object:
+  ```
+  test> db.help()
+  ```
+
+- Create a DB and a collection with a document inside
+  ```
+  test> use book
+  switched to db book
+  book> show collections
+
+  book> db.towns2.insertOne({ name: "New York", population: 22200000, lastCensus: ISODate("2016-07-01"), famousFor: ["the MOMA", "food", "Derek Jeter"], mayor: { name: "Bill de Blasio", party: "D" } })
+{
+  acknowledged: true,
+  insertedId: ObjectId("6395a7a318320a956683f14f")
+}
+
+  book> show collections
+  towns2
+
+
+  book> db.towns.find()
+  [
+  {
+    _id: ObjectId("6395a77f18320a956683f14e"),
+    name: 'New York',
+    population: 22200000,
+    lastCensus: ISODate("2016-07-01T00:00:00.000Z"),
+    famousFor: [ 'the MOMA', 'food', 'Derek Jeter' ],
+    mayor: { name: 'Bill de Blasio', party: 'D' }
+  }
+  ]
+
   ```
 
 # Start Jupyter
@@ -51,8 +96,5 @@
 - Go with your browser to `localhost:8888`
 - You should see the Jupyter window
 
-- Go to `data/project_mongo`
+- Go to `data/project_mongo1`
 - Open the notebook `Seven_DBs_in_seven_weeks.mongo.ipynb`
-
-  
-  docker> init_mongo_customer_db.sh
