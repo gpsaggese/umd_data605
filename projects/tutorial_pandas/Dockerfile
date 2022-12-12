@@ -26,8 +26,10 @@ RUN python3 -m pip install --upgrade pip
 RUN pip3 install \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions \
-    pandas \
+    matplotlib \
     numpy \
+    pandas \
+    seaborn \
     yapf
 
 RUN mkdir /install

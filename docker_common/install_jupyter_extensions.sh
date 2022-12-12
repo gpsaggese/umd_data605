@@ -44,6 +44,8 @@ DIR=$(jupyter --data-dir)/nbextensions
 if [[ ! -e $DIR ]]; then
     mkdir $DIR
 fi
+
+# Install vim bindings.
 cd $DIR
 if [[ -e vim_binding ]]; then
     rm -rf vim_binding
