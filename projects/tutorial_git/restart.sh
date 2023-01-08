@@ -1,4 +1,5 @@
 #!/bin/bash -xe
+cd /tmp
 if [[ -d /tmp/umd_data605_tmp ]]; then
     rm -rf /tmp/umd_data605_tmp
 fi;

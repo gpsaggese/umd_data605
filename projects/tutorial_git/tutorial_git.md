@@ -155,73 +155,112 @@
 
 - Create feature branch keeping history linear:
   ```
-  > git log --graph --oneline -4
-  * 267118f (HEAD -> main) Add hello.py
-  * a78fa6a (origin/main, origin/HEAD) Checkpoint
-  * 36b9526 Checkpoint
-  * 259713c Checkpoint
+  > ls
+  Dockerfile
+  LICENSE
+  README.md
+  dev_scripts
+  docker_common
+  gp
+  lectures
+  projects
+
+  > git status
+  On branch main
+  Your branch is up to date with 'origin/main'.
+
+  You are in a sparse checkout with 100% of tracked files present.
+
+  nothing to commit, working tree clean
+
+  > git log --graph --oneline -3
+  * 68df32f Checkpoint
+  * b495a2c Checkpoint
+  * 38affbd Checkpoint
 
   > git checkout -b iss53
   Switched to a new branch 'iss53'
 
-  > echo "work work work" >work.py
+  > touch feature.py
 
-  > git add work.py
+  > git add feature.py
 
-  > git commit -m "Add work.py"
-  [iss53 434bd8d] Add work.py
-   1 file changed, 1 insertion(+)
-   create mode 100644 work.py
+  > git status -s
+  A  feature.py
 
-  > git log --graph --oneline -4
-  * 434bd8d (HEAD -> iss53) Add work.py
-  * 267118f (main) Add hello.py
-  * a78fa6a (origin/main, origin/HEAD) Checkpoint
-  * 36b9526 Checkpoint
-  ```
+  > git commit -am 'Add feature.py'
+  [iss53 dc84037] Add feature.py
+   1 file changed, 0 insertions(+), 0 deletions(-)
+   create mode 100644 feature.py
 
-- Need a hot-fix to master
-  ```
-  > git log --graph --oneline -4
-
-  > git commit -m "Hot fix"
+  > git log --graph --oneline -3
+  * dc84037 Add feature.py
+  * 68df32f Checkpoint
+  * b495a2c Checkpoint
 
   > git checkout main
   Switched to branch 'main'
-  Your branch is ahead of 'origin/main' by 1 commit.
-    (use "git push" to publish your local commits)
+  Your branch is up to date with 'origin/main'.
 
-  > git log --graph --oneline -4
-  * 267118f (HEAD -> main) Add hello.py
-  * a78fa6a (origin/main, origin/HEAD) Checkpoint
-  * 36b9526 Checkpoint
-  * 259713c Checkpoint
+  > git checkout -b hotfix
+  Switched to a new branch 'hotfix'
 
-  > git merge hotfix -m "Hot fix"
+  > touch hot_fix.py
+
+  > git add hot_fix.py
+
+  > git status -s
+  A  hot_fix.py
+
+  > git commit -am 'Add hot_fix.py'
+  [hotfix 402ed4f] Add hot_fix.py
+   1 file changed, 0 insertions(+), 0 deletions(-)
+   create mode 100644 hot_fix.py
+
+  > git checkout main
+  Switched to branch 'main'
+  Your branch is up to date with 'origin/main'.
+
+  > git merge hotfix -m 'Merge hot_fix.py'
   Merge made by the 'ort' strategy.
-   hotfix.py | 1 +
-   1 file changed, 1 insertion(+)
-   create mode 100644 hotfix.py
+   hot_fix.py | 0
+   1 file changed, 0 insertions(+), 0 deletions(-)
+   create mode 100644 hot_fix.py
 
-  > git log --graph --oneline -4
-  *   536a2e4 (HEAD -> main) Merge branch 'hotfix'
+  > git log --graph --oneline -3
+  *   b15d232 Merge hot_fix.py
   |\
-  | * ab914d9 (hotfix) Hot fix
+  | * 402ed4f Add hot_fix.py
   |/
-  * 267118f Add hello.py
-  * a78fa6a (origin/main, origin/HEAD) Checkpoint
+  * 68df32f Checkpoint
 
   > git checkout iss53
   Switched to branch 'iss53'
 
-  > git log --graph --oneline -4
-  * 434bd8d (HEAD -> iss53) Add work.py
-  * 267118f Add hello.py
-  * a78fa6a (origin/main, origin/HEAD) Checkpoint
-  * 36b9526 Checkpoint
+  > git log --graph --oneline -3
+  * dc84037 Add feature.py
+  * 68df32f Checkpoint
+  * b495a2c Checkpoint
 
-  > ls
-  Dockerfile    LICENSE       README.md     dev_scripts   docker_common gp            hello.py      lectures      projects      work.py
+  > touch feature2.py
 
+  > git add feature2.py
 
+  > git commit -am 'Add feature2.py'
+  [iss53 49c2b96] Add feature2.py
+   1 file changed, 0 insertions(+), 0 deletions(-)
+   create mode 100644 feature2.py
 
+  > git checkout main
+  Switched to branch 'main'
+  Your branch is ahead of 'origin/main' by 2 commits.
+    (use "git push" to publish your local commits)
+
+  > git merge iss53 -m 'Merge iss53'
+  Merge made by the 'ort' strategy.
+   feature.py  | 0
+   feature2.py | 0
+   2 files changed, 0 insertions(+), 0 deletions(-)
+   create mode 100644 feature.py
+   create mode 100644 feature2.py
+   ```

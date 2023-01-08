@@ -1,5 +1,5 @@
 #!/bin/bash -xe
-restart.sh
+source /Users/saggese/src/umd_data605/projects/tutorial_git/restart.sh
 
 git status -s
 
