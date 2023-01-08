@@ -5,6 +5,7 @@ if [[ -d /tmp/umd_data605_tmp ]]; then
 fi;
 git clone git@github.com:gpsaggese/umd_data605.git /tmp/umd_data605_tmp
 cd /tmp/umd_data605_tmp
+git remote rm origin
 
 ls 
 git status

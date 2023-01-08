@@ -264,3 +264,153 @@
    create mode 100644 feature.py
    create mode 100644 feature2.py
    ```
+
+## Merging conflicts
+
+  ```
+  > source /Users/saggese/src/umd_data605/projects/tutorial_git/restart.sh
+
+  > cd /tmp
+
+  > [[ -d /tmp/umd_data605_tmp ]]
+
+  > rm -rf /tmp/umd_data605_tmp
+
+  > git clone git@github.com:gpsaggese/umd_data605.git /tmp/umd_data605_tmp
+  Cloning into '/tmp/umd_data605_tmp'...
+  Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+
+  > cd /tmp/umd_data605_tmp
+
+  > git remote rm origin
+
+  > ls
+  Dockerfile
+  LICENSE
+  README.md
+  dev_scripts
+  docker_common
+  gp
+  lectures
+  projects
+
+  > git status
+  On branch main
+  You are in a sparse checkout with 100% of tracked files present.
+
+  nothing to commit, working tree clean
+
+  > git log --graph --oneline -3
+  * c47a0b6 Checkpoint
+  * 68df32f Checkpoint
+  * b495a2c Checkpoint
+
+  > git checkout -b iss53
+  Switched to a new branch 'iss53'
+
+  > echo 'hello from iss53'
+
+  > git add feature.py
+
+  > git status -s
+  A  feature.py
+
+  > git commit -am 'Add feature.py'
+  [iss53 f0517d8] Add feature.py
+   1 file changed, 1 insertion(+)
+   create mode 100644 feature.py
+
+  > git log --graph --oneline -3
+  * f0517d8 Add feature.py
+  * c47a0b6 Checkpoint
+  * 68df32f Checkpoint
+
+  > git checkout main
+  Switched to branch 'main'
+
+  > git checkout -b hotfix
+  Switched to a new branch 'hotfix'
+
+  > echo 'hello from hotfix'
+
+  > git add feature.py
+
+  > git status -s
+  A  feature.py
+
+  > git commit -am 'Add hot_fix.py'
+  [hotfix 299dc2e] Add hot_fix.py
+   1 file changed, 1 insertion(+)
+   create mode 100644 feature.py
+
+  > git checkout main
+  Switched to branch 'main'
+
+  > git merge hotfix -m 'Merge hot_fix.py'
+  Merge made by the 'ort' strategy.
+   feature.py | 1 +
+   1 file changed, 1 insertion(+)
+   create mode 100644 feature.py
+
+  > git log --graph --oneline -3
+  *   17b765b Merge hot_fix.py
+  |\  
+  | * 299dc2e Add hot_fix.py
+  |/  
+  * c47a0b6 Checkpoint
+
+  > git checkout main
+  Already on 'main'
+
+  > git merge iss53 -m 'Merge iss53'
+  Auto-merging feature.py
+  CONFLICT (add/add): Merge conflict in feature.py
+  Recorded preimage for 'feature.py'
+  Automatic merge failed; fix conflicts and then commit the result.
+
+  > true
+
+  > git status -s
+  AA feature.py
+
+  > git diff
+  diff --cc feature.py
+  index 4f21d06,5b9abe9..0000000
+  --- a/feature.py
+  ++ b/feature.py
+  @@@ -1,1 -1,1 +1,5 @@@
+  +<<<<<<< HEAD
+   +hello from hotfix
+  +=======
+
+  > hello from iss53
+  +>>>>>>> iss53
+
+  > echo 'hello from iss53 and hotfix'
+
+  > git add feature.py
+
+  > git status -s
+  M  feature.py
+
+  > cat feature.py
+  hello from iss53 and hotfix
+
+  > git commit -m Merge
+  Recorded resolution for 'feature.py'.
+  [main cebc983] Merge
+
+  > git status -s
+
+  > git log --graph --oneline -5
+  *   cebc983 Merge
+  |\  
+  | * f0517d8 Add feature.py
+  * |   17b765b Merge hot_fix.py
+  |\ \  
+  | |/  
+  |/|   
+  | * 299dc2e Add hot_fix.py
+  |/  
+  * c47a0b6 Checkpoint
+  ```

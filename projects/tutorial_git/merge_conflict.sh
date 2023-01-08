@@ -1,37 +1,44 @@
 #!/bin/bash -xe
-# /Users/saggese/src/umd_data605/projects/tutorial_git/hot_fix.sh 2>&1 | tee /tmp/log.txt
+# /Users/saggese/src/umd_data605/projects/tutorial_git/merge_conflict.sh 2>&1 | tee /tmp/log.txt
 # cat /tmp/log.txt | perl -p -e 's/\+\+/+/; s/^\+ /\n> /'
 
 source /Users/saggese/src/umd_data605/projects/tutorial_git/restart.sh
 
 # Work on issue53.
 git checkout -b iss53
-touch feature.py
+echo "hello from iss53" >feature.py
 git add feature.py
 git status -s
 git commit -am "Add feature.py"
 git log --graph --oneline -3
 
-# Hot-fix to main.
+# Fix in hot-fix.
 git checkout main
 git checkout -b hotfix
-touch hot_fix.py
-git add hot_fix.py
+echo "hello from hotfix" > feature.py
+git add feature.py
 git status -s
 git commit -am "Add hot_fix.py"
+
+# Merge hot-fix into main. 
 git checkout main
 git merge hotfix -m "Merge hot_fix.py"
 git log --graph --oneline -3
 
-# Divergent history.
-git checkout iss53
-git log --graph --oneline -3
-
-# Branch keeps diverging.
-touch feature2.py
-git add feature2.py
-git commit -am "Add feature2.py"
-
 # Merge iss53 back to main. 
 git checkout main
-git merge iss53 -m "Merge iss53"
+git merge iss53 -m "Merge iss53" || true
+
+# Resolve.
+git status -s
+git diff
+
+echo "hello from iss53 and hotfix" > feature.py
+git add feature.py
+git status -s
+
+cat feature.py
+
+git commit -m "Merge"
+git status -s
+git log --graph --oneline -5
