@@ -1,17 +1,18 @@
-# Getting a Git project
+# Starting a Git project
 
 - Create a Git repo from scratch or from some local code
-    ```
-    > mkdir git_test
-    > git init
-    > ls .git
-    ```
+  ```
+  > mkdir ~/src/git_test
+  > git init
+  > ls .git
+  ```
 
 - Clone a project
   ```
   > git clone user@server:path/to/repo.git
   
   # Clone our repo.
+  > mkdir ~/src/tmp && cd ~/src/tmp
   > git clone git@github.com:gpsaggese/umd_data605.git
   Cloning into 'umd_data605'...
   Warning: Permanently added 'github.com,140.82.114.4' (ECDSA) to the list of known hosts.
@@ -23,7 +24,7 @@
   Resolving deltas: 100% (65/65), done.
   ```
   
-- A dir is created with the project and a working copy
+- A dir is created with a working copy of the project (aka "working tree")
   ```
   > cd umd_data605
   > ls -1
@@ -48,7 +49,7 @@
   refs
   ```
   
-- The project is clean
+- The project is clean:
   ```
   > git status
   On branch main
@@ -58,6 +59,8 @@
 
   nothing to commit, working tree clean
   ```
+
+# Daily use
 
 - You can add a file
   ```
@@ -75,7 +78,7 @@
   nothing added to commit but untracked files present (use "git add" to track)
   ```
 - Now there is a file in Git that is not tracked
-- Adding to the staging area
+- Adding it to the staging area
   ```
   > git add hello.py
   > git status
@@ -87,6 +90,14 @@
   Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
   new file:   hello.py
+  ```
+
+# Git remote
+
+  ```
+  > git remote -v
+  origin  git@github.com:gpsaggese/umd_data605.git (fetch)
+  origin  git@github.com:gpsaggese/umd_data605.git (push)
   ```
 
 # Branching and merging
