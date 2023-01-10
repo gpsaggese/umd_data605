@@ -3,7 +3,6 @@
 ## Set-up
 
 - Make sure Docker works on your laptop
-
   ```
   > docker version
   Client:
@@ -308,10 +307,51 @@ code within the container. To copy files into the container you can:
 
 ### Docker Help
 
-To find out more about the different docker commands:
+- To find out more about the different docker commands:
 
 ```
 > docker COMMAND --help
 ```
 
-\_Note: Descriptions used are from the [Docker website](https://www.docker.com/)
+- Note: Descriptions used are from the [Docker website](https://www.docker.com/)
+
+# Docker
+- TODO(gp): to reorg
+
+- To make things easier, we have provided a Docker Image with PostgreSQL and data
+  already pre-loaded 
+
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+- Run the docker image on your laptop
+  ```
+  # Go to the class GitHub repo:
+  > cd umd_data605
+  > ls
+  Docker_howto.md Dockerfile      LICENSE         README.md       README_gp.md
+  
+  > docker run --rm -ti -p 8888:8888 -p 8881:8881 -p 5432:5432 -v ${PATH_TO_YOUR_DIR}:/data .
+
+  # Using the current dir
+  > docker run --rm -ti -p 8888:8888 -p 8881:8881 -p 5432:5432 -v {pwd}:/data amolumd/cmsc424-fall2022.
+  ```
+- Make sure to replace /Users/amol/... with the correct path of the top level directory in the cloned GitHub repository.
+The above command mounts the local GitHub directory into /data on the virtual
+machine. Do ls /data in the virtual machine to confirm that you can see
+Assignment-0 directory in there. Make all your changes in that directory itself
+-- any changes elsewhere in the container will not survive when you exit it.
+Assuming it ran successfully, you should be logged in as root in the docker
+container, and you should see the shell. The above command maps three ports on
+the container: 8888, 8881, and 5432 (PostgreSQL). This means that if you go to
+'http://127.0.0.1:8888', you will actually be connecting to the 8888 port on the
+virtual machine (on which we are running the Jupyter Notebook). However, if your
+computer is already using these ports, you will have to modify those (see below).
+NOTE: you will be logged in as root. At this point, you should be able to use
+psql: psql university Jupyter Notebook should be pre-started (try
+http://127.0.0.1:8888), but if not, you can do: jupyter-notebook --port=8888
+--allow-root --no-browser --ip=0.0.0.0 As soon as you exit the Docker container,
+ the machine will shut down -- so only changes you have made in the /data
+ directory will persist. If you are having trouble installing Docker or somewhere
+ in the steps above, you can also install the software directly by going through
+ the commands listed in the Dockerfile.
+
