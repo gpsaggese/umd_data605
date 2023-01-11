@@ -5,19 +5,20 @@
   - one container with an app
   - one container with Redis (a key-store DB)
 
-```
-> find . -type f
-./requirements.txt
-./Dockerfile
-./README.md
-./app.py
-./docker-compose.yml
-```
+  ```
+  > find . -type f
+  ./requirements.txt
+  ./Dockerfile
+  ./README.md
+  ./app.py
+  ./docker-compose.yml
+  ```
 
-- Take a look at each file
+- Take a look at each file with `vi $(find . -type f)`
 
 ## App container
-- Our example is a simple Flask app that counts the number of times a page is loaded
+- Our example is a simple Flask app that counts the number of times a page is loaded,
+  using a Redis backend as storage
 
 - The container with the app is like:
   ```
@@ -187,26 +188,26 @@
   
 - You can check each container, since Docker Compose is just a wrapper around Docker
   commands:
-    ```
-    > docker container ls
-    CONTAINER ID   IMAGE                     COMMAND                  CREATED         STATUS         PORTS                          NAMES
-    281d654f6b8d   counter_app_web-fe        "python app.py"          5 minutes ago   Up 5 minutes   0.0.0.0:5000->5000/tcp         counter_app-web-fe-1
-    de55ae4104da   redis:alpine              "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes   6379/tcp                       counter_app-redis-1
-  
-    > docker images ls
-    REPOSITORY                      TAG                  IMAGE ID       CREATED          SIZE
-    counter_app_web-fe              latest               7172378d99d9   6 minutes ago    55.5MB
-    redis                           alpine               96a149ad0157   31 minutes ago   28.4MB
+  ```
+  > docker container ls
+  CONTAINER ID   IMAGE                     COMMAND                  CREATED         STATUS         PORTS                          NAMES
+  281d654f6b8d   counter_app_web-fe        "python app.py"          5 minutes ago   Up 5 minutes   0.0.0.0:5000->5000/tcp         counter_app-web-fe-1
+  de55ae4104da   redis:alpine              "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes   6379/tcp                       counter_app-redis-1
 
-    > docker volume ls
-    DRIVER    VOLUME NAME
-    local     counter_app_counter-vol
+  > docker images ls
+  REPOSITORY                      TAG                  IMAGE ID       CREATED          SIZE
+  counter_app_web-fe              latest               7172378d99d9   6 minutes ago    55.5MB
+  redis                           alpine               96a149ad0157   31 minutes ago   28.4MB
 
-    > docker network ls
-    NETWORK ID    NAME                      DRIVER  SCOPE
-    b4c1976d7c27  bridge                    bridge  local
-    33ff702253b3  counter-app_counter-net   bridge  local
-    ```
+  > docker volume ls
+  DRIVER    VOLUME NAME
+  local     counter_app_counter-vol
+
+  > docker network ls
+  NETWORK ID    NAME                      DRIVER  SCOPE
+  b4c1976d7c27  bridge                    bridge  local
+  33ff702253b3  counter-app_counter-net   bridge  local
+  ```
 
 - The status according to docker compose:
   ```
@@ -222,6 +223,9 @@
   ```
 - If you refresh the counter goes up
 - You can check in the log of the service that requests are happening
+  ```
+  > docker compose logs
+  ```
 
 - You can list the processes running inside each container with:
   ```
@@ -240,7 +244,7 @@
 - If you check the status with `docker compose ps` and directly with `docker` you
   can verify that the Docker objects disappeared
   - The volumes and the images are persisted, but not the containers and the networks
-- You can go to the browser and getting an error
+- You can go to the browser and get get get get get get get get an error
 
 ## Other useful commands
 - You can also `pause`, `stop`, `restart` the app

@@ -9,23 +9,6 @@ material.
   ```
 - More detailed instructions are in the project dir
 
-# Installing 
-
-- Over the course of the semester, you will work with a variety of software packages,
-  including PostgreSQL, Apache Spark, MongoDB, and others
-- Installing those packages and getting started can often be a hassle, because of
-  software dependencies
-
-- You have two choices:
-  1) Install the different software packages on your own machine (most of these
-     packages should have tutorials to install them on different OSs). If you have
-     a Linux box or a Mac, this should be possible; it may be more difficult with
-     Windows. In any case, although we will try our best, we would likely not be
-     able to help you with any problems
-  2) (Preferred Option) Use Docker. If you have a reasonably modern machine (within
-     last 3-4 years), this should generally work fine, but with older laptops, the
-     performance may not be as good. See below for more details on this
-
 # Conventions
 - We indicate the execution of an OS command (e.g., Linux / MacOS) from the terminal
   of your computer with:
