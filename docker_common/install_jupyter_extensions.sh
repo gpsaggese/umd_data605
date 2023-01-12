@@ -5,10 +5,6 @@
 
 set -ex
 
-if [[ -z $USE_JUPYTER_VIM ]]; then
-    echo "Skipping installing Jupyter extensions"
-fi;
-
 echo "# Install Jupyter extensions"
 
 # Create jupyter data dir.
@@ -43,18 +39,22 @@ done;
 # Disable configuration for nbextensions without explicit compatibility.
 echo "{\"nbext_hide_incompat\": false}" > /$HOME/.jupyter/nbconfig/common.json
 
-# Fix vim plugin extension (from dev_scripts/notebooks/fix_vim_plugin.sh).
 DIR=$(jupyter --data-dir)/nbextensions
 if [[ ! -e $DIR ]]; then
     mkdir $DIR
 fi
 
-# Install vim bindings.
-cd $DIR
-if [[ -e vim_binding ]]; then
-    rm -rf vim_binding
-fi
-git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
-jupyter nbextension enable vim_binding/vim_binding
+if [[ $USE_JUPYTER_VIM == 1 ]]; then
+    # Fix vim plugin extension (from dev_scripts/notebooks/fix_vim_plugin.sh).
+    # Install vim bindings.
+    cd $DIR
+    if [[ -e vim_binding ]]; then
+        rm -rf vim_binding
+    fi
+    git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
+    jupyter nbextension enable vim_binding/vim_binding
+else
+    echo "Skipping installing Jupyter vim"
+fi;
 
 jupyter notebook --generate-config -y
