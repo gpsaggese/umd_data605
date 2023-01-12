@@ -1,10 +1,12 @@
 # Build container
 
- ```
-> vi Dockerfile docker_build.sh docker_bash.sh 
-```
+- Let's look at the Docker
+   ```
+  > cd tutorials/tutorial_postgres
+  > vi Dockerfile docker_build.sh docker_bash.sh 
+  ```
 
-```
-> cd tutorial_postgres/postgres
-> docker_build.sh --no-cache
-```
+- Build the Docker container
+  ```
+  > docker_build.sh --no-cache
+  ```
