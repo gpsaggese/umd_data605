@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-IMAGE_NAME=umd_data605_postgres
+IMAGE_NAME=umd_data605_spring2023_postgres
 export DOCKER_BUILDKIT=1
-OPTS="--progress plain $@"
+OPTS="--progress plain"
 docker build $OPTS -t $IMAGE_NAME .

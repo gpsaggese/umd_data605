@@ -5,7 +5,11 @@
 
 set -ex
 
-echo "# Install jupyter extensions"
+if [[ -z $USE_JUPYTER_VIM ]]; then
+    echo "Skipping installing Jupyter extensions"
+fi;
+
+echo "# Install Jupyter extensions"
 
 # Create jupyter data dir.
 DIR_NAME=$(jupyter --data-dir)
