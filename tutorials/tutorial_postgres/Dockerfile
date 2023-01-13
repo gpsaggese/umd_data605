@@ -44,7 +44,7 @@ RUN apt install -y \
 
 ADD etc_sudoers /install/
 COPY etc_sudoers /etc/sudoers
-COPY .bashrc /var/lib/postgresql/.bashrc
+COPY bashrc /var/lib/postgresql/.bashrc
 
 # Set the config for PostgreSQL server.
 ADD postgresql.conf pg_hba.conf /install/
