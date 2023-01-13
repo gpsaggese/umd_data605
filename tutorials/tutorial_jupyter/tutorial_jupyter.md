@@ -37,3 +37,5 @@
 - Go with your local browser to `localhost:8888`
 
 - Navigate to `data/tutorial_jupyter.ipynb`
+
+- Read and execute the notebook

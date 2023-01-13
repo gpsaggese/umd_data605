@@ -2,7 +2,8 @@
 
 IMAGE_NAME=umd_data605_postgres
 REPO_NAME=gpsaggese
-export DOCKER_BUILDKIT=1
+#export DOCKER_BUILDKIT=1
+export DOCKER_BUILDKIT=0
 OPTS="--progress plain $@"
 #tar -czh . | docker build $OPTS -t $IMAGE_NAME -
 DIR="tmp.build"
