@@ -51,6 +51,8 @@ ADD postgresql.conf pg_hba.conf /install/
 RUN cp /install/postgresql.conf /etc/postgresql/14/main
 RUN cp /install/pg_hba.conf /etc/postgresql/14/main
 
+USER postgres
+
 # Postgres.
 EXPOSE 5432
 # Jupyter.

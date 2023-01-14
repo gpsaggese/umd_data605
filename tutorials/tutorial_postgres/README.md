@@ -10,12 +10,13 @@
     # E.g., GIT_ROOT=~/src/umd_data605
     > cd $GIT_ROOT/
 
+    > cd tutorials/tutorial_postgres
+
     > ls
-    01-Jupyter-Getting-Started.ipynb      Dockerfile                            postgresql.conf
-    02-Basics-SQL.ipynb                   README.md                             run_jupyter.sh
-    03-SQL-Different-Types-of-Joins.ipynb docker_build.sh                       smallRelationsInsertFile.sql
-    04-SQL-NULLs-and-UNKNOWN.ipynb        docker_run.sh                         university.png
-    DDL.sql                               largeRelationsInsertFile.sql
+    Dockerfile                    bashrc                        docker_clean.sh               install_jupyter_extensions.sh run_psql_server.sh            tutorial_seven_dbs
+    OLD                           docker_bash.sh                docker_push.sh                pg_hba.conf                   tmp.build                     tutorial_university
+    README.md                     docker_build.sh               etc_sudoers                   postgresql.conf               tutorial_basics
+
     ```
 
 - Make sure `Docker` daemon is running on your computer (e.g., Docker Desktop for Mac)
@@ -40,69 +41,61 @@
 
 ## Run container
 
+- Let's look at `docker_bash.sh`
 - Run Docker
   ```
-  # From `docker_run.sh`
-  > CONTAINER_NAME=gpsaggese/umd_data05_spring2023
-  > docker run --rm -ti -p 8888:8888 -p 8881:8881 -p 5432:5432 -v $(pwd):/data $CONTAINER_NAME
+  > docker_bash.sh
   ```
 
 - You should see the prompt from `Docker`
 - Check that you can see the host computed dir mounted on Docker `filesystem`
   ```
   docker> ls -1 /data
-  01-Jupyter-Getting-Started.ipynb
-  02-Basics-SQL.ipynb
-  03-SQL-Different-Types-of-Joins.ipynb
-  04-SQL-NULLs-and-UNKNOWN.ipynb
-  DDL.sql
-  Dockerfile
-  README.md
-  docker_build.sh
-  docker_run.sh
-  largeRelationsInsertFile.sql
-  pg_hba.conf
-  postgresql.conf
-  run_jupyter.sh
-  run_psql_server.sh
-  smallRelationsInsertFile.sql
-  university.png
+  Dockerfile  README.md  docker_bash.sh   docker_clean.sh  etc_sudoers                    pg_hba.conf      run_psql_server.sh  tutorial_basics     tutorial_university
+  ...
   ``` 
+- You should see the same data in `tutorial/tutorial_postgres`
 
 # Postgres
 
-- Start `Postgres` server (from /data/run_psql_server.sh)
-    ```
-  # Check whether Postgres server is running.
-  docker> service --status-all
-    [ - ]  cron
-    [ ? ]  hwclock.sh
-    [ - ]  postgresql
-    [ - ]  procps
-    [ - ]  sysstat
-    [ - ]  x11-common
+- Check out `/data/run_psql_server.sh`
+  ```
+  docker> vi /data/run_psql_server.sh
+  service --status-all
+  /etc/init.d/postgresql start
+  service --status-all
+  ```
   
-  # Start Postgres service.
-  docker> /data/run_psql_server.sh
+- Start the PostgresSQL DB service
+  ```
+  docker> /data/run_psql_server.sh`
+  + service --status-all
+  [ - ]  cron
+  [ ? ]  hwclock.sh
+  [ - ]  postgresql
+  [ - ]  procps
+  [ - ]  sysstat
   + /etc/init.d/postgresql start
-  * Starting PostgreSQL 14 database server                                                                                                                                                                    [ OK ]
-
-  # Check whether Postgres server is running.
-  docker> service --status-all
-    [ - ]  cron
-    [ ? ]  hwclock.sh
-    [ + ]  postgresql
-    [ - ]  procps
-    [ - ]  sysstat
-    [ - ]  x11-common
+  * Starting PostgreSQL 14 database server [ OK ]
+  + service --status-all
+  [ - ]  cron
+  [ ? ]  hwclock.sh
+  [ + ]  postgresql
+  [ - ]  procps
+  [ - ]  sysstat
   ```
 
 - Populate the `university DB`
   ```
+  docker> vi /data/tutorial_university/init_psql_university_db.sh
   + createdb university
   + psql --command '\i /datatemp/DDL.sql;' university
     psql:/datatemp/DDL.sql:1: NOTICE:  table "prereq" does not exist, skipping
   ...
+  ```
+
+  ```
+  docker> vi /data/tutorial_university/init_psql_university_db.sh
   ```
   
 - You can connect to `Postgres` server
