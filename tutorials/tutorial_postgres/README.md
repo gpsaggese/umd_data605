@@ -316,6 +316,15 @@
 
 ### Connecting to Postgres from Jupyter notebook
 
+- From inside the container
+  ```
+  docker> /data/run_jupyter_postgres.sh
+  ```
+- From your local computer go to `localhost:8888` in the browser
+
+- Navigate to `http://localhost:8888/tree/data/tutorial_university`
+- Execute the 3 tutorials
+
 
 * For our purposes, we will create a user with superuser privileges.
   ```
