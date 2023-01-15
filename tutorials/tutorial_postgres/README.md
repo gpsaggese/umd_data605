@@ -48,14 +48,21 @@
   ```
 
 - You should see the prompt from `Docker`
+  ```
+  postgres@09913bf19d81:/$
+  ```
 - Check that you can see the host computed dir mounted on Docker `filesystem`
   ```
-  docker> ls -1 /data
+  docker> ls /data
   Dockerfile  README.md  docker_bash.sh   docker_clean.sh  etc_sudoers
   pg_hba.conf      run_psql_server.sh  tutorial_basics     tutorial_university
   ...
   ``` 
-- You should see the same files as in `tutorial/tutorial_postgres`
+- You should see the same files as in `tutorial/tutorial_postgres` because we
+  are mapping in Docker
+  ```
+  docker run ... -v /Users/saggese/src/umd_data605/tutorials/tutorial_postgres:/data
+  ```
 
 ## PostgreSQL
 
@@ -66,26 +73,17 @@
   - These instructions are for you to understand the setup -- assuming you have
     the docker image running, you don't need to do any of this
 
-Following steps will get you started with creating a database and populating it with
-the `University` dataset provided on the book website: http://www.db-book.com
-
 - PostgreSQL runs in client-server mode
   - The server is a continuously running process that listens on a specific port
-    (the actual port would differ, and you can usually choose it when starting the
+    (the actual port would differ and you can usually choose it when starting the
     server)
   - In order to connect to the server, the client will need to know the port. The
-    client and server are often on different machines, but for you, it may be
-    easiest if they are on the same machine (i.e., the virtual machine).
+    client and server are often on different machines, but for you they are on
+    the same machine
 
 - Using the `psql` client is the easiest
   - It provides a command-line access to the database
   - There are other clients too, including GUIs
-
-- Important: The server should be already started on your virtual machine -- you do
-  not need to start it. However, the following two help pages discuss how to start
-  the
-  server: [Creating a database cluster](http://www.postgresql.org/docs/current/static/creating-cluster.html)
-  and [Starting the server](http://www.postgresql.org/docs/current/static/server-start.html)
 
 - PostgreSQL server has a default superuser called `postgres`
   - You can do everything under that username, or you can create a different
@@ -94,8 +92,17 @@ the `University` dataset provided on the book website: http://www.db-book.com
     username that you are logged in under (i.e., `root`)
   - However, if you haven't created a PostgreSQL user with that name, the command
     will fail. You can either create a user (by logging in as the superuser), or
-    run everything as a superuser (typically with the option: **-U postgres**).
+    run everything as a superuser (typically with the option: `-U postgres`)
 
+- Following steps will get you started with creating a database and populating it
+  with the `University` dataset provided on the book website:
+  http://www.db-book.com
+
+- Important: The server should be already started on your virtual machine -- you do
+  not need to start it. However, the following two help pages discuss how to start
+  the
+  server: [Creating a database cluster](http://www.postgresql.org/docs/current/static/creating-cluster.html)
+  and [Starting the server](http://www.postgresql.org/docs/current/static/server-start.html)
 
 ## Start Postgres
 
@@ -111,7 +118,7 @@ the `University` dataset provided on the book website: http://www.db-book.com
   
 - Start the PostgresSQL DB service
   ```
-  docker> /data/run_psql_server.sh`
+  docker> /data/run_psql_server.sh
   + service --status-all
   [ - ]  cron
   [ ? ]  hwclock.sh
@@ -128,10 +135,42 @@ the `University` dataset provided on the book website: http://www.db-book.com
   [ - ]  sysstat
   ```
 
-- To see if the DB works we can populate the `university DB` with the script
+## Connecting to Postgres
+  
+- You can connect to `Postgres` server
+  - from your laptop (outside Docker) like a normal client would do
+  - from inside Docker
+  - from Jupyter notebook (we will do that)
+
+## Creating example databases
+
+- We can populate the `university DB` running the script inside Docker
   ```
-  docker> vi /data/tutorial_university/init_psql_university_db.sh
-  docker> /data/tutorial_university/init_psql_university_db.sh
+  > cd tutorials/tutorial_postgres
+  > docker_bash.sh
+  docker> more /data/tutorial_university/init_psql_small_university_db.sh
+  #!/bin/bash -xe
+
+  createdb university
+  psql --command "\i /data/tutorial_university/DDL.sql;" university
+  psql --command "\i /data/tutorial_university/smallRelationsInsertFile.sql;" university
+  ```
+
+- Look at the script creating the schema
+  ```
+  docker> more /data/tutorial_university/DDL.sql
+  ...
+  ```
+
+- Look at the script inserting the data
+  ```
+  docker> more /data/tutorial_university/smallRelationsInsertFile.sql
+  ...
+  ```
+
+- Populate Postgres with the small data
+  ```
+  docker> /data/tutorial_university/init_psql_small_university_db.sh
   + createdb university
   + psql --command '\i /data/tutorial_university/DDL.sql;' university
   psql:/data/tutorial_university/DDL.sql:1: NOTICE:  table "prereq" does not exist, skipping
@@ -139,16 +178,9 @@ the `University` dataset provided on the book website: http://www.db-book.com
   ...
   ```
 
-## Connecting to Postgres
-  
-- You can connect to `Postgres` server
-  - from your laptop (outside Docker) like a normal client would do
-  - inside Docker
-  - from Jupyter notebook
-
 ### Connecting to Postgres from your laptop
 
-- From your terminal (outside `Docker`)
+- From your terminal (outside `Docker`) install the Postgres client
   ```
   > brew install postgresql
   > psql -U postgres -h localhost
@@ -161,95 +193,126 @@ the `University` dataset provided on the book website: http://www.db-book.com
 - Now you have the postgres prompt and the client can send commands to the server
 
 - You can ask for help
-```
-postgres=# help
-You are using psql, the command-line interface to PostgreSQL.
-Type:  \copyright for distribution terms
-\h for help with SQL commands
-\? for help with psql commands
-\g or terminate with semicolon to execute query
-\q to quit
+  ```
+  postgres=# help
+  You are using psql, the command-line interface to PostgreSQL.
+  Type:  \copyright for distribution terms
+  \h for help with SQL commands
+  \? for help with psql commands
+  \g or terminate with semicolon to execute query
+  \q to quit
+  ```
 
-postgres=# \h
-Available help:
-  ABORT                            ALTER SYSTEM                     CREATE FOREIGN DATA WRAPPER      CREATE USER MAPPING              DROP ROUTINE                     PREPARE
-  ALTER AGGREGATE                  ALTER TABLE                      CREATE FOREIGN TABLE             CREATE VIEW                      DROP RULE                        PREPARE TRANSACTION
-...
+- Get help for DB admin commands
 
-postgres=# \h create
-Command:     CREATE ACCESS METHOD
-Description: define a new access method
-Syntax:
-CREATE ACCESS METHOD name
-    TYPE access_method_type
-    HANDLER handler_function
-```
+  postgres=# \?
+  General
+  \copyright             show PostgreSQL usage and distribution terms
+  \crosstabview [COLUMNS] execute query and display results in crosstab
+  \errverbose            show most recent error message at maximum verbosity
+  \g [(OPTIONS)] [FILE]  execute query (and send results to file or |pipe);
+  ```
+
+- Get help for SQL commands
+  ```
+  postgres=# \h
+  Available help:
+    ABORT                            ALTER SYSTEM                     CREATE FOREIGN DATA WRAPPER      CREATE USER MAPPING              DROP ROUTINE                     PREPARE
+    ALTER AGGREGATE                  ALTER TABLE                      CREATE FOREIGN TABLE             CREATE VIEW                      DROP RULE                        PREPARE TRANSACTION
+  ...
+  ```
+
+- Get help for a specific SQL command
+  ```
+  postgres=# \h create
+  Command:     CREATE ACCESS METHOD
+  Description: define a new access method
+  Syntax:
+  CREATE ACCESS METHOD name
+      TYPE access_method_type
+      HANDLER handler_function
+  ```
+
+- Show which databases are available
+  ```
+  postgres=# \l
+                                   List of databases
+         Name       |  Owner   | Encoding | Collate |  Ctype  |   Access privileges
+  ------------------+----------+----------+---------+---------+-----------------------
+   large_university | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
+   postgres         | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
+   template0        | postgres | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+                    |          |          |         |         | postgres=CTc/postgres
+   template1        | postgres | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+                    |          |          |         |         | postgres=CTc/postgres
+   university       | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
+  (5 rows)
+  ```
 
 - Connect to the `university` DB (which contains the `University` dataset provided
   on the book website: http://www.db-book.com)
-- Note that the prompt changes to show which DB you are connected to
-```
+- Note that the prompt changes to show which DB you are connected to:
+  ```
   postgres=# \c university
   SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
   You are now connected to database "university" as user "postgres".
   
   university=#
- ```
+  ```
 
 - List the available tables (aka relations):
+  ```
+  university=# \d
+             List of relations
+   Schema |    Name    | Type  |  Owner
+  --------+------------+-------+----------
+   public | advisor    | table | postgres
+   public | classroom  | table | postgres
+   public | course     | table | postgres
+   public | department | table | postgres
+   public | instructor | table | postgres
+   public | prereq     | table | postgres
+   public | section    | table | postgres
+   public | student    | table | postgres
+   public | takes      | table | postgres
+   public | teaches    | table | postgres
+   public | time_slot  | table | postgres
+  (11 rows)
+  ```
 
-```
-university=# \d
-           List of relations
- Schema |    Name    | Type  |  Owner
---------+------------+-------+----------
- public | advisor    | table | postgres
- public | classroom  | table | postgres
- public | course     | table | postgres
- public | department | table | postgres
- public | instructor | table | postgres
- public | prereq     | table | postgres
- public | section    | table | postgres
- public | student    | table | postgres
- public | takes      | table | postgres
- public | teaches    | table | postgres
- public | time_slot  | table | postgres
-(11 rows)
-```
-
-- Show the content of one relation
-
-```
-university=# select * from instructor;
-  id   |    name    | dept_name  |  salary
--------+------------+------------+----------
- 10101 | Srinivasan | Comp. Sci. | 65000.00
- 12121 | Wu         | Finance    | 90000.00
- 15151 | Mozart     | Music      | 40000.00
- 22222 | Einstein   | Physics    | 95000.00
- 32343 | El Said    | History    | 60000.00
- 33456 | Gold       | Physics    | 87000.00
- 45565 | Katz       | Comp. Sci. | 75000.00
- 58583 | Califieri  | History    | 62000.00
- 76543 | Singh      | Finance    | 80000.00
- 76766 | Crick      | Biology    | 72000.00
- 83821 | Brandt     | Comp. Sci. | 92000.00
- 98345 | Kim        | Elec. Eng. | 80000.00
-(12 rows)
-```
+- Show the content of one table:
+  ```
+  university=# select * from instructor;
+    id   |    name    | dept_name  |  salary
+  -------+------------+------------+----------
+   10101 | Srinivasan | Comp. Sci. | 65000.00
+   12121 | Wu         | Finance    | 90000.00
+   15151 | Mozart     | Music      | 40000.00
+   22222 | Einstein   | Physics    | 95000.00
+   32343 | El Said    | History    | 60000.00
+   33456 | Gold       | Physics    | 87000.00
+   45565 | Katz       | Comp. Sci. | 75000.00
+   58583 | Califieri  | History    | 62000.00
+   76543 | Singh      | Finance    | 80000.00
+   76766 | Crick      | Biology    | 72000.00
+   83821 | Brandt     | Comp. Sci. | 92000.00
+   98345 | Kim        | Elec. Eng. | 80000.00
+  (12 rows)
+  ```
 
 ### Connecting to Postgres from inside the container
 
-- You can also connect to the server from inside the container
+- You can also connect to the Postgres server from inside the container
 - This is equivalent to running from outside the container
-```
-docker> psql
-psql (14.5 (Ubuntu 14.5-0ubuntu0.22.04.1))
-Type "help" for help.
+  ```
+  docker> psql
+  psql (14.5 (Ubuntu 14.5-0ubuntu0.22.04.1))
+  Type "help" for help.
 
-postgres=# \c university
-You are now connected to database "university" as user "postgres".
-```
+  postgres=# \c university
+  You are now connected to database "university" as user "postgres".
+  ...
+  ```
 
 ### Connecting to Postgres from Jupyter notebook
 
