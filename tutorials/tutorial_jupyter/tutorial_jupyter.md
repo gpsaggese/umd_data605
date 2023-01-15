@@ -1,3 +1,25 @@
+# Python
+
+- We will be using Python for all the tutorials and class project
+- Start the Docker container with `docker_bash.sh`
+  - Python is already installed
+- To use Python, you can just do `python3` (or `ipython`), and it will start up the
+  shell
+  ```
+  docker> python3
+  ```
+
+# Jupyter / IPython
+
+- IPython Notebook / Jupyter is an enhanced command shell for Python, that offers
+  enhanced introspection, rich media, tab completion, and history
+
+- IPython Notebook started as a web browser-based interface to IPython, and
+  proved especially popular with data scientists
+- A few years ago, the Notebook functionality was forked off as a separate project,
+  called [Jupyter](http://jupyter.org/). Jupyter provides support for many other
+  languages in addition to Python
+
 # Run Jupyter
 
 - Take a look
@@ -33,6 +55,11 @@
   [I 08:45:17.638 NotebookApp] http://bdd82a232a2c:8888/
   [I 08:45:17.638 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
   ```
+
+- This will start a Jupyter server in the container, listening on port 8888
+    - You will access it from the host (as discussed above, the Docker start command
+      maps the 8888 port on the container to the 8888 port on the host)
+    - To do that start the browser and point it to: http://127.0.0.1:8888
 
 - Go with your local browser to `localhost:8888`
 
