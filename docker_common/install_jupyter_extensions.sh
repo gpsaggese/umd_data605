@@ -52,10 +52,6 @@ if [[ -e vim_binding ]]; then
 fi
 git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
 
-if [[ $USE_JUPYTER_VIM == 1 ]]; then
-    jupyter nbextension enable vim_binding/vim_binding
-else
-    echo "Skipping enabling Jupyter vim"
-fi;
+#jupyter nbextension enable vim_binding/vim_binding
 
 jupyter notebook --generate-config -y

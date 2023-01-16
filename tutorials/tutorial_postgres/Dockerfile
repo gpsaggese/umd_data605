@@ -32,10 +32,6 @@ RUN pip3 install \
 
 RUN mkdir /install
 
-# Install Jupyter extensions.
-ADD install_jupyter_extensions.sh /install/
-RUN /install/install_jupyter_extensions.sh
-
 # Install Postgres.
 RUN apt install -y \
     postgresql \
@@ -52,6 +48,10 @@ RUN cp /install/postgresql.conf /etc/postgresql/14/main
 RUN cp /install/pg_hba.conf /etc/postgresql/14/main
 
 USER postgres
+
+# Install Jupyter extensions.
+ADD install_jupyter_extensions.sh /install/
+RUN /install/install_jupyter_extensions.sh
 
 # Postgres.
 EXPOSE 5432
