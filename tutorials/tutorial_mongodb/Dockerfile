@@ -3,7 +3,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Fix old repo for ubuntu:20.04.
 RUN mkdir /install
-COPY fix_apt_install.sh /install
+ADD fix_apt_install.sh /install/
 RUN /install/fix_apt_install.sh
 
 RUN apt-get -y update
@@ -31,22 +31,19 @@ RUN python3 -m pip install --upgrade pip
     
 # Install Python packages.
 RUN pip3 install \
-    jupyter \
-    yapf \
     ipython \
-    ipython-sql \
+    jupyter \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions \
     yapf
 
-
 # Install MongoDB.
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - && \
-  echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
-  apt update && \
-  curl -O http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
-  dpkg -i ./libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
-  apt install -y mongodb-org mongodb-org-server mongodb-org-shell
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
+    apt update && \
+    curl -O http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
+    dpkg -i ./libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
+    apt install -y mongodb-org mongodb-org-server mongodb-org-shell
 
 RUN pip3 install \
     pymongo \
@@ -55,7 +52,7 @@ RUN pip3 install \
 # Config.
 ADD etc_sudoers /install/
 COPY etc_sudoers /etc/sudoers
-COPY .bashrc /root/.bashrc
+COPY bashrc /root/.bashrc
 
 # Install Jupyter extensions.
 ADD install_jupyter_extensions.sh /install

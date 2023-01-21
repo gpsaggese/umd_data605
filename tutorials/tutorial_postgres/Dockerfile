@@ -21,13 +21,12 @@ RUN apt install -y --no-install-recommends \
 
 # Install Python packages.
 RUN pip3 install \
-    jupyter \
-    yapf \
     ipython \
     ipython-sql \
-    psycopg2-binary \
+    jupyter \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions \
+    psycopg2-binary \
     yapf
 
 RUN mkdir /install
@@ -38,6 +37,7 @@ RUN apt install -y \
     postgresql-contrib \
     libpq-dev
 
+# Config.
 ADD etc_sudoers /install/
 COPY etc_sudoers /etc/sudoers
 COPY bashrc /var/lib/postgresql/.bashrc
