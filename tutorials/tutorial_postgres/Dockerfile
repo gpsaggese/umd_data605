@@ -53,6 +53,10 @@ USER postgres
 ADD install_jupyter_extensions.sh /install/
 RUN /install/install_jupyter_extensions.sh
 
+# Report package versions.
+ADD version.sh /install/
+RUN /install/version.sh 2>&1 | tee version.log
+
 # Postgres.
 EXPOSE 5432
 # Jupyter.

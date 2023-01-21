@@ -1,10 +1,16 @@
 FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND noninteractive
 
+# Fix old repo for ubuntu:20.04.
+RUN mkdir /install
+COPY fix_apt_install.sh /install
+RUN /install/fix_apt_install.sh
+
 RUN apt-get -y update
 RUN apt-get -y upgrade
 
-RUN apt install -y \
+# Install system utilities.
+RUN apt install -y --no-install-recommends --fix-missing \
     sudo \
     curl \
     systemctl \
@@ -13,32 +19,26 @@ RUN apt install -y \
     vim
 
 # Install Python.
-RUN apt install -y \
+RUN apt install -y --no-install-recommends \
     python3 \
-    python3-pip python3-dev
+    python3-pip \
+    python3-dev
 
-#jupyter-notebook
 RUN python3 --version
 RUN pip3 --version
 
 RUN python3 -m pip install --upgrade pip
     
-# jupyter --version
-
 # Install Python packages.
 RUN pip3 install \
+    jupyter \
+    yapf \
+    ipython \
+    ipython-sql \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions \
     yapf
 
-#ipython \
-#jupyter \
-
-RUN mkdir /install
-ADD install_jupyter_extensions.sh /install
-
-# Install Jupyter extensions.
-RUN /install/install_jupyter_extensions.sh
 
 # Install MongoDB.
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - && \
@@ -57,7 +57,11 @@ ADD etc_sudoers /install/
 COPY etc_sudoers /etc/sudoers
 COPY .bashrc /root/.bashrc
 
-# 
+# Install Jupyter extensions.
+ADD install_jupyter_extensions.sh /install
+RUN /install/install_jupyter_extensions.sh
+
+# Report package versions.
 ADD version.sh /install/
 RUN /install/version.sh 2>&1 | tee version.log
 
