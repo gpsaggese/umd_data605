@@ -1,34 +1,73 @@
-Sending build context to Docker daemon  21.43MB
+Sending build context to Docker daemon  21.26MB
 Step 1/23 : FROM ubuntu:20.04
  ---> d5447fc01ae6
 Step 2/23 : ENV DEBIAN_FRONTEND noninteractive
- ---> Running in 176e358c8d81
-Removing intermediate container 176e358c8d81
- ---> c836458a7b4e
+ ---> Using cache
+ ---> 76c77b3312ee
 Step 3/23 : RUN mkdir /install
- ---> Running in ab862ceba6fe
-Removing intermediate container ab862ceba6fe
- ---> 1a872815b169
+ ---> Using cache
+ ---> 31e53c510867
 Step 4/23 : ADD fix_apt_install.sh /install/
- ---> 0b7a4efea412
+ ---> Using cache
+ ---> 209cbec76f7b
 Step 5/23 : RUN /install/fix_apt_install.sh
- ---> Running in be30044db2d3
-[91m+ DIR=/tmp/fix_apt_install
-+ mkdir /tmp/fix_apt_install
-[0m[91m+ cd /tmp/fix_apt_install
-+ cat
-[0m[91m+ rm /etc/apt/sources.list
-[0m[91m+ cp /tmp/fix_apt_install/sources.list /etc/apt/sources.list
-[0m[91m+ apt update
-[0m[91m
-WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+ ---> Using cache
+ ---> a0d15d1f2a49
+Step 6/23 : RUN apt-get -y update
+ ---> Using cache
+ ---> 44ef3f92ccff
+Step 7/23 : RUN apt-get -y upgrade
+ ---> Using cache
+ ---> 6b14ed7244b4
+Step 8/23 : RUN apt install -y --no-install-recommends --fix-missing     sudo     curl     systemctl     gnupg     git     vim
+ ---> Using cache
+ ---> e41c17e4e53c
+Step 9/23 : RUN apt install -y --no-install-recommends     python3     python3-pip     python3-dev
+ ---> Using cache
+ ---> c9262a1a11ba
+Step 10/23 : RUN python3 --version
+ ---> Using cache
+ ---> 4d627bdb0a2f
+Step 11/23 : RUN pip3 --version
+ ---> Using cache
+ ---> 023fcabad47b
+Step 12/23 : RUN python3 -m pip install --upgrade pip
+ ---> Using cache
+ ---> 8643a082f818
+Step 13/23 : RUN pip3 install     ipython     jupyter     jupyter-contrib-core     jupyter-contrib-nbextensions     yapf
+ ---> Using cache
+ ---> bd933efa74b0
+Step 14/23 : RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - &&     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list &&     apt update &&     curl -O http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb &&     dpkg -i ./libssl1.1_1.1.1f-1ubuntu2_amd64.deb &&     apt install -y mongodb-org mongodb-org-server mongodb-org-shell
+ ---> Using cache
+ ---> 3b61c69ee5f6
+Step 15/23 : RUN pip3 install     pymongo     ipython-mongo
+ ---> Using cache
+ ---> 2543e793219d
+Step 16/23 : ADD etc_sudoers /install/
+ ---> Using cache
+ ---> 3aac2204ea6b
+Step 17/23 : COPY etc_sudoers /etc/sudoers
+ ---> Using cache
+ ---> 836e7801da1e
+Step 18/23 : COPY bashrc /root/.bashrc
+ ---> Using cache
+ ---> 238be6eb8dad
+Step 19/23 : ADD install_jupyter_extensions.sh /install
+ ---> Using cache
+ ---> 572f424e7545
+Step 20/23 : RUN /install/install_jupyter_extensions.sh
+ ---> Using cache
+ ---> 931e77ff2f36
+Step 21/23 : ADD version.sh /install/
+ ---> Using cache
+ ---> 010bc20a134e
+Step 22/23 : RUN /install/version.sh 2>&1 | tee version.log
+ ---> Using cache
+ ---> e96065ace13e
+Step 23/23 : EXPOSE 8888
+ ---> Using cache
+ ---> 10e1a03940ee
+Successfully built 10e1a03940ee
+Successfully tagged gpsaggese/umd_data605_mongodb:latest
 
-[0mGet:1 http://archive.canonical.com/ubuntu focal InRelease [12.1 kB]
-Get:2 http://archive.ubuntu.com/ubuntu focal InRelease [265 kB]
-Get:3 http://archive.canonical.com/ubuntu focal/partner Sources [649 B]
-Get:4 http://archive.canonical.com/ubuntu focal/partner amd64 Packages [801 B]
-Get:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
-Get:6 http://archive.ubuntu.com/ubuntu focal-security InRelease [114 kB]
-Get:7 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
-Get:8 http://archive.ubuntu.com/ubuntu focal/multiverse Sources [208 kB]
-Get:9 http://archive.ubuntu.com/ubuntu focal/universe Sources [12.3 MB]
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
