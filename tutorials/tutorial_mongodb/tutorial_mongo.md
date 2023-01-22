@@ -1,9 +1,11 @@
 # Start container with MongoDB
 
-- You can pull the container with
+- You can pull the container with MongoDB by running:
   ```
+  > cd $GIT_ROOT/tutorials/tutorial_mongodb
+
   > docker images | grep umd_data605_mongodb
-  # No image.
+  # There is no umd_data605_mongodb image.
 
   > docker_pull.sh
 
