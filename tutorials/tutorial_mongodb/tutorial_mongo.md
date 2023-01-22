@@ -1,8 +1,23 @@
 # Start container with MongoDB
 
-- Build and start the container with MongoDB
+- You can pull the container with
+  ```
+  > docker images | grep umd_data605_mongodb
+  # No image.
+
+  > docker_pull.sh
+
+  > docker images | grep umd_data605_mongodb
+  gpsaggese/umd_data605_mongodb   latest    10e1a03940ee   59 minutes ago   1.21GB
+  ```
+
+- You can also build the container locally
   ```
   > docker_build.sh
+  ```
+
+- Start the container with MongoDB
+  ```
   > docker_bash.sh
   ```
 

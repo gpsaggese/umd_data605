@@ -1,4 +1,4 @@
-Sending build context to Docker daemon  21.26MB
+Sending build context to Docker daemon   20.8MB
 Step 1/23 : FROM ubuntu:20.04
  ---> d5447fc01ae6
 Step 2/23 : ENV DEBIAN_FRONTEND noninteractive
