@@ -1,6 +1,7 @@
 #!/bin/bash -xe
-SRC_DIR=/Users/saggese/src/cmamp2/sorrentum_sandbox
+DIR=sorrentum_sandbox
+SRC_DIR=/Users/saggese/src/cmamp2/$DIR
 #(cd $SRC_DIR; invoke git_clean)
-rm -rf sorrentum_data_node
-rsync -arhv $SRC_DIR ./sorrentum_data_node
-git add ./sorrentum_data_node
+rm -rf $DIR
+rsync -arhv $SRC_DIR $DIR
+git add $DIR
