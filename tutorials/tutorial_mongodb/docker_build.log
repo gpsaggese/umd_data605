@@ -1,4 +1,4 @@
-Sending build context to Docker daemon   20.8MB
+Sending build context to Docker daemon  20.81MB
 Step 1/23 : FROM ubuntu:20.04
  ---> d5447fc01ae6
 Step 2/23 : ENV DEBIAN_FRONTEND noninteractive
@@ -60,14 +60,14 @@ Step 20/23 : RUN /install/install_jupyter_extensions.sh
  ---> 931e77ff2f36
 Step 21/23 : ADD version.sh /install/
  ---> Using cache
- ---> 010bc20a134e
+ ---> 27950fc5aabd
 Step 22/23 : RUN /install/version.sh 2>&1 | tee version.log
  ---> Using cache
- ---> e96065ace13e
+ ---> 7f61b3239c44
 Step 23/23 : EXPOSE 8888
  ---> Using cache
- ---> 10e1a03940ee
-Successfully built 10e1a03940ee
+ ---> fe5eec81c5b6
+Successfully built fe5eec81c5b6
 Successfully tagged gpsaggese/umd_data605_mongodb:latest
 
 Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them

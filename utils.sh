@@ -14,7 +14,7 @@ build_container_image() {
     OPTS="--progress plain $@"
     (cd $DIR; docker build $OPTS -t $FULL_IMAGE_NAME . 2>&1 | tee ../docker_build.log; exit ${PIPESTATUS[0]})
     # Report build version.
-    docker run --rm -ti -v $(pwd):/data $FILL_IMAGE_NAME bash -c "/data/version.sh 2>&1 | tee /data/docker_build.version.log"
+    docker run --rm -it -v $(pwd):/data $FULL_IMAGE_NAME bash -c "/data/version.sh 2>&1 | tee /data/docker_build.version.log"
     #
     docker image ls $REPO_NAME/$IMAGE_NAME
 }
@@ -42,4 +42,29 @@ pull_container_image() {
     FULL_IMAGE_NAME=$REPO_NAME/$IMAGE_NAME
     echo "FULL_IMAGE_NAME=$FULL_IMAGE_NAME"
     docker pull $FULL_IMAGE_NAME
+}
+
+
+kill_container() {
+    FULL_IMAGE_NAME=$REPO_NAME/$IMAGE_NAME
+    echo "FULL_IMAGE_NAME=$FULL_IMAGE_NAME"
+    docker container ls
+    #
+    CONTAINER_ID=$(docker container ls -a | grep $FULL_IMAGE_NAME | awk '{print $1}')
+    echo "CONTAINER_ID=$CONTAINER_ID"
+    if [[ ! -z $CONTAINER_ID ]]; then
+        docker container rm -f $CONTAINER_ID
+        docker container ls
+    fi;
+}
+
+
+exec_container() {
+    FULL_IMAGE_NAME=$REPO_NAME/$IMAGE_NAME
+    echo "FULL_IMAGE_NAME=$FULL_IMAGE_NAME"
+    docker container ls
+    #
+    CONTAINER_ID=$(docker container ls -a | grep $FULL_IMAGE_NAME | awk '{print $1}')
+    echo "CONTAINER_ID=$CONTAINER_ID"
+    docker exec -it $CONTAINER_ID bash
 }
