@@ -13,7 +13,7 @@
   gpsaggese/umd_data605_mongodb   latest    10e1a03940ee   59 minutes ago   1.21GB
   ```
 
-- You can also build the container locally
+- You can also build the container locally (but it takes a bit of time)
   ```
   > docker_build.sh
   ```
@@ -23,9 +23,9 @@
   > docker_bash.sh
   ```
 
-- To start MongoDB server in background
+- To start MongoDB server in background:
   ```
-  docker> /data/project_mongo1/run_mongo.sh
+  docker> /data/run_mongo.sh
   + sudo systemctl enable mongod
   + sudo systemctl start mongod
   + sudo systemctl status mongod
@@ -61,18 +61,19 @@
   admin       40.00 KiB
   config     108.00 KiB
   local       40.00 KiB
-
   ```
 
 - Show the commands available on a DB object:
   ```
   test> db.help()
+  ...
   ```
 
-- Create a DB and a collection with a document inside
+- Create a DB and a collection with a document inside:
   ```
   test> use book
   switched to db book
+
   book> show collections
 
   book> db.towns2.insertOne({ name: "New York", population: 22200000, lastCensus: ISODate("2016-07-01"), famousFor: ["the MOMA", "food", "Derek Jeter"], mayor: { name: "Bill de Blasio", party: "D" } })
@@ -83,7 +84,6 @@
 
   book> show collections
   towns2
-
 
   book> db.towns.find()
   [
@@ -96,11 +96,12 @@
     mayor: { name: 'Bill de Blasio', party: 'D' }
   }
   ]
-
   ```
+- To exit from `mongosh`, type CTRL+d
 
 # Start Jupyter
-- After starting Mongo, start Jupyter
+
+- After starting Mongo, start Jupyter with:
   ```
   docker> run_jupyter.sh
   [I 09:13:03.745 NotebookApp] Writing notebook server cookie secret to /root/.local/share/jupyter/runtime/notebook_cookie_secret
@@ -113,5 +114,6 @@
 - Go with your browser to `localhost:8888`
 - You should see the Jupyter window
 
-- Go to `data/project_mongo1`
-- Open the notebook `Seven_DBs_in_seven_weeks.mongo.ipynb`
+- Navigate to `data` and open the notebook `Seven_DBs_in_seven_weeks.mongo.ipynb`
+
+- Run the notebook cell-by-cell, modify it, experiment with it
