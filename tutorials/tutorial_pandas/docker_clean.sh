@@ -1,9 +1,9 @@
-#!/bin/bash -xe
+#!/bin/bash -x
 
 GIT_ROOT=$(git rev-parse --show-toplevel)
 source $GIT_ROOT/utils.sh
 
-IMAGE_NAME=umd_data605_postgres
 REPO_NAME=gpsaggese
+IMAGE_NAME=umd_data605_postgres
 
-exec_container
+remove_container_image

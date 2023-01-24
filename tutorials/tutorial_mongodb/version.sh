@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 echo "# Pytho3"
 python3 --version
 echo "# pip3"

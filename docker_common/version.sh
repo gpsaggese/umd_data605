@@ -7,3 +7,5 @@ echo "# jupyter"
 jupyter --version
 echo "# Python packages"
 pip3 list
+echo "# mongo"
+mongod --version
