@@ -1,9 +1,9 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
 GIT_ROOT=$(git rev-parse --show-toplevel)
-source $GIT_ROOT/utils.sh
+source $GIT_ROOT/docker_common/utils.sh
 
-IMAGE_NAME=umd_data605_postgres
 REPO_NAME=gpsaggese
+IMAGE_NAME=umd_data605_postgres
 
 exec_container

@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 GIT_ROOT=$(git rev-parse --show-toplevel)
-source $GIT_ROOT/utils.sh
+source $GIT_ROOT/docker_common/utils.sh
 
-IMAGE_NAME=umd_data605_mongodb
 REPO_NAME=gpsaggese
+IMAGE_NAME=umd_data605_mongodb
 
 push_container_image
