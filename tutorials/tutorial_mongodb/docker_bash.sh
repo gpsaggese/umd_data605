@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -e
+#!/bin/bash -e
 
 REPO_NAME=gpsaggese
 IMAGE_NAME=umd_data605_mongodb

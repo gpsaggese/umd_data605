@@ -1,6 +1,9 @@
 #!/bin/bash -x
 
+GIT_ROOT=$(git rev-parse --show-toplevel)
+source $GIT_ROOT/utils.sh
+
+REPO_NAME=gpsaggese
 IMAGE_NAME=umd_data605_postgres
-docker image ls | grep $IMAGE_NAME
-docker image ls | grep $IMAGE_NAME | awk '{print $1}' | xargs -n 1 -t docker image rm -f
-docker image ls
+
+remove_container_image

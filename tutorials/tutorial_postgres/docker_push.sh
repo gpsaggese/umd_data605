@@ -1,7 +1,9 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
-docker login --username gpsaggese --password-stdin <~/.docker/passwd.gpsaggese.txt
+GIT_ROOT=$(git rev-parse --show-toplevel)
+source $GIT_ROOT/utils.sh
 
 IMAGE_NAME=umd_data605_postgres
-docker images $IMAGE_NAME
-docker push docker.io/gpsaggese/$IMAGE_NAME
+REPO_NAME=gpsaggese
+
+push_container_image
