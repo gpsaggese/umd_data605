@@ -49,15 +49,17 @@ class PostsDownloader(ssandown.DataDownloader):
             client_secret=REDDIT_SECRET,
             user_agent=REDDIT_SECRET,
         )
-        # Since we want to store a raw data as it's in initial state, then we
-        # need to fetch data in json format. In other case (non-json) we should
-        # to build deserializer for every type of reddit objects.
-        # Quote from the praw docs:
-        # "...json_dict, which contains the original API response,
-        # should be stored on every object in the json_dict attribute.
-        # Default is False as memory usage will double if enabled."
+        # Since we want to store a raw data in its initial state, we need to fetch
+        # data in JSON format. In other case (non-JSON) we should to build
+        # deserializer for every type of reddit objects.
+        # From the `praw` docs:
+        # "...json_dict, which contains the original API response, should be
+        # stored on every object in the json_dict attribute. Default is False as
+        # memory usage will double if enabled."
         self.reddit_client.config.store_json_result = True
 
+
+    # TODO(gp): @vlad -> private?
     @staticmethod
     def transform_to_dict(source: praw.models.Submission) -> dict:
         """
@@ -67,8 +69,8 @@ class PostsDownloader(ssandown.DataDownloader):
         :return: transformed dictionary
         """
         output_comments = []
-        # Get comments before main transform due it couldn't be possible
-        # after an iterator will be fetched.
+        # Get comments before main transform since it is not possible to do it
+        # after an iterator is fetched.
         if hasattr(source, "comments"):
             for comment in source.comments:
                 output_comments += [PostsDownloader.transform_to_dict(comment)]
@@ -106,8 +108,8 @@ class PostsDownloader(ssandown.DataDownloader):
         for subreddit in subreddits:
             _LOG.info("Subreddit (%s) is downloading...", subreddit)
             # TODO(Vlad): This iterator is pretty slow: ~30s for the two
-            #  subreddits and 10 posts for every subreddit.
-            #  Have to be speed up for production usage.
+            #  subreddits and 10 posts for every subreddit. Have to be speed up
+            #  for production usage.
             new_posts = self.reddit_client.subreddit(subreddit).new(
                 limit=numbers_post_to_fetch
             )

@@ -37,8 +37,6 @@
   |   |   |-- transform.py
   |   |   `-- validate.py
   |   `-- __init__.py
-  |-- images/
-  |   `-- airflow_main_panel.jpg
   |-- sorrentum_data_node/
   |   |-- airflow_data/
   |   |   |-- dags/
@@ -80,7 +78,7 @@
   > vi $GIT_ROOT/sorrentum_sandbox/common/*.py
   ```
 
-# Docker
+# Sorrentum Docker Container
 
 ## High-level description
 
@@ -252,17 +250,15 @@
   - E.g., you can enable the DAG `download_periodic_1min_postgres_ohlcv` which
     downloads OHLCV data from Binance and saves it into Postgres
 
-## Managing Airflow
-
-### Pausing the service
+## Pausing Airflow service
 
 - You can bring down the Sorrentum service (persisting the state) with:
   ```
   > docker compose down
-  Container mongo_cont                 Removed                                                                                                                                                  1.1s
-  Container airflow_cont               Removed                                                                                                                                                  6.6s
-  Container airflow_scheduler_cont     Removed                                                                                                                                                  2.1s
-  Container postgres_cont              Removed                                                                                                                                                  0.3s
+  Container mongo_cont                 Removed
+  Container airflow_cont               Removed
+  Container airflow_scheduler_cont     Removed
+  Container postgres_cont              Removed
   Network sorrentum_data_node_default  Removed
   ```
 - You can see in the Airflow window that the service has stopper
@@ -283,7 +279,7 @@
   ```
 - The containers are restarted
 
-### Restarting the services
+## Restarting the services
 
 - To remove all the containers and volumes, which corresponds to resetting 
   completely the system
@@ -309,25 +305,107 @@
   > docker-compose up --build --force-recreate
   ```
 
-## Airflow CLI
+## Tutorial Airflow
 
-- List the DAGs
+- From [official tutorial](https://airflow.apache.org/docs/apache-airflow/2.2.2/tutorial.html)
+
+- The code of the tutorial is at
   ```
-  > docker_cmd.sh airflow dags list
-  + docker exec -ti airflow_cont airflow dags list
-  dag_id   | filepath            | owner   | paused
-  =========+=====================+=========+=======
-  tutorial | airflow_tutorial.py | airflow | False
-
-  # print the list of active DAGs
-  airflow dags list
-
-  # prints the list of tasks in the "tutorial" DAG
-  airflow tasks list tutorial
-
-  # prints the hierarchy of tasks in the "tutorial" DAG
-  airflow tasks list tutorial --tree
+  > vi $GIT_REPO/sorrentum_sandbox/sorrentum_data_node/airflow_data/dags/airflow_tutorial.py
   ```
+
+- In Airflow web-server navigate to http://localhost:8090/tree?dag_id=tutorial
+
+- Lots of the Airflow commands can be executed through the CLI or the web
+  interface
+
+- Make sure that the pipeline is parsed successfully
+  ```
+  > docker_exec.sh
+  docker> python /opt/airflow/dags/airflow_tutorial.py
+  ```
+
+- Print the list of active DAGs
+  ```
+  docker> airflow dags list
+  dag_id                                                        | filepath                                                         | owner   | paused
+  ==============================================================+==================================================================+=========+=======
+  download_airflow_downloaded_5min_mongo_posts_reddit           | download_airflow_downloaded_5min_mongo_posts_reddit.py           | airflow | True
+  download_periodic_1min_postgres_ohlcv                         | download_periodic_1min_postgres_ohlcv.py                         | airflow | True
+  tutorial                                                      | airflow_tutorial.py                                              | airflow | False
+  validate_and_extract_features_airflow_5min_mongo_posts_reddit | validate_and_extract_features_airflow_5min_mongo_posts_reddit.py | airflow | True
+  validate_and_resample_periodic_1min_postgres_ohlcv            | validate_and_resample_periodic_1min_postgres_ohlcv.py            | airflow | True
+
+- Print the list of tasks in the "tutorial" DAG
+  ```
+  docker> airflow tasks list tutorial
+  print_date
+  sleep
+  templated
+  ```
+
+- Print the hierarchy of tasks in the "tutorial" DAG.
+  ```
+  docker> airflow tasks list tutorial --tree
+  <Task(BashOperator): print_date>
+    <Task(BashOperator): sleep>
+    <Task(BashOperator): templated>
+  ```
+
+- Testing `print_date` task by executing with a logical / execution date in the past:
+  ```
+  docker> airflow tasks test tutorial print_date 2015-06-01
+  [2023-01-23 10:15:34,862] {dagbag.py:500} INFO - Filling up the DagBag from /opt/airflow/dags
+  [2023-01-23 10:15:34,949] {taskinstance.py:1035} INFO - Dependencies all met for <TaskInstance: tutorial.print_date None [None]>
+  [2023-01-23 10:15:34,961] {taskinstance.py:1241} INFO -
+  --------------------------------------------------------------------------------
+  [2023-01-23 10:15:34,961] {taskinstance.py:1242} INFO - Starting attempt 1 of 2
+  [2023-01-23 10:15:34,962] {taskinstance.py:1243} INFO -
+  --------------------------------------------------------------------------------
+  [2023-01-23 10:15:34,965] {taskinstance.py:1262} INFO - Executing <Task(BashOperator): print_date> on 2015-06-01T00:00:00+00:00
+  ...
+  [2023-01-23 10:15:35,061] {subprocess.py:74} INFO - Running command: ['bash', '-c', 'date']
+  [2023-01-23 10:15:35,071] {subprocess.py:85} INFO - Output:
+  [2023-01-23 10:15:35,076] {subprocess.py:89} INFO - Mon Jan 23 10:15:35 UTC 2023
+  [2023-01-23 10:15:35,076] {subprocess.py:93} INFO - Command exited with return code 0
+  [2023-01-23 10:15:35,092] {taskinstance.py:1280} INFO - Marking task as SUCCESS. dag_id=tutorial, task_id=print_date, execution_date=20150601T000000, start_date=20230123T101534, end_date=20230123T101535
+  ```
+
+- Testing `sleep` task
+  ```
+  docker> airflow tasks test tutorial sleep 2015-06-01
+  [2023-01-23 10:16:01,653] {dagbag.py:500} INFO - Filling up the DagBag from /opt/airflow/dags
+  [2023-01-23 10:16:01,731] {taskinstance.py:1035} INFO - Dependencies all met for <TaskInstance: tutorial.sleep None [None]>
+  [2023-01-23 10:16:01,739] {taskinstance.py:1241} INFO -
+  --------------------------------------------------------------------------------
+  [2023-01-23 10:16:01,739] {taskinstance.py:1242} INFO - Starting attempt 1 of 4
+  [2023-01-23 10:16:01,739] {taskinstance.py:1243} INFO -
+  --------------------------------------------------------------------------------
+  [2023-01-23 10:16:01,741] {taskinstance.py:1262} INFO - Executing <Task(BashOperator): sleep> on 2015-06-01T00:00:00+00:00
+  ...
+  [2023-01-23 10:16:01,817] {subprocess.py:74} INFO - Running command: ['bash', '-c', 'sleep 5']
+  [2023-01-23 10:16:01,825] {subprocess.py:85} INFO - Output:
+  [2023-01-23 10:16:06,833] {subprocess.py:93} INFO - Command exited with return code 0
+  [2023-01-23 10:16:06,860] {taskinstance.py:1280} INFO - Marking task as SUCCESS. dag_id=tutorial, task_id=sleep, execution_date=20150601T000000, start_date=20230123T101601, end_date=20230123T101606
+  ```
+
+- Let's run a backfill for a week:
+  ```
+  docker> airflow dags backfill tutorial \
+    --start-date 2015-06-01 \
+    --end-date 2015-06-07
+
+  [2023-01-23 10:22:52,258] {base_executor.py:82} INFO - Adding to queue: ['airflow', 'tasks', 'run', 'tutorial', 'print_date', 'backfill__2015-06-01T00:00:00+00:00', '--ignore-depends-on-past', '--local', '--pool', 'default_pool', '--subdir', 'DAGS_FOLDER/airflow_tutorial.py', '--cfg-path', '/tmp/tmpw702ubqo']
+  [2023-01-23 10:22:52,302] {base_executor.py:82} INFO - Adding to queue: ['airflow', 'tasks', 'run', 'tutorial', 'print_date', 'backfill__2015-06-02T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', 'DAGS_FOLDER/airflow_tutorial.py', '--cfg-path', '/tmp/tmpff926sgr']
+  [2023-01-23 10:22:52,358] {base_executor.py:82} INFO - Adding to queue: ['airflow', 'tasks', 'run', 'tutorial', 'print_date', 'backfill__2015-06-03T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', 'DAGS_FOLDER/airflow_tutorial.py', '--cfg-path', '/tmp/tmp9otpet70']
+  [2023-01-23 10:22:52,408] {base_executor.py:82} INFO - Adding to queue: ['airflow', 'tasks', 'run', 'tutorial', 'print_date', 'backfill__2015-06-04T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', 'DAGS_FOLDER/airflow_tutorial.py', '--cfg-path', '/tmp/tmptq82tgu9']
+  ```
+
+- Backfilling will respect dependencies, emit logs, update DB to record status
+
+- On the web-server you can see that all the DAG executions completed
+  successfully
+  ![image](https://user-images.githubusercontent.com/49269742/212755723-57e21954-7d6a-469c-86d0-a595d032c096.png)
 
 # Sorrentum Data Nodes examples
 
@@ -362,26 +440,53 @@
 
 ### Running outside Airflow
 
-- There are various files:
-  - `db.py`: contains the interface to load / save Binance data to Postgres
-  - `download.py`: 
-  - `download_to_csv.py`:
-  - `download_to_db.py`:
-  - `example_load_and_validate.py`:
-  - `example_load_validate_transform.py`:
-  - `validate.py`:
-
 - The example code can be found in `sorrentum_sandbox/examples/binance`
+
+- There are various files:
+  - `db.py`: contains the interface to load / save Binance data to Postgres (Load
+    stage)
+  - `download.py`: implement the logic to download the data from Binance (Extract
+    stage)
+  - `download_to_csv.py`: implement Extract stage to CSV
+  - `download_to_db.py`: implement Extract stage to PostgreSQL
+  - `example_load_and_validate.py`: implement a pipeline loading data into a
+    CSV file and then validating data
+  - `example_load_validate_transform.py`: implement a pipeline loading data
+    into DB, validating data, processing data, and saving data back to DB
+  - `validate.py`: implement simple QA pipeline
+
+#### Download data
+
 - To get to know what type of data we are working with in this example you can run:
   ```
-  > docker_bash.sh
-  docker> /cmamp/sorrentum_sandbox/examples/binance/download_to_csv.py \
+  > docker_exec.sh
+  docker> cd /cmamp/sorrentum_sandbox/examples/binance
+  docker> ./download_to_csv.py \
       --start_timestamp '2022-10-20 10:00:00+00:00' \
       --end_timestamp '2022-10-21 15:30:00+00:00' \
       --target_dir 'binance_data'
+  INFO: > cmd='/cmamp/sorrentum_sandbox/examples/binance/download_to_csv.py --start_timestamp 2022-10-20 10:00:00+00:00 --end_timestamp 2022-10-21 15:30:00+00:00 --target_dir binance_data' report_memory_usage=False report_cpu_usage=False
+  INFO: Saving log to file '/cmamp/sorrentum_sandbox/examples/binance/download_to_csv.py.log'
+  06:45:25 - INFO  download.py download:120                               Downloaded data:
+             currency_pair           open           high            low          close      volume      timestamp           end_download_timestamp
+  0      ETH_USDT  1295.95000000  1297.34000000  1295.95000000  1297.28000000  1.94388000  1666260060000 2023-01-23 11:45:22.729119+00:00
+  1      ETH_USDT  1297.28000000  1297.28000000  1297.28000000  1297.28000000  0.00000000  1666260120000 2023-01-23 11:45:22.729188+00:00
+  2      ETH_USDT  1297.28000000  1297.28000000  1297.28000000  1297.28000000  0.00000000  1666260180000 2023-01-23 11:45:22.729201+00:00
+  3      ETH_USDT  1297.28000000  1297.28000000  1297.28000000  1297.28000000  0.00000000  1666260240000 2023-01-23 11:45:22.729246+00:00
+  4      ETH_USDT  1297.28000000  1297.28000000  1297.28000000  1297.28000000  0.00000000  1666260300000 2023-01-23 11:45:22.729261+00:00
   ```
 - The script downloads around 1 day worth of OHLCV bars (aka candlestick) into a
-  CSV
+  CSV file
+  ```
+  docker> ls binance_data/
+  bulk.manual.download_1min.csv.ohlcv.spot.v7.binance.binance.v1_0_0.csv
+
+  docker> more binance_data/bulk.manual.download_1min.csv.ohlcv.spot.v7.binance.binance.v1_0_0.csv
+  currency_pair,open,high,low,close,volume,timestamp,end_download_timestamp
+  ETH_USDT,1295.95000000,1297.34000000,1295.95000000,1297.28000000,1.94388000,1666260060000,2023-01-23 11:45:22.729119+00:00
+  ETH_USDT,1297.28000000,1297.28000000,1297.28000000,1297.28000000,0.00000000,1666260120000,2023-01-23 11:45:22.729188+00:00
+  ETH_USDT,1297.28000000,1297.28000000,1297.28000000,1297.28000000,0.00000000,1666260180000,2023-01-23 11:45:22.729201+00:00
+  ```
 
 - An example of an OHLCV data snapshot:
 
@@ -391,59 +496,74 @@
 |BTC_USDT     |19185.10000000|19197.71000000|19183.13000000|19186.63000000|1.62299500|1666260060000|2023-01-13 13:01:54.508880+00:00|
 
   - Each row represents a state of a given asset for a given minute.
-  - In the above example we have data points for two currency pairs `ETH_USDT` and `BTC_USDT` for a given minute denoted by UNIX timestamp 1666260060000 (10/20/2022 10:01:00+00:00), which in Sorrentum protocol notation represents time interval `[10/20/2022 10:00:00+00:00, 10/20/2022 10:00:59.99+00:00)`. Within this timeframe `ETH_USDT` started trading at `1295.95`, reached the highest(lowest) price of `1297.34`(`1295.95`) and ended at `1297.28`.  
+  - In the above example we have data points for two currency pairs `ETH_USDT`
+    and `BTC_USDT` for a given minute denoted by UNIX timestamp 1666260060000
+    `10/20/2022 10:01:00+00:00`, which in Sorrentum protocol notation represents
+    time interval `[10/20/2022 10:00:00+00:00, 10/20/2022 10:00:59.99+00:00)`.
+    Within this timeframe `ETH_USDT` started trading at `1295.95`, reached the
+    highest (lowest) price of `1297.34`(`1295.95`) and ended at `1297.28`.  
 
+#### QA
  
-- To familiarize yourself with the concepts of data quality assurance/validation
-  you can proceed with the example script `example_load_and_validate.py` which
-  runs a trivial data QA operations (i.e. checking the dataset is not empty)
+- To familiarize yourself with the concepts of data quality assurance /
+  validation you can proceed with the example script
+  `example_load_and_validate.py` which runs a trivial data QA operations (i.e.
+  checking the dataset is not empty)
   ```
-  docker> example_load_and_validate.py \
+  docker> ./example_load_and_validate.py \
       --start_timestamp '2022-10-20 12:00:00+00:00' \
       --end_timestamp '2022-10-21 12:00:00+00:00' \
       --source_dir 'binance_data' \
       --dataset_signature 'bulk.manual.download_1min.csv.ohlcv.spot.v7.binance.binance.v1_0_0'
   ```
 
+#### Run ETL pipeline
+
+#### Run unit tests
+
 ### Running inside Airflow
 
-1. Bring up the services via docker-compose as described above
-2. Visit `localhost:8090/home`
-3. Sign in using the default credentials `airflow`:`airflow`
-4. There are two Airflow DAGs preloaded for this example
-   - `download_periodic_1min_postgres_ohlcv`: scheduled to run every minute and
-     download the last minute worth of OHLCV data using
-     `sorrentum_sandbox/examples/binance/download_to_db.py`
-   - `download_periodic_1min_postgres_ohlcv`: scheduled to run every 5 minutes,
-     load data from a postgres table, resample, and save back the data
-5. A few minutes after enabling the DAGs, you can observe the PostgreSQL database to preview the results of the data pipeline (the default password is `postgres`)
+- Bring up the services via docker-compose as described above
+- Visit `localhost:8090/home`
+- Sign in using the default credentials `airflow`:`airflow`
+- There are two Airflow DAGs preloaded for this example stored in the dir
+  `$GIT_ROOT/sorrentum_sandbox/sorrentum_data_node/airflow_data/dags`
+   - `download_periodic_1min_postgres_ohlcv`:
+     - scheduled to run every minute
+     - download the last minute worth of OHLCV data using
+      `examples/binance/download_to_db.py`
+   - `validate_and_resample_periodic_1min_postgres_ohlcv`
+     - scheduled to run every 5 minutes
+     - load data from a postgres table, resample it, and save back the data
+       using `examples/binance/example_load_validate_transform.py`
+- A few minutes after enabling the DAGs in Airflow, you can check the PostgreSQL
+  database to preview the results of the data pipeline
+  - The default password is `postgres`
   ```
   docker> psql -U postgres -p 5532 -d airflow -h host.docker.internal -c 'SELECT * FROM binance_ohlcv_spot_downloaded_1min LIMIT 5'
-  ```
 
-  ```
   docker> psql -U postgres -p 5532 -d airflow -h host.docker.internal -c 'SELECT * FROM binance_ohlcv_spot_resampled_5min LIMIT 5'
   ```
 
 ## Reddit
 
-- In this example we use Reddit REST API, available free of charge
-  - We build a small ETL pipeline used to download and transform Reddit posts and
-    comments for selected subreddits
+- In this example we use Reddit REST API, available free of charge, to build a
+  small ETL pipeline to download and transform Reddit posts and comments for
+  selected subreddits
 
 ### Steps of the ETL Reddit pipeline
 
 - Periodically download raw Reddit data to a MongoDB collection for certain
   period of time
 - Periodically Load raw data from MongoDB, then:
-  - validate data
-  - transform data
-  - save processed data to another MongoDB collection
+  - Validate data
+  - Transform data
+  - Save processed data to another MongoDB collection
 
 ### Running outside Airflow
 
-1. The example code can be found in `sorrentum_sandbox/examples/reddit`
-2. To explore the data structure you can run:
+- The example code can be found in `sorrentum_sandbox/examples/reddit`
+- To explore the data structure you can run:
    ```bash
    sorrentum_sandbox/examples/reddit/download_to_db.py \
        --start_timestamp '2022-10-20 10:00:00+00:00' \
@@ -454,51 +574,58 @@
 
 - TODO(gp): Add more info
 
-It looks like (cut version):
-```json
+- It looks like (cut version):
+  ```json
+    {
+      "_id": {"$oid": "63bd466b85a76c62bb578e49"},
+      ...
+      "created": {"$date": "2023-01-10T11:01:29.000Z"},
+      "created_utc": "1673348489.0",
+      "discussion_type": "null",
+      "distinguished": "null",
+      "domain": "\"crypto.news\"",
+      "downs": "0",
+      "edited": "false",
+      "permalink": "\"/r/CryptoCurrency/comments/108741k/us_prosecutors_urge_victims_of_ftx_collapse_to/\"",
+      "send_replies": "false",
+      "title": "\"US prosecutors urge victims of FTX collapse to speak out.\"",
+      "ups": "1",
+      "upvote_ratio": "1.0",
+      "url": "\"https://crypto.news/us-prosecutors-urge-victims-of-ftx-collapse-to-speak-out/\"",
+      "url_overridden_by_dest": "\"https://crypto.news/us-prosecutors-urge-victims-of-ftx-collapse-to-speak-out/\"",
+      "user_reports": "[]",
+      ...
+    }
+  ```
+- Second step is extracting features. It could be run as: 
+  ```
+  > sorrentum_sandbox/examples/reddit/load_validate_transform.py \
+      --start_timestamp '2022-10-20 10:00:00+00:00' \
+      --end_timestamp '2022-10-21 15:30:00+00:00'
+  ```
+then in MongoDB it could be found in the `posts_features` collection
+
+- Example:
+  ```json
   {
-    "_id": {"$oid": "63bd466b85a76c62bb578e49"},
-    ...
-    "created": {"$date": "2023-01-10T11:01:29.000Z"},
-    "created_utc": "1673348489.0",
-    "discussion_type": "null",
-    "distinguished": "null",
-    "domain": "\"crypto.news\"",
-    "downs": "0",
-    "edited": "false",
-    "permalink": "\"/r/CryptoCurrency/comments/108741k/us_prosecutors_urge_victims_of_ftx_collapse_to/\"",
-    "send_replies": "false",
-    "title": "\"US prosecutors urge victims of FTX collapse to speak out.\"",
-    "ups": "1",
-    "upvote_ratio": "1.0",
-    "url": "\"https://crypto.news/us-prosecutors-urge-victims-of-ftx-collapse-to-speak-out/\"",
-    "url_overridden_by_dest": "\"https://crypto.news/us-prosecutors-urge-victims-of-ftx-collapse-to-speak-out/\"",
-    "user_reports": "[]",
-    ...
+    "_id": {"$oid": "63bd461de978f68eae1c4e11"},
+    "cross_symbols": ["USDT"],
+    "reddit_post_id": "\"108455o\"",
+    "symbols": ["ETH", "USDT"],
+    "top_most_comment_body": "\"Pro & con info are in the collapsed comments below for the following topics: [Crypto.com(CRO)](/r/CryptoCurrency/comments/108455o/cryptocom_is_delisting_usdt_what_do_they_know/j3q51fa/), [Tether](/r/CryptoCurrency/comments/108455o/cryptocom_is_delisting_usdt_what_do_they_know/j3q52ab/).\"",
+    "top_most_comment_tokens": ["con", "pro", "cro", "collapsed", "are", "tether", "j3q51fa", "r", "usdt", "is", "comments", "topics", "for", "in", "com", "cryptocom", "delisting", "they", "know", "crypto", "what", "do", "j3q52ab", "cryptocurrency", "info", "108455o", "below", "following", "the"]
   }
-```
-Second step is extracting features. It could be run as: 
-```shell
-sorrentum_sandbox/examples/reddit/load_validate_transform.py \
-    --start_timestamp '2022-10-20 10:00:00+00:00' \
-    --end_timestamp '2022-10-21 15:30:00+00:00'
-```
-then in MongoDB it could be found in the **posts_features** collection. 
-Example:
-```json
-{
-  "_id": {"$oid": "63bd461de978f68eae1c4e11"},
-  "cross_symbols": ["USDT"],
-  "reddit_post_id": "\"108455o\"",
-  "symbols": ["ETH", "USDT"],
-  "top_most_comment_body": "\"Pro & con info are in the collapsed comments below for the following topics: [Crypto.com(CRO)](/r/CryptoCurrency/comments/108455o/cryptocom_is_delisting_usdt_what_do_they_know/j3q51fa/), [Tether](/r/CryptoCurrency/comments/108455o/cryptocom_is_delisting_usdt_what_do_they_know/j3q52ab/).\"",
-  "top_most_comment_tokens": ["con", "pro", "cro", "collapsed", "are", "tether", "j3q51fa", "r", "usdt", "is", "comments", "topics", "for", "in", "com", "cryptocom", "delisting", "they", "know", "crypto", "what", "do", "j3q52ab", "cryptocurrency", "info", "108455o", "below", "following", "the"]
-}
-```
-3. Sign in using credentials (the defaults are airflow:airflow)
-4. There are two Airflow DAGs preloaded for this example
-- `download_airflow_downloaded_5min_mongo_posts_reddit` - by default scheduled to run every 5 minutes and download last 5 minutes data from new posts from the certain subreddits using `sorrentum_sandbox/examples/reddit/download_to_db.py`
-- `validate_and_extract_features_airflow_5min_mongo_posts_reddit` - by default scheduled to run every 5 minutes, load data from a MongoDB collection, extract features and save it back to a posts_features collection
+  ```
+- Sign in using the usual credentials
+- There are two Airflow DAGs preloaded for this example
+  - `download_airflow_downloaded_5min_mongo_posts_reddit`
+    - scheduled to run every 5 minutes
+    - download last 5 minutes data from new posts from the certain subreddits
+      using `sorrentum_sandbox/examples/reddit/download_to_db.py`
+  - `validate_and_extract_features_airflow_5min_mongo_posts_reddit`
+    - scheduled to run every 5 minutes
+    - load data from a MongoDB collection, extract features and save it back to a
+      posts_features collection
 
 ### Running outside Airflow
 

@@ -1,5 +1,5 @@
 """
-Example DAG to load reddit data from DB, transform and save back to the DB.
+Example DAG to load Reddit data from DB, transform and save back to the DB.
 
 Import as:
 
@@ -13,10 +13,9 @@ from airflow.operators.bash import BashOperator
 
 _DAG_ID = "validate_and_extract_features_airflow_5min_mongo_posts_reddit"
 _DAG_DESCRIPTION = (
-    "Load from DB, extract features and save to MongoDB"
-    " every 5 minutes"
+    "Load data from DB, extract features and save to MongoDB  every 5 minutes"
 )
-# Specify when/how often to execute the DAG.
+# Specify when to execute the DAG.
 _SCHEDULE = "*/5 * * * *"
 
 # Pass default parameters for the DAG.
@@ -40,8 +39,8 @@ dag = airflow.DAG(
     start_date=datetime.datetime(2022, 1, 1, 0, 0, 0),
 )
 
-# Extract features for current time frame minus 5 minutes on order to
-# make sure that downloader already finished
+# Extract features for current time frame minus 5 minutes on order to make sure
+# that downloader already finished.
 bash_command = [
     "/cmamp/sorrentum_sandbox/examples/reddit/load_validate_transform.py",
     "--start_timestamp {{ data_interval_start - macros.timedelta(minutes=10)}}",

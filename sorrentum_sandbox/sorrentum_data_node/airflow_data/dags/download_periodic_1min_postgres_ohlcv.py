@@ -15,8 +15,10 @@ import airflow
 from airflow.operators.bash import BashOperator
 
 _DAG_ID = "download_periodic_1min_postgres_ohlcv"
-_DAG_DESCRIPTION = "Download Binance OHLCV data every minute and save to Postgres"
-# Specify when/how often to execute the DAG.
+_DAG_DESCRIPTION = (
+    "Download Binance OHLCV data every minute and save to Postgres"
+)
+# Specify when often to execute the DAG.
 _SCHEDULE = "* * * * *"
 
 # Pass default parameters for the DAG.
@@ -41,7 +43,7 @@ dag = airflow.DAG(
 )
 
 bash_command = [
-    # Sleep 5 seconds to ensure the bar is finished
+    # Sleep 5 seconds to ensure the bar is finished.
     "sleep 5",
     "&&",
     "/cmamp/sorrentum_sandbox/examples/binance/download_to_db.py",

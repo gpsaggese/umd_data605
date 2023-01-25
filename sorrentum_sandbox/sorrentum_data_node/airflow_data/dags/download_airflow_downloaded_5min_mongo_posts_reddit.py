@@ -15,11 +15,13 @@ import airflow
 from airflow.operators.bash import BashOperator
 
 _DAG_ID = "download_airflow_downloaded_5min_mongo_posts_reddit"
-_DAG_DESCRIPTION = "Download reddit posts every 5 minutes and save to MongoDB"
-# Specify when/how often to execute the DAG.
+_DAG_DESCRIPTION = (
+    "Download Reddit posts every 5 minutes and save to MongoDB"
+)
+# Specify when often to execute the DAG.
 _SCHEDULE = "*/5 * * * *"
 
-# Pass default parameters for the DAG.
+# Default parameters for the DAG.
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,
@@ -41,7 +43,7 @@ dag = airflow.DAG(
 )
 
 bash_command = [
-    # Sleep 5 seconds to ensure the post is submitted
+    # Sleep 5 seconds to ensure the post is submitted.
     "sleep 5",
     "&&",
     "/cmamp/sorrentum_sandbox/examples/reddit/download_to_db.py",

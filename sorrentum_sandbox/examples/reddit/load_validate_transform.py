@@ -3,9 +3,8 @@
 Load and validate data within a specified time period from MongoDB collection,
 extract features and load back to the DB.
 
-Use as:
-# Load reddit data:
-> example_load_and_validate.py \
+# Load Reddit data:
+> load_validate_transform.py \
     --start_timestamp '2022-10-20 12:00:00+00:00' \
     --end_timestamp '2022-10-21 12:00:00+00:00' \
     --source_collection 'posts' \
@@ -27,29 +26,26 @@ import sorrentum_sandbox.examples.reddit.validate as ssexreva
 _LOG = logging.getLogger(__name__)
 
 # #############################################################################
-# Example script setup
+# Script.
 # #############################################################################
 
 
 def _add_load_args(
     parser: argparse.ArgumentParser,
 ) -> argparse.ArgumentParser:
-    """
-    Add the command line options for exchange download.
-    """
     parser.add_argument(
         "--start_timestamp",
         required=True,
         action="store",
         type=str,
-        help="Beginning of the loaded period, e.g. 2022-02-09 10:00:00+00:00",
+        help="Beginning of the loaded period, e.g. `2022-02-09 10:00:00+00:00`",
     )
     parser.add_argument(
         "--end_timestamp",
         action="store",
         required=True,
         type=str,
-        help="End of the loaded period, e.g. 2022-02-10 10:00:00+00:00",
+        help="End of the loaded period, e.g. `2022-02-10 10:00:00+00:00`",
     )
     parser.add_argument(
         "--source_collection",
@@ -86,12 +82,12 @@ def _main(parser: argparse.ArgumentParser) -> None:
     # Convert timestamps.
     start_timestamp = pd.Timestamp(args.start_timestamp)
     end_timestamp = pd.Timestamp(args.end_timestamp)
-    # Prepare connection.
+    # 1) Build client.
     mongodb_client = pymongo.MongoClient(
         host=ssexredb.MONGO_HOST, port=27017, username="mongo", password="mongo"
     )
     reddit_mongo_client = ssexredb.RedditMongoClient(mongo_client=mongodb_client)
-    # Load data.
+    # 2) Load data.
     data = reddit_mongo_client.load(
         dataset_signature=args.source_collection,
         start_timestamp=start_timestamp,
@@ -106,11 +102,11 @@ def _main(parser: argparse.ArgumentParser) -> None:
     dataset_validator = ssexreva.SingleDatasetValidator(
         [empty_title_check, positive_number_of_comments_check]
     )
-    # Validate data.
+    # 3) Validate data.
     dataset_validator.run_all_checks([data], _LOG)
-    # Transform data.
+    # 4) Transform data.
     features = ssexretr.extract_features(data)
-    # Save back to db.
+    # 5) Save back to db.
     _LOG.info("Extracted features: \n %s", features.head())
     db_saver = ssexredb.BaseMongoSaver(
         mongo_client=mongodb_client, db_name="reddit"

@@ -49,6 +49,7 @@ class CsvClient(sinsacli.DataClient):
     def load(
         self,
         dataset_signature: str,
+        *,
         start_timestamp: Optional[pd.Timestamp] = None,
         end_timestamp: Optional[pd.Timestamp] = None,
         **kwargs: Any,
@@ -57,7 +58,7 @@ class CsvClient(sinsacli.DataClient):
         Load CSV data specified by a unique signature from a desired source
         directory for a specified time period.
 
-        TODO(gp): where is the dependency.
+        TODO(gp): where is the dependency?
         The method assumes data having a 'timestamp' column.
         """
         # TODO(Juraj): rewrite using dataset_schema_utils.
@@ -140,7 +141,8 @@ def _main(parser: argparse.ArgumentParser) -> None:
     end_timestamp = pd.Timestamp(args.end_timestamp)
     # Load data.
     csv_client = CsvClient(args.source_dir)
-    data = csv_client.load(args.dataset_signature, start_timestamp, end_timestamp)
+    data = csv_client.load(args.dataset_signature,
+        start_timestamp=start_timestamp, end_timestamp=end_timestamp)
     # Validate data.
     empty_dataset_check = sisebiva.EmptyDatasetCheck()
     # Conforming to the (a, b] interval convention, remove 1 minute from the

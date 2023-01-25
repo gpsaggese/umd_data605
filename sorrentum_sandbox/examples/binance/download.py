@@ -21,10 +21,14 @@ import sorrentum_sandbox.common.download as ssandown
 _LOG = logging.getLogger(__name__)
 
 
-# TODO(gp): surrentum -> sorrentum everywhere
+# TODO(gp): @juraj surrentum -> sorrentum everywhere
+
+# #############################################################################
+# OhlcvBinanceRestApiDownloader
+# #############################################################################
 
 
-# TODO(gp): -> OhlcvRestApiDownloader since Binance is already in the path.
+# TODO(gp): @juraj -> OhlcvRestApiDownloader since Binance is already in the path.
 class OhlcvBinanceRestApiDownloader(ssandown.DataDownloader):
     """
     Class for downloading OHLCV data using REST API provided by Binance.
@@ -42,7 +46,8 @@ class OhlcvBinanceRestApiDownloader(ssandown.DataDownloader):
         """
         Construct Binance downloader class instance.
 
-        :param use_binance_dot_com: select the domain to use when downloading
+        :param use_binance_dot_com: select the domain to use when downloading,
+            e.g., "binance.com" or "binance.us"
         """
         self.use_binance_dot_com = use_binance_dot_com
 

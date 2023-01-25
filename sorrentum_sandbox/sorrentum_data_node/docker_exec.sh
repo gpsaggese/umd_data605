@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
 IMAGE_NAME="airflow_cont"
 

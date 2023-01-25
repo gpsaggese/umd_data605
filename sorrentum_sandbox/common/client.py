@@ -12,7 +12,7 @@ import pandas as pd
 
 class DataClient(abc.ABC):
     """
-    Loading data for a given source from disk into main memory.
+    Load data for a given source from disk into main memory.
     """
 
     @abc.abstractmethod

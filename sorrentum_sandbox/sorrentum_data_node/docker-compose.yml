@@ -21,7 +21,7 @@ services:
       - airflow-database-data:/var/lib/postgresql/data/
     ports:
       # Access PostgreSQL from outside the container on port 5532.
-      - 5532:5432
+      - "5532:5432"
         
   # Mongo.
 
@@ -33,7 +33,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=mongo
       - MONGO_INITDB_ROOT_PASSWORD=mongo
     ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
       - ./mongo_data:/data/db
 
@@ -49,7 +49,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - 8090:8080
+      - "8090:8080"
     volumes:
       - ./airflow_data/dags:/opt/airflow/dags
       - ./airflow_data/plugins:/opt/airflow/plugins
@@ -60,8 +60,7 @@ services:
 
   airflow-scheduler:
     # Let's force to use a pre-built image.
-    #build: .
-    #image: resdev-airflow:latest
+    # build: .
     image: sorrentum/sorrentum:latest
     container_name: airflow_scheduler_cont
     env_file:
@@ -88,7 +87,7 @@ services:
   #  container_name: redis_cont
   #  restart: always
   #  ports:
-  #    - 6379:6379
+  #    - "6379:6379"
 
   #airflow-worker1:
   #  build: .
@@ -150,7 +149,7 @@ services:
   #  restart: always
   #  command: celery flower
   #  ports:
-  #    - 5555:5555
+  #    - "5555:5555"
 
 volumes:
   airflow-database-data:

@@ -1,5 +1,5 @@
 """
-Implementation of save part of the ETL and QA pipeline.
+Implementation of DB interface for the ETL and QA pipeline.
 
 Import as:
 
@@ -18,7 +18,11 @@ import sorrentum_sandbox.common.save as ssansave
 
 MONGO_HOST = os.environ["MONGO_HOST"]
 
+# #############################################################################
+# BaseMongoSaver
+# #############################################################################
 
+# TODO(gp): In the code there is no reference to Reddit -> MongoDataSaver
 class BaseMongoSaver(ssansave.DataSaver):
     """
     Store data from Reddit to MongoDB.
@@ -38,6 +42,13 @@ class BaseMongoSaver(ssansave.DataSaver):
         db[self.db_name][collection_name].insert_many(data)
 
 
+# #############################################################################
+# RedditMongoClient
+# #############################################################################
+
+
+# TODO(gp): @Vlad we can remove the dependency on Reddit and call it ->
+#  MongoClient
 class RedditMongoClient(ssanclie.DataClient):
     """
     Load data located in MongoDB into the memory.
@@ -64,7 +75,7 @@ class RedditMongoClient(ssanclie.DataClient):
 
         The method assumes data having a 'timestamp' column.
 
-        :param dataset_signature: str: collection name where data come from
+        :param dataset_signature: collection name where data come from
         :param start_timestamp: beginning of the time period to load. If `None`,
             start with the earliest available data
         :param end_timestamp: end of the time period to load. If `None`, download
@@ -83,6 +94,7 @@ class RedditMongoClient(ssanclie.DataClient):
                     {"$lt": end_timestamp.to_pydatetime()}
                 )
         # Access the data.
+        # TODO(gp): @Vlad Pass the name "reddit" through the constructor.
         db = self.mongo_client.reddit
         data = list(db[dataset_signature].find(timestamp_filter))
         # Convert the data to a dataframe.

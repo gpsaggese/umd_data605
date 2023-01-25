@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 #
 # Execute bash in the Sorrentum container.
 #

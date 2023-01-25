@@ -129,11 +129,12 @@ def _main(parser: argparse.ArgumentParser) -> None:
     # Convert timestamps.
     start_timestamp = pd.Timestamp(args.start_timestamp)
     end_timestamp = pd.Timestamp(args.end_timestamp)
+    # 1) Load data.
     db_conn = sisebidb.get_db_connection()
-    # Load data.
     db_client = sisebidb.PostgresClient(db_conn)
     data = db_client.load(args.source_table, start_timestamp, end_timestamp)
     _LOG.info(f"Loaded data: \n {data.head()}")
+    # 2) QA
     empty_dataset_check = sisebiva.EmptyDatasetCheck()
     # Conforming to the (a, b] interval convention, remove 1 minute from the
     # end_timestamp.
@@ -146,9 +147,9 @@ def _main(parser: argparse.ArgumentParser) -> None:
     # Validate by running all QA checks, if one of them fails, the rest of the
     # code is not executed as it could produce faulty results.
     dataset_validator.run_all_checks([data], _LOG)
-    # Transform data.
+    # 3) Transform data.
     resampled_data = _resample_data_to_5min(data)
-    # Save back to db.
+    # 4) Save back to DB.
     _LOG.info(f"Transformed data: \n {resampled_data.head()}")
     db_saver = sisebidb.PostgresDataFrameSaver(db_conn)
     db_saver.save(sinsadow.RawData(resampled_data), args.target_table)

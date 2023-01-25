@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -xe
+#!/bin/bash -e
 
 IMAGE_NAME="sorrentum"
 REPO_NAME="sorrentum"

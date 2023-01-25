@@ -122,7 +122,7 @@ class PostgresDataFrameSaver(sinsasav.DataSaver):
         self.db_conn.commit()
 
     # TODO(gp): @juraj let's pass columns directly at this point so we can do the
-    # join only once.
+    #  join only once.
     @staticmethod
     def _create_insert_query(df: pd.DataFrame, db_table: str) -> str:
         """
@@ -143,9 +143,8 @@ class PostgresDataFrameSaver(sinsasav.DataSaver):
         """
         Create DB data tables to store data.
 
-        Note that typically table creation would not be handled in the
-        same place as downloading the data, but as an example this
-        suffices.
+        Note that typically table creation would not be handled in the same place
+        as downloading the data, but as an example this suffices.
         """
         cursor = self.db_conn.cursor()
         #
@@ -170,13 +169,14 @@ class PostgresClient(sinsacli.DataClient):
         """
         Constructor.
 
-        :param db_conn: DB connection (e.g., )
+        :param db_conn: DB connection
         """
         self.db_conn = db_connection
 
     def load(
         self,
         dataset_signature: str,
+        *,
         start_timestamp: Optional[pd.Timestamp] = None,
         end_timestamp: Optional[pd.Timestamp] = None,
         **kwargs: Any,
@@ -185,7 +185,7 @@ class PostgresClient(sinsacli.DataClient):
         Load CSV data specified by a unique signature from a desired source
         directory for a specified time period.
 
-        The method assumes data having a 'timestamp' column.
+        The method assumes data having a `timestamp` column.
         """
         select_query = f"SELECT * FROM {dataset_signature}"
         # Filter data.
