@@ -1,8 +1,11 @@
 #!/bin/bash -xe
-# /Users/saggese/src/umd_data605/projects/tutorial_git/work_on_main.sh 2>&1 | tee /tmp/log.txt
-# cat /tmp/log.txt | perl -p -e 's/\+\+/+/; s/^\+ /\n> /'
 
-source /Users/saggese/src/umd_data605/projects/tutorial_git/restart.sh
+# To generate the output for the markdown run:
+# > /Users/saggese/src/umd_data605/tutorials/tutorial_git/work_on_main.sh 2>&1 | tee /tmp/log.txt
+# > cat /tmp/log.txt | perl -p -e 's/\+\+/+/; s/^\+ /\n> /'
+
+GIT_ROOT=/Users/saggese/src/umd_data605
+source $GIT_ROOT/tutorials/tutorial_git/restart.sh
 
 git status -s
 

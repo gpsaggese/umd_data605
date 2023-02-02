@@ -5,12 +5,23 @@
   > mkdir /tmp/git_test
   > cd /tmp/git_test
   > git init
-  > ls .git
+  > ls -1 .git/
+  HEAD
+  config
+  description
+  hooks
+  info
+  objects
+  refs
   ```
+- You can experiment with Git in this scratch repo, but everything will be local
+  - You need a remote repo (e.g., on GitHub) to make it more interesting and
+    realistic
 
 - Clone a project, e.g., the class project from
   `https://github.com/gpsaggese/umd_data605`
   ```
+  > cd /tmp
   > git clone git@github.com:gpsaggese/umd_data605.git /tmp/umd_data605_tmp
   Cloning into 'umd_data605'...
   Warning: Permanently added 'github.com,140.82.114.4' (ECDSA) to the list of known hosts.
@@ -65,6 +76,8 @@
 - You can add a file
   ```
   > echo "print('hello')" >hello.py
+  > python hello.py
+  hello
   > git status
   On branch main
   Your branch is up to date with 'origin/main'.
@@ -78,7 +91,7 @@
   nothing added to commit but untracked files present (use "git add" to track)
   ```
 - Now there is a file in Git that is not tracked
-- Adding it to the staging area
+- Adding it to the staging area and committing
   ```
   > git add hello.py
   > git status
@@ -90,15 +103,33 @@
   Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
   new file:   hello.py
-
-  > git commit -am "Add hello.py"
-
-  > git log --graph --oneline -4
-  * 267118f (HEAD -> main) Add hello.py
-  * a78fa6a (origin/main, origin/HEAD) Checkpoint
-  * 36b9526 Checkpoint
-  * 259713c Checkpoint
   ```
+
+- Look at how the history changes (your output might change depending on where
+  you are in the history of the repo):
+  ```
+  # Check history.
+  > git log --graph --oneline -4
+  * a349849 (HEAD -> main, origin/main, origin/HEAD) Checkpoint
+  * f85c019 Checkpoint
+  * 20734cf Checkpoint
+  * e36d971 Checkpoint
+
+  # Commit locally.
+  > git commit -am "Add hello.py"
+  [main f919311] Add hello.py
+  1 file changed, 1 insertion(+)
+  create mode 100644 hello.py
+
+  # Check history.
+  > git log --graph --oneline -4
+  * f919311 (HEAD -> main) Add hello.py
+  * a349849 (origin/main, origin/HEAD) Checkpoint
+  * f85c019 Checkpoint
+  * 20734cf Checkpoint
+  ```
+- You see that a new node in the commit graph was added and the pointers are
+  moved
 
 # Git remote
   ```
@@ -106,7 +137,7 @@
   origin  git@github.com:gpsaggese/umd_data605.git (fetch)
   origin  git@github.com:gpsaggese/umd_data605.git (push)
 
-  # Get the data you don't have 
+  # Get the data you don't have.
   > git fetch
 
   # Fetch and rebase.
@@ -118,8 +149,11 @@
 
 ## Work on main
 
-- From `work_on_main.sh`
+- You can execute the script `work_on_main.sh` or (better) execute the command
+  line-by-line:
   ```
+  # Checkout a clean copy of the class repo.
+
   > ls
   Dockerfile LICENSE README.md dev_scripts docker_common gp lectures projects
 
