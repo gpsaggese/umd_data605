@@ -21,25 +21,20 @@ RUN apt install -y --no-install-recommends \
     python3-dev
 
 RUN python3 -m pip install --upgrade pip
+
+RUN apt-get install -y build-essential
     
 # Install Python packages.
 RUN pip3 install \
+    jupyter \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions \
-    jupyter \
-    yapf
-
-RUN apt-get install -y build-essential
-
-RUN pip3 install \
-    cython thriftpy2
-
-RUN pip3 install \
     matplotlib \
     pandas \
     parquet \
     pyarrow \
-    s3fs
+    s3fs \
+    yapf
 
 RUN mkdir /install
 
