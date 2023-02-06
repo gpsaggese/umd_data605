@@ -1,4 +1,5 @@
-FROM ubuntu:20.04
+#FROM ubuntu:20.04
+FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get -y update
@@ -34,10 +35,11 @@ RUN pip3 install \
     cython thriftpy2
 
 RUN pip3 install \
-    pandas \
     matplotlib \
-    s3fs \
-    parquet
+    pandas \
+    parquet \
+    pyarrow \
+    s3fs
 
 RUN mkdir /install
 
