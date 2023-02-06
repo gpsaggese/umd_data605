@@ -1,5 +1,9 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
-IMAGE_NAME=umd_data605_spring2023_mongodb
-CONTAINER_ID=$(docker container ls | grep $IMAGE_NAME | awk '{print $1}')
-docker exec -it $CONTAINER_ID bash
+GIT_ROOT=$(git rev-parse --show-toplevel)
+source $GIT_ROOT/docker_common/utils.sh
+
+REPO_NAME=gpsaggese
+IMAGE_NAME=umd_data605_XYZ
+
+exec_container
