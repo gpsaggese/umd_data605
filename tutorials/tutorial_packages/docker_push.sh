@@ -4,6 +4,6 @@ GIT_ROOT=$(git rev-parse --show-toplevel)
 source $GIT_ROOT/docker_common/utils.sh
 
 REPO_NAME=gpsaggese
-IMAGE_NAME=umd_data605_postgres
+IMAGE_NAME=umd_data605_packages
 
-remove_container_image
+push_container_image
