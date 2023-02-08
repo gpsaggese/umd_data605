@@ -7,7 +7,7 @@ material.
   ```
   > git clone git@github.com:gpsaggese/umd_data605.git
   ```
-- More detailed instructions are in the project dir
+- More detailed instructions are in each project dir
 
 # Conventions
 - We indicate the execution of an OS command (e.g., Linux / MacOS) from the terminal
@@ -22,7 +22,7 @@ material.
   ```
 
 - We indicate the execution of a command inside a Docker container with:
-  ```buildoutcfg
+  ```
   docker> ls 
   ```
 

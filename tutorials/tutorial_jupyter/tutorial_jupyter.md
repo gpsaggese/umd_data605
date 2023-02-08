@@ -1,6 +1,6 @@
 # Python
 
-- We will be using Python for all the tutorials and class project
+- We will be using Python for all the tutorials and for the class project
 - Start the Docker container with `docker_bash.sh`
   - Python is already installed
 - To use Python, you can just do `python3` (or `ipython`), and it will start up the
@@ -13,8 +13,7 @@
 
 - IPython Notebook / Jupyter is an enhanced command shell for Python, that offers
   enhanced introspection, rich media, tab completion, and history
-
-- IPython Notebook started as a web browser-based interface to IPython, and
+- IPython Notebook started as a web browser-based interface to IPython and
   proved especially popular with data scientists
 - A few years ago, the Notebook functionality was forked off as a separate project,
   called [Jupyter](http://jupyter.org/). Jupyter provides support for many other
@@ -42,9 +41,9 @@
   + docker run --rm -ti --name umd_data605_postgres -p 8888:8888 -p 5432:5432 -v /Users/saggese/src/umd_data605/tutorials/tutorial_jupyter:/data gpsaggese/umd_data605_postgres
   ```
 
-- Start Jupyter
+- Start Jupyter inside container:
   ```
-  docker> /data/run_jupyter_postgres.sh
+  docker> /data/run_jupyter.sh
   + jupyter-notebook --port=8888 --no-browser --ip=0.0.0.0 --NotebookApp.token= --NotebookApp.password=
   [I 08:45:16.978 NotebookApp] Writing notebook server cookie secret to /var/lib/postgresql/.local/share/jupyter/runtime/notebook_cookie_secret
   [I 08:45:16.983 NotebookApp] Authentication of /metrics is OFF, since other authentication is disabled.
@@ -56,7 +55,7 @@
   [I 08:45:17.638 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
   ```
 
-- This will start a Jupyter server in the container, listening on port 8888
+- This will start a Jupyter server in the container listening on port 8888
     - You will access it from the host (as discussed above, the Docker start command
       maps the 8888 port on the container to the 8888 port on the host)
     - To do that start the browser and point it to: http://127.0.0.1:8888
