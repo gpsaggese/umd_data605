@@ -1,5 +1,7 @@
 # Starting a Git project
 
+## Create a repo from scratch
+
 - Create a Git repo from scratch or from some local code
   ```
   > mkdir /tmp/git_test
@@ -17,6 +19,8 @@
 - You can experiment with Git in this scratch repo, but everything will be local
   - You need a remote repo (e.g., on GitHub) to make it more interesting and
     realistic
+
+## Clone class project
 
 - Clone a project, e.g., the class project from
   `https://github.com/gpsaggese/umd_data605`
@@ -71,7 +75,22 @@
   nothing to commit, working tree clean
   ```
 
+- You can restore the repo to the initial state with:
+  ```
+  > source $GIT_ROOT/projects/tutorial_git/restart.sh
+  ```
+  which in practice corresponds to:
+  ```
+  > rm -rf /tmp/umd_data605_tmp
+
+  > git clone git@github.com:gpsaggese/umd_data605.git /tmp/umd_data605_tmp
+  Cloning into '/tmp/umd_data605_tmp'...
+  Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+  ```
+
 # Daily use
+
+## Adding a file
 
 - You can add a file
   ```
@@ -91,7 +110,7 @@
   nothing added to commit but untracked files present (use "git add" to track)
   ```
 - Now there is a file in Git that is not tracked
-- Adding it to the staging area and committing
+- Adding it to the staging area
   ```
   > git add hello.py
   > git status
@@ -104,6 +123,8 @@
   (use "git restore --staged <file>..." to unstage)
   new file:   hello.py
   ```
+
+## Commit a file
 
 - Look at how the history changes (your output might change depending on where
   you are in the history of the repo):
@@ -132,18 +153,24 @@
   moved
 
 # Git remote
+
+- Check for the remote
   ```
   > git remote -v
   origin  git@github.com:gpsaggese/umd_data605.git (fetch)
   origin  git@github.com:gpsaggese/umd_data605.git (push)
+  ```
 
-  # Get the data you don't have.
+- Get the data you don't have
+  ```
   > git fetch
 
   # Fetch and rebase.
   > git pull
   > git pull --autostash
   ```
+- This won't make a difference unless a commit went it in between the time you
+  cloned and fetched (which is very unlikely)
 
 # Branching and merging
 
@@ -152,8 +179,6 @@
 - You can execute the script `work_on_main.sh` or (better) execute the command
   line-by-line:
   ```
-  # Checkout a clean copy of the class repo.
-
   > ls
   Dockerfile LICENSE README.md dev_scripts docker_common gp lectures projects
 
@@ -187,7 +212,9 @@
 
 ## Hot fix
 
-- Create feature branch keeping history linear:
+- The script is `$GIT_ROOT/tutorials/tutorial_git/hot_fix.sh`
+
+- Create a feature branch keeping history linear:
   ```
   > ls
   Dockerfile
@@ -211,10 +238,16 @@
   * 68df32f Checkpoint
   * b495a2c Checkpoint
   * 38affbd Checkpoint
+  ```
 
+- Create a new branch `iss53`
+  ```
   > git checkout -b iss53
   Switched to a new branch 'iss53'
+  ```
 
+- Create and commit a file in the branch `iss53`
+  ```
   > touch feature.py
 
   > git add feature.py
@@ -231,7 +264,10 @@
   * dc84037 Add feature.py
   * 68df32f Checkpoint
   * b495a2c Checkpoint
+  ```
 
+- Create a new branch `hotfix` off `main`
+  ```
   > git checkout main
   Switched to branch 'main'
   Your branch is up to date with 'origin/main'.
@@ -250,7 +286,10 @@
   [hotfix 402ed4f] Add hot_fix.py
    1 file changed, 0 insertions(+), 0 deletions(-)
    create mode 100644 hot_fix.py
+  ```
 
+- Go back to `main` and merge `hotfix`
+  ```
   > git checkout main
   Switched to branch 'main'
   Your branch is up to date with 'origin/main'.
@@ -267,7 +306,10 @@
   | * 402ed4f Add hot_fix.py
   |/
   * 68df32f Checkpoint
+  ```
 
+- Go back to `iss53` branch` and commit more changes
+  ```
   > git checkout iss53
   Switched to branch 'iss53'
 
@@ -284,7 +326,10 @@
   [iss53 49c2b96] Add feature2.py
    1 file changed, 0 insertions(+), 0 deletions(-)
    create mode 100644 feature2.py
+  ```
 
+- Merge `iss53` to main
+  ```
   > git checkout main
   Switched to branch 'main'
   Your branch is ahead of 'origin/main' by 2 commits.
@@ -301,22 +346,25 @@
 
 ## Merging conflicts
 
+- A script running the entire flow is in `$GIT_ROOT/tutorials/tutorial_git/merge_conflict.sh`
+  - You should execute each command one at a time
+
+- Restore the repo to the initial state
   ```
-  > source /Users/saggese/src/umd_data605/projects/tutorial_git/restart.sh
-
-  > cd /tmp
-
-  > [[ -d /tmp/umd_data605_tmp ]]
-
+  > source $GIT_ROOT/projects/tutorial_git/restart.sh
+  ```
+  which in practice corresponds to
+  ```
   > rm -rf /tmp/umd_data605_tmp
 
   > git clone git@github.com:gpsaggese/umd_data605.git /tmp/umd_data605_tmp
   Cloning into '/tmp/umd_data605_tmp'...
   Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+  ```
 
+- Create a branch `iss53` with some changes.
+  ```
   > cd /tmp/umd_data605_tmp
-
-  > git remote rm origin
 
   > ls
   Dockerfile
@@ -342,7 +390,7 @@
   > git checkout -b iss53
   Switched to a new branch 'iss53'
 
-  > echo 'hello from iss53'
+  > echo 'hello from iss53' >feature.py
 
   > git add feature.py
 
@@ -358,14 +406,17 @@
   * f0517d8 Add feature.py
   * c47a0b6 Checkpoint
   * 68df32f Checkpoint
+  ```
 
+- Create an `hotfix` branch with some changes
+  ```
   > git checkout main
   Switched to branch 'main'
 
   > git checkout -b hotfix
   Switched to a new branch 'hotfix'
 
-  > echo 'hello from hotfix'
+  > echo 'hello from hotfix' >feature.py
 
   > git add feature.py
 
@@ -376,7 +427,10 @@
   [hotfix 299dc2e] Add hot_fix.py
    1 file changed, 1 insertion(+)
    create mode 100644 feature.py
+  ```
 
+- Merge `hotfix` in `main`
+  ```
   > git checkout main
   Switched to branch 'main'
 
@@ -392,7 +446,10 @@
   | * 299dc2e Add hot_fix.py
   |/  
   * c47a0b6 Checkpoint
+  ```
 
+- Merge `iss53` in `main` creating conflicts
+  ```
   > git checkout main
   Already on 'main'
 
@@ -401,8 +458,6 @@
   CONFLICT (add/add): Merge conflict in feature.py
   Recorded preimage for 'feature.py'
   Automatic merge failed; fix conflicts and then commit the result.
-
-  > true
 
   > git status -s
   AA feature.py
@@ -419,8 +474,11 @@
 
   > hello from iss53
   +>>>>>>> iss53
+  ```
 
-  > echo 'hello from iss53 and hotfix'
+- Solve the conflict and merge
+  ```
+  > echo 'hello from iss53 and hotfix' >feature.py
 
   > git add feature.py
 
