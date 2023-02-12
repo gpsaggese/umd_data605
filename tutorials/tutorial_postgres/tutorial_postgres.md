@@ -14,6 +14,7 @@
   # E.g., GIT_ROOT=~/src/umd_data605
   > cd $GIT_ROOT
   > ls
+  Dockerfile    LICENSE       README.md     __pycache__   dev_scripts   docker_common gp            lectures      tutorial
 
   > cd tutorials/tutorial_postgres
   > ls
@@ -57,8 +58,9 @@
   pg_hba.conf      run_psql_server.sh  tutorial_basics     tutorial_university
   ...
   ``` 
-- You should see the same files as in `tutorial/tutorial_postgres` because we
-  are mapping in Docker
+- You should see from inside the container the same files as in
+  `tutorial/tutorial_postgres` because we are mapping that directory into Docker
+  `/data`, since the command is like:
   ```
   docker run ... -v /Users/saggese/src/umd_data605/tutorials/tutorial_postgres:/data
   ```
@@ -66,21 +68,22 @@
 ## PostgreSQL
 
 - PostgreSQL is a full-fledged and powerful relational database system, and will
-  be used for several tutorials and class project
+  be used for several tutorials and for the class project
 
-- PostgreSQL is already installed on your container
-  - These instructions are for you to understand the setup -- assuming you have
-    the docker image running, you don't need to do any of this
+- PostgreSQL is already installed in your container
+  - These instructions are for you to understand the setup
+  - Assuming you have the docker image running, you don't need to do any of this
 
 - PostgreSQL runs in client-server mode
   - The server is a continuously running process that listens on a specific port
-    (the actual port would differ and you can usually choose it when starting the
+    (the actual port can differ and you can usually choose it when starting the
     server)
-  - In order to connect to the server, the client will need to know the port. The
-    client and server are often on different machines, but for you they are on
-    the same machine
+  - In order to connect to the server, the client needs to know the port
+  - The client and server are often on different machines, but in your set-up
+    they are on the same machine
 
-- Using the `psql` client is the easiest
+- Connecting using the `psql` client is the easiest way to talk to PostgreSQL
+  server
   - It provides a command-line access to the database
   - There are other clients too, including GUIs
 
@@ -88,7 +91,7 @@
   - You can do everything under that username, or you can create a different
     username for yourself
   - If you run a command (say `createdb`) without any options, it uses the same
-    username that you are logged in under (i.e., `root`)
+    Linux username that you are logged in under (i.e., `root`, `postgres`)
   - However, if you haven't created a PostgreSQL user with that name, the command
     will fail. You can either create a user (by logging in as the superuser), or
     run everything as a superuser (typically with the option: `-U postgres`)
@@ -97,15 +100,17 @@
   with the `University` dataset provided on the book website:
   http://www.db-book.com
 
-- Important: The server should be already started on your virtual machine -- you do
-  not need to start it. However, the following two help pages discuss how to start
-  the
-  server: [Creating a database cluster](http://www.postgresql.org/docs/current/static/creating-cluster.html)
-  and [Starting the server](http://www.postgresql.org/docs/current/static/server-start.html)
+- `psql` takes quite a few other options: you can specify different user, a
+  specific port, another server etc. See
+  documentation: http://www.postgresql.org/docs/current/static/app-psql.html
+
+- Note: you don't need a password here because PostgreSQL uses what's
+  called `peer authentication` by default. You would typically need a password for
+  other types of connections to the server (e.g., through JDBC).
 
 ## Start Postgres
 
-- We need to start the Postgres DB service
+- We need to start the Postgres DB service / server
 
 - Check out `/data/run_psql_server.sh`
   ```
@@ -136,25 +141,118 @@
 
 ## Connecting to Postgres
   
-- You can connect to `Postgres` server
-  - from your laptop (outside Docker) like a normal client would do
-  - from inside Docker
-  - from Jupyter notebook (we will do that)
+- You can connect to `Postgres` server:
+  - from your laptop (outside Docker) like a regular client would do
+  - from another process inside Docker
+  - from Jupyter notebook
 
-## Creating example databases
+### Connecting to Postgres from inside the container
 
-- We can populate the `university DB` running the script inside Docker
+- Assuming you have the server running in the `umd_data605_postgres` container
+
+- You can connect to the Postgres server from inside the container either in the
+  same that is running the process that started the server
+  ```
+  > docker_bash.sh
+  ```
+- Inside the container, start the server in background and then connect to the
+  server
+  ```
+  docker> /data/run_psql_server.sh
+  ...
+  docker> psql
+  psql (14.5 (Ubuntu 14.5-0ubuntu0.22.04.1))
+  Type "help" for help.
+
+  postgres=# \c university
+  connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  database "university" does not exist
+  Previous connection kept
+  ```
+- The DB is empty so nothing is returned
+
+- Another approach is to open multiple terminals in the same container
+  ```
+  > docker_bash.sh
+  # Start the server.
+  ...
+  ```
+
+- In another terminal start another process in the same container
+  ```
+  > docker_exec.sh
+  FULL_IMAGE_NAME=gpsaggese/umd_data605_postgres
+  CONTAINER ID   IMAGE                            COMMAND   CREATED         STATUS         PORTS                                            NAMES
+  2ea21580ffb9   gpsaggese/umd_data605_postgres   "bash"    5 minutes ago   Up 5 minutes   0.0.0.0:5432->5432/tcp, 0.0.0.0:8888->8888/tcp   umd_data605_postgres
+  CONTAINER_ID=2ea21580ffb9
+  postgres@2ea21580ffb9:/$
+  ```
+
+### Connecting to Postgres from your laptop
+
+- From your laptop terminal (outside `Docker`) you need to install the Postgres
+  client `psql` to connect
+  ```
+  > brew install postgresql
+  > psql -U postgres -h localhost
+  SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+  You are now connected to database "university" as user "postgres".
+
+  postgres=# 
+  ```
+- This is equivalent to running from inside the container
+
+- It shows how the connection happens over a port from client and server
+  - Processes are running on separate "machines", one is Docker, the other is
+    your laptop
+
+### Connecting to Postgres from Jupyter notebook
+
+- From inside the container
+  ```
+  docker> /data/run_jupyter_postgres.sh
+  ```
+- From your local computer go to `localhost:8888` in the browser
+
+- Navigate to `http://localhost:8888/tree/data/tutorial_university`
+
+- Execute the 3 tutorials
+  ```
+  > ls -1 *.ipynb
+  sql_basics.ipynb
+  sql_joins.ipynb
+  sql_nulls_and_unknown.ipynb
+  ```
+
+- Note that you need to initialize the DB with some content to run the notebooks
+  (see below)
+
+- The notebook connects to your local PostgreSQL instance and serves as an
+  alternative mechanism to run queries
+
+- We can now run SQL commands using `magic` commands, which is an extensibility
+  mechanism provided by Jupyter.
+  - `%sql` is for single-line SQL commands
+  - `%%sql` allows us to do multi-line SQL commands
+
+## Creating example database
+
+### Creating small university example databases
+
+- Assume that the DB server is already running
   ```
   > cd tutorials/tutorial_postgres
   > docker_bash.sh
-  docker> more /data/tutorial_university/init_psql_small_university_db.sh
+  FULL_IMAGE_NAME=gpsaggese/umd_data605_postgres
+CONTAINER ID   IMAGE                            COMMAND   CREATED         STATUS         PORTS                                            NAMES
+2ea21580ffb9   gpsaggese/umd_data605_postgres   "bash"    5 minutes ago   Up 5 minutes   0.0.0.0:5432->5432/tcp, 0.0.0.0:8888->8888/tcp   umd_data605_postgres
+CONTAINER_ID=2ea21580ffb9
+  docker> more /data/tutorial_university/init_small_psql_university_db.sh
   #!/bin/bash -xe
 
   createdb university
   psql --command "\i /data/tutorial_university/DDL.sql;" university
   psql --command "\i /data/tutorial_university/smallRelationsInsertFile.sql;" university
   ```
-
 - Look at the script creating the schema
   ```
   docker> more /data/tutorial_university/DDL.sql
@@ -167,9 +265,9 @@
   ...
   ```
 
-- Populate Postgres with the small data
+- We can populate the `university DB` running the script inside Docker:
   ```
-  docker> /data/tutorial_university/init_psql_small_university_db.sh
+  docker> /data/tutorial_university/init_small_psql_university_db.sh
   + createdb university
   + psql --command '\i /data/tutorial_university/DDL.sql;' university
   psql:/data/tutorial_university/DDL.sql:1: NOTICE:  table "prereq" does not exist, skipping
@@ -177,62 +275,32 @@
   ...
   ```
 
-- We will create a database called `university`:
-  ```
-  createdb university
-  ```
-  - More info at http://www.postgresql.org/docs/current/static/tutorial-createdb.html
+- The script executes the following commands:
 
-- `psql` takes quite a few other options: you can specify different user, a
-  specific port, another server etc. See
-  documentation: http://www.postgresql.org/docs/current/static/app-psql.html
+- Create a database called `university`:
+  ```
+  psql> createdb university
+  ```
 
-- Note: you don't need a password here because PostgreSQL uses what's
-  called `peer authentication` by default. You would typically need a password for
-  other types of connections to the server (e.g., through JDBC).
+- Create the tables
+  ```
+  psql> \i DDL.sql
+  ```
 
 - To populate the database using the provided university dataset, use the
-  following: `\i DDL.sql`, followed by
   ```
-  \i smallRelationsInsertFile.sql
+  psql> \i smallRelationsInsertFile.sql
   ``` 
 
 - For this to work, the two `.sql` files must be in the same directory as the one
-  where you started `psql`. The first command creates the tables, and the second one
-  inserts tuples in it.
+  where you started `psql`.
 
-- Create a different database `university_large` for the larger dataset provided
-  (`largeRelationsInsertFile.sql`). Since the table names are identical, we need
-  a separate database
+### Creating "university_large" example
 
-### Connecting to Postgres from inside the container
+- You can create a different database `university_large` for the larger dataset provided
+- Since the table names are identical, you need a separate database
 
-- You can connect to the Postgres server from inside the container
-  ```
-  docker> psql
-  psql (14.5 (Ubuntu 14.5-0ubuntu0.22.04.1))
-  Type "help" for help.
-
-  postgres=# \c university
-  You are now connected to database "university" as user "postgres".
-  ...
-  ```
-
-### Connecting to Postgres from your laptop
-
-- From your terminal (outside `Docker`) you need to install the Postgres client
-  `psql` to connect
-  ```
-  > brew install postgresql
-  > psql -U postgres -h localhost
-  SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
-  You are now connected to database "university" as user "postgres".
-
-  postgres=# 
-  ```
-- This is equivalent to running from inside the container
-
-### psql
+## Using psql CLI
 
 - Now you have the postgres prompt and the client can send commands to the server
 
@@ -360,29 +428,3 @@
    98345 | Kim        | Elec. Eng. | 80000.00
   (12 rows)
   ```
-
-### Connecting to Postgres from Jupyter notebook
-
-- From inside the container
-  ```
-  docker> /data/run_jupyter_postgres.sh
-  ```
-- From your local computer go to `localhost:8888` in the browser
-
-- Navigate to `http://localhost:8888/tree/data/tutorial_university`
-- Execute the 3 tutorials
-  ```
-  > ls -1 *.ipynb
-  sql_basics.ipynb
-  sql_joins.ipynb
-  sql_nulls_and_unknown.ipynb
-  ```
-
-- The notebook connect to your local PostgreSQL instance. The Notebook also
-  serves as an alternative mechanism to run queries.
-
-- We can now run SQL commands using `magic` commands, which is an extensibility
-  mechanism provided by Jupyter.
-
-- `%sql` is for single-line commands, whereas `%%sql` allows us to do multi-line
-  SQL commands
