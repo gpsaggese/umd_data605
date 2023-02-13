@@ -24,6 +24,7 @@ RUN pip3 install \
     pandas \
     fastparquet \
     matplotlib \
+    numpy \
     yapf \
     ipython \
     jupyter-contrib-core \
