@@ -14,7 +14,7 @@ build_container_image() {
     OPTS="--progress plain $@"
     (cd $DIR; docker build $OPTS -t $FULL_IMAGE_NAME . 2>&1 | tee ../docker_build.log; exit ${PIPESTATUS[0]})
     # Report build version.
-    #docker run --rm -it -v $(pwd):/data $FULL_IMAGE_NAME bash -c "/data/version.sh 2>&1 | tee /data/docker_build.version.log"
+    (cd $DIR; docker run --rm -it -v $(pwd):/data $FULL_IMAGE_NAME bash -c "/data/version.sh 2>&1 | tee /data/docker_build.version.log")
     #
     docker image ls $REPO_NAME/$IMAGE_NAME
     echo "*****************************"

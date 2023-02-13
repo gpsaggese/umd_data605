@@ -64,7 +64,7 @@ RUN /install/install_jupyter_extensions.sh
 
 # Report package versions.
 #ADD version.sh /install/
-#RUN /install/version.sh 2>&1 | tee version.log
+#RUN /install/version.sh 2>&1 | tee /data/version.log
 
 # Dask.
 EXPOSE 8787
