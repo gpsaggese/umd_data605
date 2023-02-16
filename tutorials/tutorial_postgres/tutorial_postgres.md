@@ -428,3 +428,9 @@ CONTAINER_ID=2ea21580ffb9
    98345 | Kim        | Elec. Eng. | 80000.00
   (12 rows)
   ```
+
+# Other notebook examples
+
+http://localhost:8888/notebooks/data/tutorial_university/sql_basics.ipynb
+
+http://localhost:8888/notebooks/data/tutorial_university/sql_nulls_and_unknown.ipynb

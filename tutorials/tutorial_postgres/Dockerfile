@@ -21,6 +21,11 @@ RUN apt install -y --no-install-recommends \
 
 # Install Python packages.
 RUN pip3 install \
+    dask[complete] \
+    pandas \
+    fastparquet \
+    matplotlib \
+    numpy \
     ipython \
     ipython-sql \
     jupyter \
@@ -47,6 +52,10 @@ ADD postgresql.conf pg_hba.conf /install/
 RUN cp /install/postgresql.conf /etc/postgresql/14/main
 RUN cp /install/pg_hba.conf /etc/postgresql/14/main
 
+# Install graphviz.
+RUN apt install -y graphviz
+RUN pip3 install graphviz
+
 USER postgres
 
 # Install Jupyter extensions.
@@ -54,9 +63,11 @@ ADD install_jupyter_extensions.sh /install/
 RUN /install/install_jupyter_extensions.sh
 
 # Report package versions.
-ADD version.sh /install/
-RUN /install/version.sh 2>&1 | tee version.log
+#ADD version.sh /install/
+#RUN /install/version.sh 2>&1 | tee /data/version.log
 
+# Dask.
+EXPOSE 8787
 # Postgres.
 EXPOSE 5432
 # Jupyter.
