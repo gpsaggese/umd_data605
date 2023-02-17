@@ -5,7 +5,7 @@ services:
     command: python app.py
     ports:
       - target: 5000
-        published: 5000
+        published: 5001
     networks:
       - counter-net
     volumes:
