@@ -18,7 +18,7 @@
   > docker_build.sh
   ```
 
-- Start the container with MongoDB
+- Start the container with MongoDB:
   ```
   > docker_bash.sh
   ```
@@ -42,9 +42,16 @@
   test
   ```
 
-# MongoDB CRUD
-- To start Mongo CLI
+- To start MongoDB server and Jupyter:
   ```
+  > docker_jupyter.sh
+  ```
+  and then go to `localhost:8888`
+
+# MongoDB client CRUD
+- To start Mongo client CLI:
+  ```
+  > docker_bash.sh
   docker> mongosh
   Current Mongosh Log ID: 638efd4f9b201b6f53ffa8e2
   Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1
@@ -54,6 +61,8 @@
 
   test>
   ```
+- Now you have a JS prompt from MongoDB client that you can use to communicate
+  with the server
 
 - Show current DBs:
   ```
@@ -75,12 +84,16 @@
   switched to db book
 
   book> show collections
+  # Nothing to show. The collection is empty:
+  ```
 
+- Insert some data and read it back
+  ```
   book> db.towns2.insertOne({ name: "New York", population: 22200000, lastCensus: ISODate("2016-07-01"), famousFor: ["the MOMA", "food", "Derek Jeter"], mayor: { name: "Bill de Blasio", party: "D" } })
-{
-  acknowledged: true,
-  insertedId: ObjectId("6395a7a318320a956683f14f")
-}
+  {
+    acknowledged: true,
+    insertedId: ObjectId("6395a7a318320a956683f14f")
+  }
 
   book> show collections
   towns2
