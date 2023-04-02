@@ -44,6 +44,10 @@ RUN pip3 install \
     seaborn \
     yapf
 
+# Install graphviz.
+RUN apt install -y graphviz
+RUN pip3 install graphviz
+
 RUN mkdir /install
 
 # Install Jupyter extensions.
@@ -59,5 +63,7 @@ COPY bashrc /root/.bashrc
 ADD version.sh /install/
 RUN /install/version.sh 2>&1 | tee version.log
 
+# Dask.
+EXPOSE 8787
 # Jupyter.
 EXPOSE 8888

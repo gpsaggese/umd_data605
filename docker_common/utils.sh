@@ -7,10 +7,10 @@ build_container_image() {
     if [[ -d $DIR ]]; then
         rm -rf $DIR
     fi;
-    cp -Lr . $DIR
+    cp -Lr . $DIR || true
     # Build container.
-    #export DOCKER_BUILDKIT=1
-    export DOCKER_BUILDKIT=0
+    export DOCKER_BUILDKIT=1
+    #export DOCKER_BUILDKIT=0
     OPTS="--progress plain $@"
     (cd $DIR; docker build $OPTS -t $FULL_IMAGE_NAME . 2>&1 | tee ../docker_build.log; exit ${PIPESTATUS[0]})
     # Report build version.
