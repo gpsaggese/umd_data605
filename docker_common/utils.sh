@@ -9,19 +9,24 @@ build_container_image() {
     fi;
     cp -Lr . $DIR || true
     # Build container.
-    export DOCKER_BUILDKIT=1
-    #export DOCKER_BUILDKIT=0
-    if [[ 1 == 0 ]]; then
+    echo "DOCKER_BUILDKIT=$DOCKER_BUILDKIT"
+    echo "DOCKER_BUILD_MULTI_ARCH=$DOCKER_BUILD_MULTI_ARCH"
+    if [[ $DOCKER_BUILD_MULTI_ARCH != 1 ]]; then
         # Build for a single architecture.
+        echo "Building for current architecture..."
         OPTS="--progress plain $@"
         (cd $DIR; docker build $OPTS -t $FULL_IMAGE_NAME . 2>&1 | tee ../docker_build.log; exit ${PIPESTATUS[0]})
     else
         # Build for multiple architectures.
+        echo "Building for multiple architectures..."
         OPTS="$@"
         export DOCKER_CLI_EXPERIMENTAL=enabled
-        docker buildx rm --all-inactive --force
-        docker buildx create --name mybuilder
-        docker buildx use mybuilder
+        # Create a new builder.
+        #docker buildx rm --all-inactive --force
+        #docker buildx create --name mybuilder
+        #docker buildx use mybuilder
+        # Use the default builder.
+        docker buildx use multiarch
         docker buildx inspect --bootstrap
         # Note that one needs to push to the repo since otherwise it is not possible to keep multiple 
         (cd $DIR; docker buildx build --push --platform linux/arm64,linux/amd64 $OPTS --tag $FULL_IMAGE_NAME . 2>&1 | tee ../docker_build.log; exit ${PIPESTATUS[0]})
