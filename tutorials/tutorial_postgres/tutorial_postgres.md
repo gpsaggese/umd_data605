@@ -10,7 +10,7 @@
 - Open a terminal
 
 - Go to the dir with the class repo `umd_data605`
-  ```
+  ```bash
   # E.g., GIT_ROOT=~/src/umd_data605
   > cd $GIT_ROOT
   > ls
@@ -29,13 +29,13 @@
   the container, but if you are adventurous you can build the container yourself
 
 - Let's look at how the container is built and handled:
-   ```
+   ```bash
   > cd $GIT_REPO/tutorials/tutorial_postgres
   > vi Dockerfile docker_*.sh
   ```
 
 - Build the Docker container (this takes 10 mins):
-  ```
+  ```bash
   > docker_build.sh
   ```
 
@@ -43,16 +43,16 @@
 
 - Let's look at `docker_bash.sh`, which runs a container
 - Run bash inside Docker container
-  ```
+  ```bash
   > docker_bash.sh
   ```
 
 - You should see the prompt from `Docker` with user and container id
-  ```
+  ```bash
   postgres@09913bf19d81:/$
   ```
 - Check that you can see the host computed dir mounted on Docker `filesystem`
-  ```
+  ```bash
   docker> ls /data
   Dockerfile  README.md  docker_bash.sh   docker_clean.sh  etc_sudoers
   pg_hba.conf      run_psql_server.sh  tutorial_basics     tutorial_university
@@ -61,8 +61,8 @@
 - You should see from inside the container the same files as in
   `tutorial/tutorial_postgres` because we are mapping that directory into Docker
   `/data`, since the command is like:
-  ```
-  docker run ... -v /Users/saggese/src/umd_data605/tutorials/tutorial_postgres:/data
+  ```bash
+  > docker run ... -v /Users/saggese/src/umd_data605/tutorials/tutorial_postgres:/data
   ```
 
 ## PostgreSQL
@@ -113,7 +113,7 @@
 - We need to start the Postgres DB service / server
 
 - Check out `/data/run_psql_server.sh`
-  ```
+  ```bash
   docker> vi /data/run_psql_server.sh
   service --status-all
   /etc/init.d/postgresql start
@@ -121,7 +121,7 @@
   ```
   
 - Start the PostgresSQL DB service
-  ```
+  ```bash
   docker> /data/run_psql_server.sh
   + service --status-all
   [ - ]  cron
@@ -152,12 +152,12 @@
 
 - You can connect to the Postgres server from inside the container either in the
   same that is running the process that started the server
-  ```
+  ```bash
   > docker_bash.sh
   ```
 - Inside the container, start the server in background and then connect to the
   server
-  ```
+  ```bash
   docker> /data/run_psql_server.sh
   ...
   docker> psql
@@ -209,14 +209,14 @@
 
 - From inside the container
   ```
-  docker> /data/run_jupyter_postgres.sh
+  docker> /data/run_jupyter.sh
   ```
 - From your local computer go to `localhost:8888` in the browser
 
 - Navigate to `http://localhost:8888/tree/data/tutorial_university`
 
 - Execute the 3 tutorials
-  ```
+  ```bash
   > ls -1 *.ipynb
   sql_basics.ipynb
   sql_joins.ipynb
@@ -224,13 +224,14 @@
   ```
 
 - Note that you need to initialize the DB with some content to run the notebooks
-  (see below)
+  (following the instructions below in "Creating example database" section)
+  otherwise you are going to get an error
 
 - The notebook connects to your local PostgreSQL instance and serves as an
   alternative mechanism to run queries
 
 - We can now run SQL commands using `magic` commands, which is an extensibility
-  mechanism provided by Jupyter.
+  mechanism provided by Jupyter notebook
   - `%sql` is for single-line SQL commands
   - `%%sql` allows us to do multi-line SQL commands
 
@@ -238,35 +239,38 @@
 
 ### Creating small university example databases
 
-- Assume that the DB server is already running
-  ```
+- Assume that the Postgres DB server is already running
+  ```bash
   > cd tutorials/tutorial_postgres
   > docker_bash.sh
   FULL_IMAGE_NAME=gpsaggese/umd_data605_postgres
-CONTAINER ID   IMAGE                            COMMAND   CREATED         STATUS         PORTS                                            NAMES
-2ea21580ffb9   gpsaggese/umd_data605_postgres   "bash"    5 minutes ago   Up 5 minutes   0.0.0.0:5432->5432/tcp, 0.0.0.0:8888->8888/tcp   umd_data605_postgres
-CONTAINER_ID=2ea21580ffb9
+  CONTAINER ID   IMAGE                            COMMAND   CREATED         STATUS         PORTS                                            NAMES
+  2ea21580ffb9   gpsaggese/umd_data605_postgres   "bash"    5 minutes ago   Up 5 minutes   0.0.0.0:5432->5432/tcp, 0.0.0.0:8888->8888/tcp   umd_data605_postgres
+  CONTAINER_ID=2ea21580ffb9
+
   docker> more /data/tutorial_university/init_small_psql_university_db.sh
   #!/bin/bash -xe
 
   createdb university
+  # Create the schema.
   psql --command "\i /data/tutorial_university/DDL.sql;" university
+  # Insert some data in the DB.
   psql --command "\i /data/tutorial_university/smallRelationsInsertFile.sql;" university
   ```
 - Look at the script creating the schema
-  ```
+  ```bash
   docker> more /data/tutorial_university/DDL.sql
   ...
   ```
 
 - Look at the script inserting the data
-  ```
+  ```bash
   docker> more /data/tutorial_university/smallRelationsInsertFile.sql
   ...
   ```
 
 - We can populate the `university DB` running the script inside Docker:
-  ```
+  ```bash
   docker> /data/tutorial_university/init_small_psql_university_db.sh
   + createdb university
   + psql --command '\i /data/tutorial_university/DDL.sql;' university
@@ -278,17 +282,17 @@ CONTAINER_ID=2ea21580ffb9
 - The script executes the following commands:
 
 - Create a database called `university`:
-  ```
+  ```bash
   psql> createdb university
   ```
 
 - Create the tables
-  ```
+  ```bash
   psql> \i DDL.sql
   ```
 
 - To populate the database using the provided university dataset, use the
-  ```
+  ```bash
   psql> \i smallRelationsInsertFile.sql
   ``` 
 

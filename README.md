@@ -31,6 +31,5 @@ material.
   psql> 
   ```
 
-# Checklist before visiting office hours
-
+# Office hours
 - Contact: gsaggese@umd.edu

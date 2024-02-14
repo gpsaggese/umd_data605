@@ -19,7 +19,7 @@ def get_hit_count():
 @app.route('/')
 def hello():
     count = get_hit_count()
-    return "What's up Docker Deep Divers! You've visited me {} times.\n".format(count)
+    return "You've visited me {} times.\n".format(count)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

@@ -6,6 +6,7 @@
   - one container with Redis (a key-store DB)
 
   ```
+  > cd counter_app
   > find . -type f
   ./requirements.txt
   ./Dockerfile
@@ -40,8 +41,8 @@
   ```
 
 - The Python code of the application is:
-  ```
-  > cat app.py
+  `cat app.py`
+  ```python
   import time
   import redis
   from flask import Flask
@@ -80,6 +81,8 @@
 - The Docker compose is:
   ```
   > cat docker-compose.yml
+  ```
+  ```yaml
   version: "3.5"
   services:
     web-fe:
@@ -88,10 +91,10 @@
       # The entrypoint of the container is `python app.py`.
       command: python app.py
       # The traffic from the port 5000 inside the container (target) is mapped to the
-      # port 5000 on the container.
+      # port 5001 on the container.
       ports:
         - target: 5000
-          published: 5000
+          published: 5001
       # Both services are on the same network `counter-net` so that they can see each
       # other.
       networks:
@@ -156,7 +159,7 @@
   counter_app-web-fe-1  |  * Debug mode: on
   counter_app-web-fe-1  |  * Running on all addresses.
   counter_app-web-fe-1  |    WARNING: This is a development server. Do not use it in a production deployment.
-  counter_app-web-fe-1  |  * Running on http://172.28.0.3:5000/ (Press CTRL+C to quit)
+  counter_app-web-fe-1  |  * Running on http://172.28.0.3:5001/ (Press CTRL+C to quit)
   counter_app-web-fe-1  |  * Restarting with stat
   counter_app-web-fe-1  |  * Debugger is active!
   counter_app-web-fe-1  |  * Debugger PIN: 206-984-706
@@ -180,7 +183,7 @@
   > docker compose ps
   NAME                   COMMAND                  SERVICE             STATUS              PORTS
   counter_app-redis-1    "docker-entrypoint.s…"   redis               running             6379/tcp
-  counter_app-web-fe-1   "python app.py"          web-fe              running             0.0.0.0:5000->5000/tcp
+  counter_app-web-fe-1   "python app.py"          web-fe              running             0.0.0.0:5000->5001/tcp
   ```
   - The Docker objects are named by Compose as the project name (i.e., build context
     dir `counter_app`) and resource name (i.e., `redis-1`, `web-fe-1`)
@@ -191,7 +194,7 @@
   ```
   > docker container ls
   CONTAINER ID   IMAGE                     COMMAND                  CREATED         STATUS         PORTS                          NAMES
-  281d654f6b8d   counter_app_web-fe        "python app.py"          5 minutes ago   Up 5 minutes   0.0.0.0:5000->5000/tcp         counter_app-web-fe-1
+  281d654f6b8d   counter_app_web-fe        "python app.py"          5 minutes ago   Up 5 minutes   0.0.0.0:5000->5001/tcp         counter_app-web-fe-1
   de55ae4104da   redis:alpine              "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes   6379/tcp                       counter_app-redis-1
 
   > docker images ls
@@ -217,7 +220,7 @@
   ```
 
 ## Interact with the app
-- The app is running, if you go to your browse to `http://localhost:5000/`
+- The app is running, if you go to your browse to `http://localhost:5001/`
   ```
   What's up Docker Deep Divers! You've visited me 1 times.
   ```
