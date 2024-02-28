@@ -1,16 +1,12 @@
-FROM ubuntu:20.04
-ENV DEBIAN_FRONTEND noninteractive
+# Start with a basic Ubuntu image.
+FROM ubuntu:22.04
 
-# Fix old repo for ubuntu:20.04.
-RUN mkdir /install
-ADD fix_apt_install.sh /install/
-RUN /install/fix_apt_install.sh
-
-RUN apt-get -y update
-RUN apt-get -y upgrade
+# Update the packages.
+RUN apt-get -y update && \
+    apt-get -y upgrade
 
 # Install system utilities.
-RUN apt install -y --no-install-recommends --fix-missing \
+RUN apt install -y --no-install-recommends \
     sudo \
     curl \
     systemctl \
@@ -20,14 +16,15 @@ RUN apt install -y --no-install-recommends --fix-missing \
 
 # Install Python.
 RUN apt install -y --no-install-recommends \
+    build-essential \
     python3 \
     python3-pip \
     python3-dev
 
-RUN python3 --version
-RUN pip3 --version
+#RUN python3 --version
+#RUN pip3 --version
 
-RUN python3 -m pip install --upgrade pip
+#RUN python3 -m pip install --upgrade pip
     
 # Install Python packages.
 # There is a bug:
@@ -44,13 +41,17 @@ RUN pip3 install \
     jupyter-contrib-nbextensions \
     yapf
 
+# Avoid to ask for timezone.
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
+
 # Install MongoDB.
-RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add - && \
-    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
-    apt update && \
-    curl -O http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
-    dpkg -i ./libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
-    apt install -y mongodb-org mongodb-org-server mongodb-org-shell
+RUN sudo apt-get install gnupg curl && \
+  curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+     sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+     --dearmor && \
+  echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list && \
+  sudo apt-get update && \
+  sudo apt-get install -y mongodb-org
 
 RUN pip3 install \
     pymongo \
@@ -62,7 +63,7 @@ COPY etc_sudoers /etc/sudoers
 COPY bashrc /root/.bashrc
 
 # Install Jupyter extensions.
-ADD install_jupyter_extensions.sh /install
+ADD install_jupyter_extensions.sh /install/
 RUN /install/install_jupyter_extensions.sh
 
 # Report package versions.
