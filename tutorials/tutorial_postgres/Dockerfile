@@ -29,18 +29,18 @@ RUN apt install -y --no-install-recommends \
 # https://discourse.jupyter.org/t/jupyter-notebook-zmq-message-arrived-on-closed-channel-error/17869/10
 RUN pip3 install \
     dask[complete] \
-    pandas \
     fastparquet \
-    matplotlib \
-    numpy \
     ipython \
-    tornado==6.1 \
-    jupyter-client==7.3.2 \
     ipython-sql \
     jupyter \
+    jupyter-client==7.3.2 \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions \
+    matplotlib \
+    numpy \
+    pandas \
     psycopg2-binary \
+    tornado==6.1 \
     yapf
 
 RUN mkdir /install
