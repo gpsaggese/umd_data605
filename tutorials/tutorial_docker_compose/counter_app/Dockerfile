@@ -1,6 +1,6 @@
 # Use a small image `alpine` with Python inside.
 FROM python:3.6-alpine
-# Copy app into image.
+# Copy current dir `counter_app` into image.
 ADD . /code
 # Set working dir.
 WORKDIR /code
