@@ -1,5 +1,10 @@
 # Tutorial Airflow
 
+- Go to the tutorial dir
+  ```bash
+  > cd ~/src/umd_data605_1/tutorials/tutorial_airflow
+  ```
+
 ## Creating a Docker compose
 
 - From official installation
@@ -8,6 +13,7 @@
 - The most important steps are to download the docker compose file
   ```
   > curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.8.2/docker-compose.yaml'
+  ```
 
 ## Clean up the environment
 
@@ -48,7 +54,7 @@
   tutorial_airflow-airflow-init-1 exited with code 0
   ```
 
-- To start Airflow
+- To start Airflow:
   ```bash
   > docker compose up
   ...
@@ -60,10 +66,11 @@
   tutorial_airflow-airflow-webserver-1  | [2024-03-10 14:00:54 +0000] [30] [INFO] Booting worker with pid: 30
   ```
 
-- This is equivalent to `docker_exec.sh` to get a bash
+- To start a `bash` inside the Airflow container:
   ```
   > ./airflow.sh bash
   ```
+  - This is equivalent to `docker_bash.sh` in other tutorials
 
 - The code of the tutorial is at
   ```
