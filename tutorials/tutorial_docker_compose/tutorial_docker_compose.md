@@ -311,10 +311,9 @@
   281d654f6b8d   counter_app_web-fe   "python app.py"          5 minutes ago   Up 5 minutes   0.0.0.0:5000->5001/tcp    counter_app-web-fe-1
   de55ae4104da   redis:alpine         "docker-entrypoint.s…"   5 minutes ago   Up 5 minutes   6379/tcp                  counter_app-redis-1
 
-  > docker images ls
+  > docker images | grep counter_app
   REPOSITORY                      TAG                  IMAGE ID       CREATED          SIZE
   counter_app_web-fe              latest               7172378d99d9   6 minutes ago    55.5MB
-  redis                           alpine               96a149ad0157   31 minutes ago   28.4MB
 
   > docker volume ls
   DRIVER    VOLUME NAME
