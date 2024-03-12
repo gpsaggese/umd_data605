@@ -25,7 +25,7 @@
 
 - Go to the tutorial dir
   ```bash
-  > cd ~/src/umd_data605_1/tutorials/tutorial_airflow
+  > cd $GIT_ROOT/tutorials/tutorial_airflow
 
   > ls -1
   README.md
@@ -33,6 +33,8 @@
   airflow.sh
   dags
   docker-compose.yaml
+  docker_clean.sh
+  docker_ls.sh
   ```
 
 - Let's take a look
@@ -121,9 +123,9 @@
   but as long as it gets to `Listening at...` it's all good
 
 - To start a `bash` inside the Airflow container:
-  ```
-  > ./airflow.sh bash
   ```bash
+  > ./airflow.sh bash
+  ```
   - This is equivalent to `docker_bash.sh` in other tutorials
 
 - The webserver is available at http://localhost:8080
@@ -244,6 +246,7 @@
 
 - Testing `sleep` task
   ```
+  docker> airflow tasks test tutorial sleep 2015-06-01
   [2024-03-12T09:41:51.859+0000] {dagbag.py:540} INFO - Filling up the DagBag from /opt/***/dags
   [2024-03-12T09:41:51.950+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: tutorial.sleep __***_temporary_run_2024-03-12T09:41:51.931244+00:00__ [None]>
   [2024-03-12T09:41:51.953+0000] {taskinstance.py:1979} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: tutorial.sleep __***_temporary_run_2024-03-12T09:41:51.931244+00:00__ [None]>
