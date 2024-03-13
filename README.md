@@ -1,5 +1,13 @@
-Many thanks to Prof Alan Sussman and Prof Amol Deshpande for helping with the class
-material.
+# UMD DATA 605 - Big Data Systems
+
+https://1000logos.net/wp-content/uploads/2022/07/University-of-Maryland-Logo.png
+
+- [Spring 2024](https://app.testudo.umd.edu/soc/202401/DATA/DATA605)
+- [Spring 2023](https://app.testudo.umd.edu/soc/202301/DATA/DATA605)
+
+- [Canvas](https://umd.instructure.com/courses/1342334)
+
+- [Syllabus](https://docs.google.com/document/d/1LYd7QqGOU2_JR5QOWaAxWCwBB2cy16n57dSaVV6A3tc/edit#heading=h.278ryn4xodsb)
 
 # Cloning the GitHub class repo
 
@@ -33,3 +41,7 @@ material.
 
 # Office hours
 - Contact: gsaggese@umd.edu
+
+Many thanks to Prof Alan Sussman and Prof Amol Deshpande for helping with the class
+material.
+
