@@ -15,10 +15,11 @@ RUN apt install -y --no-install-recommends \
     vim
 
 # Install Python.
+#ENV PY_VER="3.10" 
 RUN apt install -y --no-install-recommends \
-    python3 \
-    python3-pip \
-    python3-dev
+      python3.10 \
+      python3-pip \
+      python3-dev
 
 RUN python3 -m pip install --upgrade pip
 
