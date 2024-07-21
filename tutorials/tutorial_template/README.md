@@ -43,3 +43,11 @@ install_jupyter_extensions.sh
 update.sh
 utils.sh
 version.sh
+
+#
+
+To update the common scripts
+> /Users/saggese/src/umd_data605_1/admin_scripts/cp_docker_files.sh
+
+To create links
+> /Users/saggese/src/umd_data605_1/admin_scripts/create_links.sh
