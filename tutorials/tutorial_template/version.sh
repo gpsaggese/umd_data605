@@ -1,11 +1,23 @@
 #!/bin/bash
-echo "# Pytho3"
-python3 --version
-echo "# pip3"
-pip3 --version
-echo "# jupyter"
-jupyter --version
+VERSION=$(python3 --version)
+echo "# Python3: $VERSION"
+
+VERSION=$(pip3 --version)
+echo "# pip3: $VERSION"
+
+if which jupyter >/dev/null 2>&1; then
+    VERSION=$(jupyter --version)
+else
+    VERSION="-"
+fi
+echo "# jupyter: $VERSION"
+
+if which mongod >/dev/null 2>&1; then
+    VERSION=$(mongod --version)
+else
+    VERSION="-"
+fi
+echo "# mongo: $VERSION"
+
 echo "# Python packages"
 pip3 list
-echo "# mongo"
-mongod --version

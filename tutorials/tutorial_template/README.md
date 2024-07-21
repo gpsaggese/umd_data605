@@ -1,8 +1,8 @@
-This is a template to easily create Dockerized environments
+This directory is a template to easily create Dockerized environments.
 
 ## Dockerfile
 
-It is a `Dockerfile` to create a Docker container with
+It is a `Dockerfile` to create a Docker container with:
   - Ubuntu 20.4
   - Some system utilities
   - Python

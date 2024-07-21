@@ -14,11 +14,16 @@ ISSUE_TITLE=$*
 
 # Replace spaces with _ and convert to lowercase.
 BRANCH_NAME=$(echo "${ISSUE_TITLE}" | tr ' ' '_')
-echo $BRANCH_NAME
+echo "Branch_name=$BRANCH_NAME"
+
+run() {
+  echo "$1"
+  eval "$1"
+}
 
 # Create and checkout the new branch.
-git fetch origin
-git checkout -b "${BRANCH_NAME}"
-git push -u origin "${BRANCH_NAME}"
+run "git fetch origin"
+run "git checkout -b "${BRANCH_NAME}""
+run "git push -u origin "${BRANCH_NAME}""
 
 echo "Branch '${BRANCH_NAME}' created and pushed to GitHub"
