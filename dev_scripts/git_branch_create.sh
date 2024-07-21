@@ -17,7 +17,7 @@ BRANCH_NAME=$(echo "${ISSUE_TITLE}" | tr ' ' '_')
 echo "Branch_name=$BRANCH_NAME"
 
 run() {
-  echo "$1"
+  echo "> $1"
   eval "$1"
 }
 

@@ -124,3 +124,8 @@ print_docker_vars() {
 }
 
 
+run() {
+    cmd="$*"
+    echo "> $cmd"
+    eval "$cmd"
+}
