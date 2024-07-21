@@ -34,17 +34,29 @@ RUN python3 -m pip install --upgrade pip
 #   assert 0 < size <= self._size
 # for tornado==6.2 and jupyter-client==8.0.2.
 # https://discourse.jupyter.org/t/jupyter-notebook-zmq-message-arrived-on-closed-channel-error/17869/10
+#RUN pip3 install \
+#    ipython \
+#    tornado \
+#    jupyter-client \
+#    jupyter \
+#    jupyter-contrib-core \
+#    jupyter-contrib-nbextensions \
+#    matplotlib \
+#    pandas \
+#    seaborn \
+#    yapf
+  
 RUN pip3 install \
-    ipython \
-    tornado==6.1 \
-    jupyter-client==7.3.2 \
-    jupyter \
-    jupyter-contrib-core \
-    jupyter-contrib-nbextensions \
+    tornado \
     matplotlib \
     pandas \
     seaborn \
     yapf
+
+# tornado==6.1
+# jupyter-client==7.3.2
+
+RUN pip3 install jupyter jupyter_contrib_nbextensions
 
 RUN pip3 install pyllms
 
@@ -54,7 +66,7 @@ RUN pip3 install pyllms
 RUN mkdir /install
 
 # Install Jupyter extensions.
-ADD install_jupyter_extensions.sh /install
+#ADD install_jupyter_extensions.sh /install
 #RUN /install/install_jupyter_extensions.sh
 
 # Config.
@@ -63,8 +75,8 @@ COPY etc_sudoers /etc/sudoers
 COPY bashrc /root/.bashrc
 
 # Report package versions.
-ADD version.sh /install/
-RUN /install/version.sh 2>&1 | tee version.log
+#ADD version.sh /install/
+#RUN /install/version.sh 2>&1 | tee version.log
 
 # Jupyter.
 EXPOSE 8888
