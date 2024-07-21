@@ -51,3 +51,6 @@ To update the common scripts
 
 To create links
 > /Users/saggese/src/umd_data605_1/admin_scripts/create_links.sh
+
+cp -rP ~/src/umd_data605_1/tutorials/tutorial_template ~/src/umd_data605_1/tutorials/tutorial_llms
+rm README.md
