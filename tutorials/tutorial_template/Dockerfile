@@ -1,4 +1,5 @@
-FROM ubuntu:20.04
+#FROM ubuntu:20.04
+FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get -y update
@@ -20,6 +21,11 @@ RUN apt install -y --no-install-recommends \
     python3-dev
 
 RUN python3 -m pip install --upgrade pip
+
+# RUN apt-get install -y build-essential
+
+# Install more system packages.
+# ...
     
 # Install Python packages.
 # There is a bug:
@@ -31,10 +37,16 @@ RUN pip3 install \
     ipython \
     tornado==6.1 \
     jupyter-client==7.3.2 \
+    jupyter \
     jupyter-contrib-core \
     jupyter-contrib-nbextensions \
-    psycopg2-binary \
+    matplotlib \
+    pandas \
+    seaborn \
     yapf
+
+# Install more Python packages.
+# ...
 
 RUN mkdir /install
 
