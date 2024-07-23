@@ -517,7 +517,8 @@ assistant = hopenai.get_coding_style_assistant()
 hopenai.pprint(assistant)
 
 
-question = "What is DRY?"
+#question = "What is DRY?"
+question = "Should one pay the technical debt?"
 messages = hopenai.get_query_assistant(assistant, question)
 
 print(messages)
@@ -527,3 +528,19 @@ type(messages[0])
 hopenai.pprint(messages[0])
 
 print(hopenai.response_to_txt(messages[0]))
+
+assistants = client.beta.assistants.list()
+
+hopenai.pprint([ai.id for ai in assistants.data])
+
+hopenai.pprint(assistants.data[0])
+
+hopenai.assistant_to_info(assistants.data[0])
+
+hopenai.delete_all_assistants(ask_for_confirmation=False)
+
+pprint.pprint(client.files.list().data[0])
+
+print(type(files[0]))
+
+files = client.files.list().data

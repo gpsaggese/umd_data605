@@ -1,13 +1,18 @@
 import sys
 sys.path.append('/data')
 
+import openai
 from openai import OpenAI
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 import helpers.hdbg as hdbg
+import datetime
 import os
 
 import logging
+
+from openai.types.beta.assistant import Assistant
+from openai.types.beta.threads.message import Message
 
 _LOG = logging.getLogger(__name__)
 
@@ -18,6 +23,38 @@ hdbg.set_logger_verbosity(logging.INFO)
 
 _LOG.debug = _LOG.info
 
+# #############################################################################
+
+
+def response_to_txt(response: Any) -> None:
+    if isinstance(response, openai.types.chat.chat_completion.ChatCompletion):
+        return response.choices[0].message.content
+    elif isinstance(response, openai.pagination.SyncCursorPage):
+        return response.data[0].content[0].text.value
+    elif isinstance(response, openai.types.beta.threads.message.Message):
+        return response.content[0].text.value
+    else:
+        raise ValueError(f"Unknown response type: {type(response)}")
+
+
+# TODO(gp): Clean up this.
+from pprint import pformat
+from typing import Any
+
+from pygments import highlight
+from pygments.formatters import Terminal256Formatter
+from pygments.lexers import PythonLexer
+
+
+def pprint(obj: Any) -> None:
+    """
+    Pretty-print in color.
+    """
+    if hasattr(obj, "to_dict"):
+        obj = obj.to_dict()
+    print(highlight(pformat(obj), PythonLexer(), Terminal256Formatter()), end="")
+
+# #############################################################################
 
 def get_completion(user: str, *, system: str = "",
                    model: Optional[str] = None, **create_kwargs) -> str:
@@ -33,13 +70,78 @@ def get_completion(user: str, *, system: str = "",
     )
     return completion.choices[0].message.content
 
-# messages = [
-#   {"role": "system",
-#    "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-#   {"role": "user",
-#    "content": "Compose a poem that explains the concept of recursion in programming."}
-# ]
 
+def _extract(obj: Dict[str, Any], keys: List[str]) -> Dict[str, Any]:
+    hdbg.dassert_isinstance(obj, dict)
+    obj_tmp = {}
+    for key in keys:
+        #dassert_hasattr(obj, key)
+        hdbg.dassert_in(key, obj)
+        obj_tmp[key] = getattr(obj, key)
+    return obj_tmp
+
+
+# [FileObject(id='file-ZSexZm5C9t00NYMBFjQUDzUo',
+#   bytes=89329,
+#   created_at=1721761992,
+#   filename='all.coding_style.how_to_guide.md',
+#   object='file',
+#   purpose='assistants',
+#   status='processed',
+#   status_details=None),
+
+
+def file_to_info(file: openai.types.file_object.FileObject) -> Dict[str, Any]:
+    hdbg.dassert_isinstance(assistant, openai.types.file_object.FileObject)
+    keys = ["id", "created_at", "filename"]
+    file_tmp = _extract(file, keys)
+    file_tmp["created_at"] = datetime.datetime.fromtimestamp(file_tmp[
+                                                          "created_at"])
+    return file_tmp
+
+
+def files_to_str(files : List[openai.types.file_object.FileObject]) -> str:
+    txt: List[str] = []
+    txt.append("Found %s files" % len(files))
+    for file in files:
+        txt.append("Deleting file %s" % file_to_info(file))
+    txt = "\n".join(txt)
+    return txt
+
+
+def delete_all_files(*, ask_for_confirmation: bool = True):
+    client = OpenAI()
+    files = list(client.files.list())
+    # Print.
+    _LOG.info(files_to_str(files))
+    # Confirm.
+    if ask_for_confirmation:
+        hdbg.dfatal("Stopping")
+    # Delete.
+    for file in files:
+        _LOG.info("Deleting file %s", file)
+        client.files.delete(file.id)
+
+
+# #############################################################################
+# Assistants
+# #############################################################################
+
+# {'created_at': 1721761992,
+#  'description': None,
+#  'id': 'asst_aXKuTAqUwIrEcXFciT7b11UU',
+#  'instructions': 'You are an expert Python coder. Use you knowledge base to '
+#                  'answer questions about how to write code.',
+#  'metadata': {},
+#  'model': 'gpt-4o',
+#  'name': 'Coding style expert',
+#  'object': 'assistant',
+#  'response_format': 'auto',
+#  'temperature': 1.0,
+#  'tool_resources': {'file_search': {'vector_store_ids': ['vs_CyJx606jziuN8L5WgSwsuzPd']}},
+#  'tools': [{'type': 'file_search'}],
+#  'top_p': 1.0}
+#
 
 def get_coding_style_assistant():
     client = OpenAI()
@@ -73,7 +175,7 @@ def get_coding_style_assistant():
     return assistant
 
 
-def get_query_assistant(assistant, question):
+def get_query_assistant(assistant: Assistant, question: str) -> List[Message]:
     client = OpenAI()
     # Create a thread and attach the file to the message.
     thread = client.beta.threads.create(
@@ -98,32 +200,41 @@ def get_query_assistant(assistant, question):
     return messages
 
 
-def response_to_txt(response):
-    import openai
-
-    if isinstance(response, openai.types.chat.chat_completion.ChatCompletion):
-        return response.choices[0].message.content
-    elif isinstance(response, openai.pagination.SyncCursorPage):
-        return response.data[0].content[0].text.value
-    elif isinstance(response, openai.types.beta.threads.message.Message):
-        return response.content[0].text.value
-    else:
-        raise ValueError(f"Unknown response type: {type(response)}")
+def dassert_hasattr(obj, attr):
+    hdbg.dassert(hasattr(obj, attr), f"Object\n'%s'\nhas no attribute '%s'",
+                 obj, attr)
 
 
-# TODO(gp): Clean up this.
-from pprint import pformat
-from typing import Any
+def assistant_to_info(assistant):
+    hdbg.dassert_isinstance(assistant, openai.types.beta.assistant.Assistant)
+    keys = ["name", "created_at", "id", "instructions", "model"]
+    assistant_info = _extract(assistant, keys)
+    # for key in keys:
+    #     dassert_hasattr(assistant, key)
+    #     assistant_info[key] = getattr(assistant, key)
+    assistant_info["created_at"] = datetime.datetime.fromtimestamp(assistant_info["created_at"])
+    return assistant_info
 
-from pygments import highlight
-from pygments.formatters import Terminal256Formatter
-from pygments.lexers import PythonLexer
+
+def assistants_to_str(assistants):
+    txt = []
+    txt.append("Found %s assistants" % len(assistants))
+    for assistant in assistants:
+        txt.append("Deleting assistant %s" % assistant_to_info(assistant))
+    txt = "\n".join(txt)
+    return txt
 
 
-def pprint(obj: Any) -> None:
-    """
-    Pretty-print in color.
-    """
-    if hasattr(obj, "to_dict"):
-        obj = obj.to_dict()
-    print(highlight(pformat(obj), PythonLexer(), Terminal256Formatter()), end="")
+def delete_all_assistants(*, ask_for_confirmation: bool = True):
+    client = OpenAI()
+    assistants = client.beta.assistants.list()
+    assistants = assistants.data
+    _LOG.info(assistants_to_str(assistants))
+    if ask_for_confirmation:
+        hdbg.dfatal("Stopping")
+    for assistant in assistants:
+        _LOG.info("Deleting assistant %s", assistant)
+        client.beta.assistants.delete(assistant.id)
+
+
+
