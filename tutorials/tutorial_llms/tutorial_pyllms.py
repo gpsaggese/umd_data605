@@ -501,5 +501,29 @@ print(messages)
 # print(message_content.value)
 # print("\n".join(citations))
 # -
+# ## Query using library.
+
+# ## 
 
 
+
+# Force reloading a module.
+import hopenai
+from importlib import reload
+reload(hopenai)
+
+assistant = hopenai.get_coding_style_assistant()
+
+hopenai.pprint(assistant)
+
+
+question = "What is DRY?"
+messages = hopenai.get_query_assistant(assistant, question)
+
+print(messages)
+
+type(messages[0])
+
+hopenai.pprint(messages[0])
+
+print(hopenai.response_to_txt(messages[0]))
