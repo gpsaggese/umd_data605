@@ -14,10 +14,11 @@ print_docker_vars
 
 run "docker image ls $FULL_IMAGE_NAME"
 
-CONTAINER_NAME=$IMAGE_NAME
+CONTAINER_NAME=${IMAGE_NAME}_bash
+PORT=8889
 cmd="docker run --rm -ti \
     --name $CONTAINER_NAME \
-    -p 8888:8888 -p 5432:5432 \
+    -p $PORT:$PORT \
     -v $(pwd):/data \
     $FULL_IMAGE_NAME"
 run $cmd
