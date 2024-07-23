@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 import hopenai
 
+# ##############################################################################
 
 class TestGetCompletion(unittest.TestCase):
 
@@ -56,5 +57,12 @@ class TestGetCompletion(unittest.TestCase):
         self.assertEqual(result, exp_result)
 
 
-if __name__ == '__main__':
-    unittest.main()
+# ##############################################################################
+
+
+class TestAssistant(unittest.TestCase):
+
+    def test_serialize(self):
+        
+
+
