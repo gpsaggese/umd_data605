@@ -63,6 +63,6 @@ class TestGetCompletion(unittest.TestCase):
 class TestAssistant(unittest.TestCase):
 
     def test_serialize(self):
-        
+
 
 

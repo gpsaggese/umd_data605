@@ -1,7 +1,9 @@
 #!/bin/bash
 #
-# Create links from common to the current tutorial dir.
-#
+# Copy the common files (excluding `docker_name.sh`)
+#   from a tutorial dir
+#   to the common central location (i.e., `docker_common`)
+# 
 
 set -e
 #set -x
@@ -13,15 +15,19 @@ if [[ "$CURRENT_DIR" != *"tutorial_"* ]]; then
     exit -1
 fi;
 
+
+#FILES=$(find . -name "docker_*.sh" -depth 1 | grep -v docker_name.sh)
 FILES="docker_bash.sh docker_build.sh docker_clean.sh docker_cmd.sh docker_exec.sh docker_jupyter.sh docker_push.sh"
 # Files in the Docker container.
 FILES="$FILES bashrc etc_sudoers install_jupyter_extensions.sh run_jupyter.sh version.sh"
 
 for FILE in $FILES
 do
-    echo "Creating link for '$FILE'"
-    if [[ -f $FILE ]]; then
-        rm -f $FILE
+    echo "Copying '$FILE' to docker_common"
+    if [ -L "$FILE" ]; then
+        # $FILE is a symbolic link. Remove it.
+        unlink $FILE
     fi;
-    ln -s ../../docker_common/$FILE .
+    cp -f ../../docker_common/$FILE $FILE
+    chmod +w $FILE
 done;

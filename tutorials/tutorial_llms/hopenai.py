@@ -68,7 +68,8 @@ def get_completion(user: str, *, system: str = "",
         ],
         **create_kwargs
     )
-    return completion.choices[0].message.content
+    #return completion.choices[0].message.content
+    return completion
 
 
 def _extract(obj: Dict[str, Any], keys: List[str]) -> Dict[str, Any]:
