@@ -46,6 +46,27 @@ version.sh
 
 #
 
+Problem:
+- There are several files that should be shared across tutorials (`common`) and
+  others that need to customized for each tutorial
+
+Solution:
+- We share common files across tutorials using symbolic links
+  - In this way a change in one file benefit every tutorial
+- We don't allow to modify the common files directly
+  - Use `chmod -w` on `common` and the symbolic links
+- At the same time sometimes we need to change files locally without affecting
+  the common ones
+  - In this case we replace links with copies
+  - Change / evolve the code
+  - Either
+    - Leave the code copied/pasted/modified
+    - Copy the code to `common` and create links after unit testing
+- We need some unit tests to make sure nothing is broken
+
+- We use a few scripts to make local copies of the shared files in a specific
+  tutorial
+
 To update the common scripts
 > /Users/saggese/src/umd_data605_1/admin_scripts/cp_docker_files.sh
 

@@ -42,4 +42,3 @@
 
 Many thanks to Prof Alan Sussman and Prof Amol Deshpande for helping with the class
 material.
-
