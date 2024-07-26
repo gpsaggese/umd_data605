@@ -1,5 +1,6 @@
 import sys
-sys.path.append('/data')
+
+sys.path.append("/data")
 
 import datetime
 import logging
@@ -16,7 +17,7 @@ import helpers.hlogging as hlogging
 
 _LOG = logging.getLogger(__name__)
 
-#hdbg.set_logger_verbosity(logging.DEBUG)
+# hdbg.set_logger_verbosity(logging.DEBUG)
 
 _LOG.debug = _LOG.info
 
@@ -51,7 +52,9 @@ def pprint(obj: Any) -> None:
     """
     if hasattr(obj, "to_dict"):
         obj = obj.to_dict()
-    print(highlight(pformat(obj), PythonLexer(), Terminal256Formatter()), end="")
+    print(
+        highlight(pformat(obj), PythonLexer(), Terminal256Formatter()), end=""
+    )
 
 
 # #############################################################################
@@ -60,23 +63,34 @@ def pprint(obj: Any) -> None:
 def get_edgar_example():
     #!curl https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm
     import requests
+
     # URL of the PDF you want to download.
-    pdf_url = 'https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm'
+    pdf_url = "https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm"
     # Send a GET request to the URL.
-    response = requests.get(pdf_url, headers={"User-Agent": "Mozilla/5.0 (Company info@company.com)"})
+    response = requests.get(
+        pdf_url,
+        headers={"User-Agent": "Mozilla/5.0 (Company info@company.com)"},
+    )
     # Check if the request was successful.
     if response.status_code == 200:
         # Write the content of the response to a PDF file.
-        with open('document.pdf', 'wb') as file:
+        with open("document.pdf", "wb") as file:
             file.write(response.content)
         print("Download completed!")
     else:
         print(f"Failed to download PDF. Status code: {response.status_code}")
 
+
 # #############################################################################
 
-def get_completion(user: str, *, system: str = "",
-                   model: Optional[str] = None, **create_kwargs) -> str:
+
+def get_completion(
+    user: str,
+    *,
+    system: str = "",
+    model: Optional[str] = None,
+    **create_kwargs,
+) -> str:
     model = _MODEL if model is None else model
     client = OpenAI()
     completion = client.chat.completions.create(
@@ -85,9 +99,9 @@ def get_completion(user: str, *, system: str = "",
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ],
-        **create_kwargs
+        **create_kwargs,
     )
-    #return completion.choices[0].message.content
+    # return completion.choices[0].message.content
     return completion
 
 
@@ -114,12 +128,13 @@ def file_to_info(file: openai.types.file_object.FileObject) -> Dict[str, Any]:
     hdbg.dassert_isinstance(assistant, openai.types.file_object.FileObject)
     keys = ["id", "created_at", "filename"]
     file_tmp = _extract(file, keys)
-    file_tmp["created_at"] = datetime.datetime.fromtimestamp(file_tmp[
-                                                          "created_at"])
+    file_tmp["created_at"] = datetime.datetime.fromtimestamp(
+        file_tmp["created_at"]
+    )
     return file_tmp
 
 
-def files_to_str(files : List[openai.types.file_object.FileObject]) -> str:
+def files_to_str(files: List[openai.types.file_object.FileObject]) -> str:
     txt: List[str] = []
     txt.append("Found %s files" % len(files))
     for file in files:
@@ -162,13 +177,15 @@ def delete_all_files(*, ask_for_confirmation: bool = True):
 #  'top_p': 1.0}
 #
 
+
 def get_coding_style_assistant(
-        assistant_name: str,
-        instructions: str,
-        vector_store_name: str,
-        file_paths: List[str],
-        *,
-        model: Optional[str] = None) -> Assistant:
+    assistant_name: str,
+    instructions: str,
+    vector_store_name: str,
+    file_paths: List[str],
+    *,
+    model: Optional[str] = None,
+) -> Assistant:
     model = _MODEL if model is None else model
     client = OpenAI()
     # TODO(gp): If the assistant already exists, return it.
@@ -198,7 +215,9 @@ def get_coding_style_assistant(
     #
     assistant = client.beta.assistants.update(
         assistant_id=assistant.id,
-        tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
+        tool_resources={
+            "file_search": {"vector_store_ids": [vector_store.id]}
+        },
     )
     return assistant
 
@@ -224,13 +243,15 @@ def get_query_assistant(assistant: Assistant, question: str) -> List[Message]:
         thread_id=thread.id, assistant_id=assistant.id
     )
     messages = list(
-        client.beta.threads.messages.list(thread_id=thread.id, run_id=run.id))
+        client.beta.threads.messages.list(thread_id=thread.id, run_id=run.id)
+    )
     return messages
 
 
 def dassert_hasattr(obj, attr):
-    hdbg.dassert(hasattr(obj, attr), f"Object\n'%s'\nhas no attribute '%s'",
-                 obj, attr)
+    hdbg.dassert(
+        hasattr(obj, attr), f"Object\n'%s'\nhas no attribute '%s'", obj, attr
+    )
 
 
 def assistant_to_info(assistant):
@@ -240,7 +261,9 @@ def assistant_to_info(assistant):
     # for key in keys:
     #     dassert_hasattr(assistant, key)
     #     assistant_info[key] = getattr(assistant, key)
-    assistant_info["created_at"] = datetime.datetime.fromtimestamp(assistant_info["created_at"])
+    assistant_info["created_at"] = datetime.datetime.fromtimestamp(
+        assistant_info["created_at"]
+    )
     return assistant_info
 
 
@@ -263,6 +286,3 @@ def delete_all_assistants(*, ask_for_confirmation: bool = True):
     for assistant in assistants:
         _LOG.info("Deleting assistant %s", assistant)
         client.beta.assistants.delete(assistant.id)
-
-
-

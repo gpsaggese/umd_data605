@@ -1,5 +1,6 @@
 import hopenai
 
+
 def get_code_snippet1() -> str:
     """
     Code snippet without docstring.
@@ -62,7 +63,7 @@ def remove_code_delimiters(text):
     :return: The text with the code delimiters removed.
     """
     # Replace the ```python and ``` delimiters with empty strings
-    text = text.replace('```python', '').replace('```', '')
+    text = text.replace("```python", "").replace("```", "")
     return text.strip()
 
 
@@ -111,6 +112,7 @@ Add type hints to the function passed.
     ret = remove_code_delimiters(ret)
     return ret
 
+
 import ast
 import textwrap
 
@@ -142,22 +144,23 @@ import re
 
 def remove_docstring(code):
     # Remove multi-line comments (docstrings)
-    code = re.sub(r'"""[\s\S]*?"""', '', code)
-    code = re.sub(r"'''[\s\S]*?'''", '', code)
+    code = re.sub(r'"""[\s\S]*?"""', "", code)
+    code = re.sub(r"'''[\s\S]*?'''", "", code)
     # Remove empty lines.
-    code = '\n'.join(line for line in code.splitlines() if line.strip())
+    code = "\n".join(line for line in code.splitlines() if line.strip())
     return code
 
 
 def remove_comments(code):
     # Remove single-line comments.
-    code = re.sub(r'^\s*#.*', '', code)
+    code = re.sub(r"^\s*#.*", "", code)
     # Remove empty lines.
-    code = '\n'.join(line for line in code.splitlines() if line.strip())
+    code = "\n".join(line for line in code.splitlines() if line.strip())
     return code
 
 
 import helpers.hio as hio
+
 
 def get_functions():
     txt = hio.from_file("helpers/hdbg.py")
@@ -218,7 +221,8 @@ Now, perform the task on this new input.
     """
     return text
 
-#print("\n".join(examples))[:100]
+
+# print("\n".join(examples))[:100]
 
 # # Example usage
 # code = '''

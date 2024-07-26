@@ -23,15 +23,12 @@ _LOG = logging.getLogger(__name__)
 
 def _parse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     hparser.add_input_output_args(parser)
     parser.add_argument(
-        "-t",
-        "--transform",
-        required=True,
-        type=str,
-        help="Type of transform"
+        "-t", "--transform", required=True, type=str, help="Type of transform"
     )
     hparser.add_verbosity_arg(parser)
     return parser
@@ -39,8 +36,8 @@ def _parse() -> argparse.ArgumentParser:
 
 def _main(parser: argparse.ArgumentParser) -> None:
     args = parser.parse_args()
-    #print("cmd line: %s" % hdbg.get_command_line())
-    #hdbg.init_logger(verbosity=args.log_level, use_exec_path=True)
+    # print("cmd line: %s" % hdbg.get_command_line())
+    # hdbg.init_logger(verbosity=args.log_level, use_exec_path=True)
     # Parse files.
     in_file_name, out_file_name = hparser.parse_input_output_args(args)
     _ = in_file_name, out_file_name
