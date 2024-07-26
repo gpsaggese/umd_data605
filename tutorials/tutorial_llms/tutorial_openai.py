@@ -127,12 +127,26 @@ ret = snippets.add_docstring_one_shot_learning1(in_out[idx][1])
 #ret = snippets.add_comments_one_shot_learning1(in_out[idx][1])
 print(ret)
 
-print(snippets.remove_code_delimiters(ret))
+#in_outs = snippets.get_in_out_functions("code_snippets1", "remove_comments")
+in_outs = snippets.get_in_out_functions("code_snippets1", "remove_docstring")
+snippets.in_out_to_files(in_outs)
 
-print(snippets.print_in_out(in_out[7]))
+function_tag = "code_snippets1"
+transform_tag = "remove_docstring"
+prompt_tag = "docstring"
+in_outs = snippets.eval_prompt(function_tag, transform_tag, prompt_tag) 
 
-system = snippets.build_few_shot_learning()
-print(system)
+print(snippets.in_outs_to_str(in_outs))
+
+import tqdm
+in_outs = snippets.get_in_out_functions(function_tag, transform_tag)
+for in_out in tqdm.tqdm(in_outs):
+    in_out.act = snippets.apply_prompt(prompt_tag, in_out.in_)
+    print(in_out.act)
+
+print(in_outs[0])
+
+in_out_to_files(in_out)
 
 # # Assistant
 

@@ -1,6 +1,4 @@
-import sys
-
-sys.path.append("/data")
+import sys; sys.path.append("/data")
 
 import datetime
 import logging
@@ -22,6 +20,9 @@ _LOG = logging.getLogger(__name__)
 _LOG.debug = _LOG.info
 
 _MODEL = "gpt-4o-mini"
+
+
+_TEMPERATURE = 0.1
 
 # #############################################################################
 
@@ -81,6 +82,15 @@ def get_edgar_example():
         print(f"Failed to download PDF. Status code: {response.status_code}")
 
 
+def _extract(obj: Dict[str, Any], keys: List[str]) -> Dict[str, Any]:
+    hdbg.dassert_isinstance(obj, dict)
+    obj_tmp = {}
+    for key in keys:
+        hdbg.dassert_in(key, obj)
+        obj_tmp[key] = getattr(obj, key)
+    return obj_tmp
+
+
 # #############################################################################
 
 
@@ -105,13 +115,9 @@ def get_completion(
     return completion
 
 
-def _extract(obj: Dict[str, Any], keys: List[str]) -> Dict[str, Any]:
-    hdbg.dassert_isinstance(obj, dict)
-    obj_tmp = {}
-    for key in keys:
-        hdbg.dassert_in(key, obj)
-        obj_tmp[key] = getattr(obj, key)
-    return obj_tmp
+# #############################################################################
+# Assistants
+# #############################################################################
 
 
 # [FileObject(id='file-ZSexZm5C9t00NYMBFjQUDzUo',
@@ -175,7 +181,6 @@ def delete_all_files(*, ask_for_confirmation: bool = True):
 #  'tool_resources': {'file_search': {'vector_store_ids': ['vs_CyJx606jziuN8L5WgSwsuzPd']}},
 #  'tools': [{'type': 'file_search'}],
 #  'top_p': 1.0}
-#
 
 
 def get_coding_style_assistant(

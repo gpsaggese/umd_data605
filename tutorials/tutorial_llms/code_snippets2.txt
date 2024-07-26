@@ -1,0 +1,120 @@
+def listdir(
+    dir_name: str,
+    pattern: str,
+    only_files: bool,
+    use_relative_paths: bool,
+    *,
+    exclude_git_dirs: bool = True,
+    maxdepth: Optional[int] = None,
+) -> List[str]:
+    """
+    Find all files and subdirectories under `directory` that match `pattern`.
+
+    :param dir_name: path to the directory where to look for files
+    :param pattern: pattern to match a filename against (e.g., `*.py`)
+    :param only_files: look for only files instead of both files and directories
+    :param use_relative_paths: remove `dir_name` from path
+    :param exclude_git_dirs: skip `.git` dirs
+    :param maxdepth: limit the depth of directory traversal
+    """
+    hdbg.dassert_dir_exists(dir_name)
+    cmd = [f"find {dir_name}", f'-name "{pattern}"']
+    if maxdepth is not None:
+        cmd.append(f'-maxdepth "{maxdepth}"')
+    if only_files:
+        cmd.append("-type f")
+    if exclude_git_dirs:
+        cmd.append(r'-not -path "*/\.git/*"')
+    cmd = " ".join(cmd)
+    _, output = hsystem.system_to_string(cmd)
+    paths = [path for path in output.split("\n") if path != ""]
+    _LOG.debug("Found %s paths in %s", len(paths), dir_name)
+    _LOG.debug("\n".join(paths))
+    if use_relative_paths:
+        paths = [os.path.relpath(path, start=dir_name) for path in paths]
+    return path
+
+
+def keep_python_files(
+    file_names: List[str], exclude_paired_jupytext: bool
+) -> List[str]:
+    """
+    Return a list with all Python file names (i.e., with the `py` extension).
+
+    :param file_names: list of file names to process
+    :param exclude_paired_jupytext: exclude Python file that are associated to
+        notebooks (i.e., that have a corresponding `.ipynb` file)
+    """
+    hdbg.dassert_isinstance(file_names, list)
+    # Check all the files.
+    py_file_names = []
+    for file_name in file_names:
+        if file_name.endswith(".py"):
+            if exclude_paired_jupytext:
+                # Include only the non-paired Python files.
+                is_paired = is_paired_jupytext_python_file(file_name)
+                add = not is_paired
+            else:
+                # Include all the Python files.
+                add = True
+        else:
+            add = False
+        _LOG.debug("file_name='%s' -> add='%s'", file_name, add)
+        if add:
+            py_file_names.append(file_name)
+    _LOG.debug("Found %s python files", len(py_file_names))
+    return py_file_name
+
+
+def create_dir(
+    dir_name: str,
+    incremental: bool,
+    *,
+    abort_if_exists: bool = False,
+    ask_to_delete: bool = False,
+    backup_dir_if_exists: bool = False,
+) -> None:
+    """
+    Create a directory.
+
+    :param incremental: if False then the directory is deleted and re-
+        created, otherwise the same directory is reused as it is
+    :param abort_if_exists: abort if the target directory already exists
+    :param ask_to_delete: if it is not incremental and the dir exists,
+        asks before deleting. This option is used when we want to start
+        with a clean dir (i.e., incremental=False) but, at the same
+        time, we want to make sure that the user doesn't want to delete
+        the content of the dir. Another approach is to automatically
+        rename the old dir with backup_dir_if_exists.
+    :param backup_dir_if_exists: if the target dir already exists, then
+        rename it using a timestamp (e.g., dir_20231003_080000) and
+        create a new target dir
+    """
+    if backup_dir_if_exists:
+        if not os.path.exists(dir_name):
+            # Create new dir.
+            _LOG.debug("Creating dir '%s'", dir_name)
+            _create_dir(dir_name, incremental=True)
+        else:
+            _LOG.debug("Dir '%s' already exists", dir_name)
+            # Get dir timestamp.
+            dir_timestamp = os.path.getmtime(dir_name)
+            dir_datetime = datetime.datetime.fromtimestamp(dir_timestamp)
+            # Build new dir name with timestamp.
+            dir_name_new = dir_name + "." + dir_datetime.strftime("%Y%m%d_%H%M%S")
+            # Rename dir.
+            if not os.path.exists(dir_name_new):
+                _LOG.warning("Renaming dir '%s' -> '%s'", dir_name, dir_name_new)
+                os.rename(dir_name, dir_name_new)
+            else:
+                _LOG.warning("Dir '%s' already exists", dir_name_new)
+            # Create new dir.
+            _LOG.debug("Creating dir '%s'", dir_name)
+            _create_dir(dir_name, incremental=True)
+    else:
+        _create_dir(
+            dir_name,
+            incremental,
+            abort_if_exists=abort_if_exists,
+            ask_to_delete=ask_to_delete,
+        )

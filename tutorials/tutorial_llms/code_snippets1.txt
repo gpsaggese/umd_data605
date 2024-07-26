@@ -1,0 +1,11 @@
+def test(
+    dir_name: str,
+) -> str:
+    """
+    Test.
+
+    :param dir_name: path to the directory where to look for files
+    """
+    _ = dir_name, pattern
+    # Hello.
+    return "test"

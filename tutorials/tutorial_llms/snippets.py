@@ -1,5 +1,10 @@
 import hopenai
+import logging
+from typing import Any, Dict, List, Tuple, Optional
 
+import helpers.hdbg as hdbg
+
+_LOG = logging.getLogger(__name__)
 
 def get_code_snippet1() -> str:
     """
@@ -55,7 +60,18 @@ def get_coding_style_assistant(
     return code_snippet
 
 
-def remove_code_delimiters(text):
+# #############################################################################
+# Manipulate code.
+# #############################################################################
+
+
+import ast
+import textwrap
+import re
+import helpers.hio as hio
+
+
+def remove_code_delimiters(text: str) -> str:
     """
     Remove ```python and ``` delimiters from a given text.
 
@@ -67,7 +83,149 @@ def remove_code_delimiters(text):
     return text.strip()
 
 
-def add_comments_one_shot_learning1(user):
+def remove_docstring(code: str) -> str:
+    # Remove multi-line comments (docstrings)
+    code = re.sub(r'"""[\s\S]*?"""', "", code)
+    code = re.sub(r"'''[\s\S]*?'''", "", code)
+    # Remove empty lines.
+    code = "\n".join(line for line in code.splitlines() if line.strip())
+    return code
+
+
+def remove_comments(code: str) -> str:
+    # Remove single-line comments.
+    code_tmp = []
+    for line in code.split("\n"):
+        if not re.search(r"^\s*\#.*", line):
+            code_tmp.append(line)
+    code = "\n".join(code_tmp)
+    return code
+
+
+def split_code_by_function(code: str) -> List[str]:
+    # Parse the code into an AST
+    tree = ast.parse(code)
+    # Initialize a list to store function snippets
+    function_snippets = []
+    # Iterate through the AST nodes
+    for node in ast.iter_child_nodes(tree):
+        if isinstance(node, ast.FunctionDef):
+            # Get the source code for the function
+            function_code = ast.get_source_segment(code, node)
+            # Dedent the function code
+            function_code = textwrap.dedent(function_code)
+            # Add the function code to our list
+            function_snippets.append(function_code)
+    return function_snippets
+
+
+def get_functions(tag: str) -> List[str]:
+    # Read code.
+    if tag == "hdbg":
+        txt = hio.from_file("helpers/hdbg.py")
+    elif tag == "code_snippets1":
+        txt = hio.from_file("code_snippets1.txt")
+    elif tag == "code_snippets2":
+        txt = hio.from_file("code_snippets2.txt")
+    else:
+        raise ValueError(f"Invalid tag='{tag}'")
+    #
+    functions = split_code_by_function(txt)
+    return functions
+
+
+# #############################################################################
+
+
+from dataclasses import dataclass
+
+
+@dataclass
+class InOut:
+    in_: str
+    out: str
+    act: str
+
+    def __str__(self) -> str:
+        text = ""
+        text += "\nInput:\n"
+        text += f"'\n{self.in_}\n'"
+        text += "\nOutput:\n"
+        text += f"'\n{self.out}\n'"
+        return text
+
+
+# TODO(gp): -> in_out_to_gpt_text
+def get_in_out_example(idx: int, func: str) -> str:
+    text = ""
+    func_no_comments = remove_comments(func)
+    return text
+
+
+def get_in_out_functions(function_tag: str, transform_tag: str) -> List[InOut]:
+    # Get code.
+    functions = get_functions(function_tag)
+    # Pick transform function.
+    if transform_tag == "remove_comments":
+        transform = remove_comments
+    elif transform_tag == "remove_docstring":
+        transform = remove_docstring
+    else:
+        raise ValueError(f"Invalid transform_tag='{transform_tag}'")
+    # Convert in input / output examples.
+    in_outs = []
+    for func in functions:
+        in_ = transform(func)
+        out = func
+        in_outs.append(InOut(in_, out, ""))
+    return in_outs
+
+
+def _functions_to_file(funcs: List[str], file_name: str) -> None:
+    hdbg.dassert_isinstance(funcs, list)
+    txt = "\n\n".join(funcs)
+    hio.to_file(file_name, txt)
+
+
+def in_outs_to_files(in_outs: List[InOut]) -> None:
+    hdbg.dassert_isinstance(in_outs, list)
+    ins = []
+    outs = []
+    acts = []
+    for in_out in in_outs:
+        ins.append(in_out.in_)
+        outs.append(in_out.out)
+        acts.append(in_out.act)
+    _LOG.info("Saving results ...")
+    _functions_to_file(ins, "in.txt")
+    _functions_to_file(outs, "out.txt")
+    _functions_to_file(acts, "act.txt")
+
+
+def in_outs_to_str(in_outs: List[InOut]) -> str:
+    hdbg.dassert_isinstance(in_outs, list)
+    ins = []
+    outs = []
+    acts = []
+    for in_out in in_outs:
+        ins.append(in_out.in_)
+        outs.append(in_out.out)
+        acts.append(in_out.act)
+    ret = ""
+    ret += "\n\n### in.txt ###\n"
+    ret += "\n\n".join(ins)
+    ret += "\n\n### out.txt ###\n"
+    ret += "\n\n".join(outs)
+    ret += "\n\n### act.txt ###\n"
+    ret += "\n\n".join(acts)
+    return ret
+
+# #############################################################################
+# Prompts.
+# #############################################################################
+
+
+def add_comments_one_shot_learning1(user: str) -> str:
     system = """
 You are a proficient Python coder.
 Given the Python code passed below, 
@@ -86,7 +244,7 @@ Comments should be in imperative form, a full English phrase, and end with a per
     return ret
 
 
-def add_docstring_one_shot_learning1(user):
+def add_docstring_one_shot_learning1(user: str) -> str:
     system = """
 You are a proficient Python coder.
 Add a docstring to the function passed.
@@ -102,7 +260,7 @@ To describe the parameters use the REST style, which requires each parameter to 
     return ret
 
 
-def add_type_hints(user):
+def add_type_hints(user: str) -> str:
     system = """
 You are a proficient Python coder.
 Add type hints to the function passed.
@@ -113,96 +271,8 @@ Add type hints to the function passed.
     return ret
 
 
-import ast
-import textwrap
-
-
-def split_code_by_function(code):
-    # Parse the code into an AST
-    tree = ast.parse(code)
-
-    # Initialize a list to store function snippets
-    function_snippets = []
-
-    # Iterate through the AST nodes
-    for node in ast.iter_child_nodes(tree):
-        if isinstance(node, ast.FunctionDef):
-            # Get the source code for the function
-            function_code = ast.get_source_segment(code, node)
-
-            # Dedent the function code
-            function_code = textwrap.dedent(function_code)
-
-            # Add the function code to our list
-            function_snippets.append(function_code)
-
-    return function_snippets
-
-
-import re
-
-
-def remove_docstring(code):
-    # Remove multi-line comments (docstrings)
-    code = re.sub(r'"""[\s\S]*?"""', "", code)
-    code = re.sub(r"'''[\s\S]*?'''", "", code)
-    # Remove empty lines.
-    code = "\n".join(line for line in code.splitlines() if line.strip())
-    return code
-
-
-def remove_comments(code):
-    # Remove single-line comments.
-    code = re.sub(r"^\s*#.*", "", code)
-    # Remove empty lines.
-    code = "\n".join(line for line in code.splitlines() if line.strip())
-    return code
-
-
-import helpers.hio as hio
-
-
-def get_functions():
-    txt = hio.from_file("helpers/hdbg.py")
-    functions = split_code_by_function(txt)
-    return functions
-
-
-def get_in_out_functions():
-    in_out = []
-    functions = get_functions()
-    for func in functions:
-        in_out.append((remove_comments(func), func))
-    return in_out
-
-
-def print_in_out(in_out):
-    text = ""
-    text += "\nInput:\n"
-    text += f"'''\n{in_out[0]}\n'''"
-    text += "\nOutput:\n"
-    text += f"'''\n{in_out[1]}\n'''"
-    return text
-
-
-def get_in_out_example(idx, func):
-    text = ""
-    func_no_comments = remove_comments(func)
-    text += f"\n\nExample {idx}\n"
-    text += "\nInput:\n"
-    text += f"'''\n{func_no_comments}\n'''"
-    text += "\nOutput:\n"
-    text += f"'''\n{func}\n'''"
-    return text
-
-
-def build_few_shot_learning():
-    functions = get_functions()
-
-    # #print(functions[2])
-    # func_no_comments = snippets.remove_comments(functions[2])
-    # print(func_no_comments)
-
+def build_few_shot_learning() -> str:
+    functions = get_functions1()
     text = """
 You are a proficient Python coder.
 
@@ -222,26 +292,38 @@ Now, perform the task on this new input.
     return text
 
 
-# print("\n".join(examples))[:100]
+def apply_prompt(prompt_tag: str, txt: str) -> str:
+    if prompt_tag == "comment":
+        txt = add_comments_one_shot_learning1(txt)
+    elif prompt_tag == "docstring":
+        txt = add_docstring_one_shot_learning1(txt)
+    elif prompt_tag == "typehints":
+        txt = add_type_hints(txt)
+    else:
+        raise ValueError("Invalid prompt_tag=%s" % prompt_tag)
+    return txt
 
-# # Example usage
-# code = '''
-# def function1():
-#     print("This is function 1")
-#
-# def function2(arg):
-#     return arg * 2
-#
-# def function3():
-#     """This is a docstring"""
-#     a = 1
-#     b = 2
-#     return a + b
-# '''
-#
-# snippets = split_code_by_function(code)
-#
-# for i, snippet in enumerate(snippets, 1):
-#     print(f"Function {i}:")
-#     print(snippet)
-#     print("-" * 40)
+
+# #############################################################################
+# Eval.
+# #############################################################################
+
+import tqdm
+
+def eval_prompt(function_tag: str, transform_tag: str, prompt_tag: str, *,
+                save_to_file: bool = True,
+                ) -> List[
+    InOut]:
+    in_outs = get_in_out_functions(function_tag, transform_tag)
+    _LOG.info("Processing %s examples", len(in_outs))
+    in_outs_tmp = []
+    for in_out in tqdm.tqdm(in_outs):
+        txt = apply_prompt(prompt_tag, in_out.in_)
+        hdbg.dassert_ne(txt, "")
+        in_out.act = txt
+        in_outs_tmp.append(in_out)
+    if save_to_file:
+        in_outs_to_files(in_outs_tmp)
+    return in_outs_tmp
+
+
