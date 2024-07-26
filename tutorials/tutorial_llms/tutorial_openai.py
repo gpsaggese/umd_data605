@@ -13,6 +13,8 @@
 #     name: python3
 # ---
 
+# # Import
+
 # +
 # #!pip install openai
 # -
@@ -21,9 +23,27 @@
 # %load_ext autoreload
 # %autoreload 2
 
-import hopenai
+# +
+import pprint
+import logging
 
-# ## Chat
+import hopenai
+import helpers.hdbg as hdbg
+
+hdbg.init_logger()
+
+hdbg.set_logger_verbosity(logging.INFO)
+# -
+
+import os; os.environ["OPENAI_API_KEY"] = ""
+
+if False:
+    # Force reloading a module.
+    import hopenai
+    from importlib import reload
+    reload(hopenai)
+
+# # Chat
 
 # +
 from openai import OpenAI
@@ -96,17 +116,39 @@ print(type(response))
 
 hopenai.get_completion("hello")
 
+import snippets
 
-# ## Assistant
+in_out = snippets.get_in_out_functions()
 
-def response_to_txt(response):
-    import openai
-    
-    if isinstance(response, openai.types.chat.chat_completion.ChatCompletion):
-        return response.choices[0].message.content
-    elif isinstance(messages, openai.pagination.SyncCursorPage):
-        return response.data[0].content[0].text.value
+idx = 6
+print(in_out[idx][1])
 
+#snippets.add_docstring_one_shot_learning1(in_out[0][1])
+snippets.add_comments_one_shot_learning1(in_out[idx][1])
+
+print(snippets.print_in_out(in_out[7]))
+
+system = snippets.build_few_shot_learning()
+print(system)
+
+# # Assistant
+
+# +
+system = """You are a proficient Python coder and write English very well. 
+Given the Python code passed below, improve or add comments to the code.
+Each comment should be in imperative form, a full English phrase, and end with a period.
+Comments must be for every logical chunk of 4 or 5 lines of Python code.
+Do not comment every single line of code and especially logging statements.
+"""
+
+# There should be no empty line in the code.
+
+user1 = snippets.get_code_snippet2()
+
+response = hopenai.get_completion(user, system=system)
+
+print(hopenai.response_to_txt(response))
+# -
 
 # ### Assistant Quickstart
 
@@ -296,25 +338,29 @@ assistant = client.beta.assistants.create(
 )
 
 # +
-# #!curl https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm
+# # #!curl https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm
 
-import requests
+# import requests
 
-# URL of the PDF you want to download
-pdf_url = 'https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm'
+# # URL of the PDF you want to download
+# pdf_url = 'https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm'
 
-# Send a GET request to the URL
-response = requests.get(pdf_url, headers={"User-Agent": "Mozilla/5.0 (Company info@company.com)"})
+# # Send a GET request to the URL
+# response = requests.get(pdf_url, headers={"User-Agent": "Mozilla/5.0 (Company info@company.com)"})
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Write the content of the response to a PDF file
-    with open('document.pdf', 'wb') as file:
-        file.write(response.content)
-    print("Download completed!")
-else:
-    print(f"Failed to download PDF. Status code: {response.status_code}")
+# # Check if the request was successful
+# if response.status_code == 200:
+#     # Write the content of the response to a PDF file
+#     with open('document.pdf', 'wb') as file:
+#         file.write(response.content)
+#     print("Download completed!")
+# else:
+#     print(f"Failed to download PDF. Status code: {response.status_code}")
+
+hopenai.get_edgar_example()
 # -
+
+
 
 # !ls -l document.pdf
 
@@ -458,12 +504,19 @@ print(messages)
 # -
 # ## Query using library.
 
-# Force reloading a module.
-import hopenai
-from importlib import reload
-reload(hopenai)
+# +
+assistant_name = "coder_assistant"
+instructions = "You are an expert Python coder. Use you knowledge base to answer questions about how to write code."
 
-assistant = hopenai.get_coding_style_assistant()
+vector_store_name = "Coding style"
+file_paths = ["all.coding_style.how_to_guide.md"]
+
+assistant = hopenai.get_coding_style_assistant(
+    assistant_name,
+    instructions,
+    vector_store_name,
+    file_paths)
+# -
 
 hopenai.pprint(assistant)
 
@@ -471,10 +524,6 @@ hopenai.pprint(assistant)
 #question = "What is DRY?"
 question = "Should one pay the technical debt?"
 messages = hopenai.get_query_assistant(assistant, question)
-
-print(messages)
-
-type(messages[0])
 
 hopenai.pprint(messages[0])
 
@@ -496,7 +545,7 @@ print(type(files[0]))
 
 files = client.files.list().data
 
-# ## Prompt engineering
+# # Prompt engineering
 
 # +
 system = """

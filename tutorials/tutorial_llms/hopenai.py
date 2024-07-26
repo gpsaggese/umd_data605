@@ -1,25 +1,22 @@
 import sys
 sys.path.append('/data')
 
-import openai
-from openai import OpenAI
+import datetime
+import logging
+import os
 from typing import Any, Dict, List, Optional
 
-import helpers.hdbg as hdbg
-import datetime
-import os
-
-import logging
-
+import openai
+from openai import OpenAI
 from openai.types.beta.assistant import Assistant
 from openai.types.beta.threads.message import Message
 
+import helpers.hdbg as hdbg
+import helpers.hlogging as hlogging
+
 _LOG = logging.getLogger(__name__)
 
-#
-#import helpers.hlogging as hlogging
 #hdbg.set_logger_verbosity(logging.DEBUG)
-hdbg.set_logger_verbosity(logging.INFO)
 
 _LOG.debug = _LOG.info
 
@@ -54,6 +51,26 @@ def pprint(obj: Any) -> None:
         obj = obj.to_dict()
     print(highlight(pformat(obj), PythonLexer(), Terminal256Formatter()), end="")
 
+
+# #############################################################################
+
+
+def get_edgar_example():
+    #!curl https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm
+    import requests
+    # URL of the PDF you want to download.
+    pdf_url = 'https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm'
+    # Send a GET request to the URL.
+    response = requests.get(pdf_url, headers={"User-Agent": "Mozilla/5.0 (Company info@company.com)"})
+    # Check if the request was successful.
+    if response.status_code == 200:
+        # Write the content of the response to a PDF file.
+        with open('document.pdf', 'wb') as file:
+            file.write(response.content)
+        print("Download completed!")
+    else:
+        print(f"Failed to download PDF. Status code: {response.status_code}")
+
 # #############################################################################
 
 def get_completion(user: str, *, system: str = "",
@@ -76,7 +93,6 @@ def _extract(obj: Dict[str, Any], keys: List[str]) -> Dict[str, Any]:
     hdbg.dassert_isinstance(obj, dict)
     obj_tmp = {}
     for key in keys:
-        #dassert_hasattr(obj, key)
         hdbg.dassert_in(key, obj)
         obj_tmp[key] = getattr(obj, key)
     return obj_tmp
@@ -144,34 +160,42 @@ def delete_all_files(*, ask_for_confirmation: bool = True):
 #  'top_p': 1.0}
 #
 
-def get_coding_style_assistant():
+def get_coding_style_assistant(
+        assistant_name: str,
+        instructions: str,
+        vector_store_name: str,
+        file_paths: List[str],
+        *,
+        model: str = "gpt-4o") -> Assistant:
     client = OpenAI()
-    instructions = "You are an expert Python coder. Use you knowledge base to answer questions about how to write code."
-    model = "gpt-4o"
+    # TODO(gp): If the assistant already exists, return it.
     assistant = client.beta.assistants.create(
-        name="Coding style expert",
+        name=assistant_name,
         instructions=instructions,
         model=model,
         tools=[{"type": "file_search"}],
     )
+    # TODO(gp): If the vector store already exists, return it.
+    _LOG.debug("Creating vector store ...")
     # Create a vector store.
-    vector_store = client.beta.vector_stores.create(name="Coding style")
+    vector_store = client.beta.vector_stores.create(name=vector_store_name)
     # Ready the files for upload to OpenAI.
-    file_paths = ["all.coding_style.how_to_guide.md"]
+    # file_paths = ["all.coding_style.how_to_guide.md"]
     file_streams = [open(path, "rb") for path in file_paths]
-    # Use the upload and poll SDK helper to upload the files, add them to the vector store,
-    # and poll the status of the file batch for completion.
+    # Use the upload and poll SDK helper to upload the files, add them to the
+    # vector store, and poll the status of the file batch for completion.
+    _LOG.debug("Uploading vector store ...")
     file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
         vector_store_id=vector_store.id, files=file_streams
     )
     # You can print the status and the file counts of the batch to see the
     # result of this operation.
-    #hdbg.dassert_eq(file_batch.status, "succeeded")
+    # hdbg.dassert_eq(file_batch.status, "succeeded")
     _LOG.debug("File_batch: %s", file_batch)
     #
     assistant = client.beta.assistants.update(
-      assistant_id=assistant.id,
-      tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
+        assistant_id=assistant.id,
+        tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
     )
     return assistant
 
