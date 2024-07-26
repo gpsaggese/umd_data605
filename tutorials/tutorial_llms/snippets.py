@@ -54,6 +54,18 @@ def get_coding_style_assistant(
     return code_snippet
 
 
+def remove_code_delimiters(text):
+    """
+    Remove ```python and ``` delimiters from a given text.
+
+    :param text: The input text containing code delimiters.
+    :return: The text with the code delimiters removed.
+    """
+    # Replace the ```python and ``` delimiters with empty strings
+    text = text.replace('```python', '').replace('```', '')
+    return text.strip()
+
+
 def add_comments_one_shot_learning1(user):
     system = """
 You are a proficient Python coder.
@@ -68,7 +80,9 @@ Comments should be in imperative form, a full English phrase, and end with a per
     # Do not comment every single line of code and especially logging statements.
     # Each comment should be in imperative form, a full English phrase, and end with a period.
     response = hopenai.get_completion(user, system=system)
-    print(hopenai.response_to_txt(response))
+    ret = hopenai.response_to_txt(response)
+    ret = remove_code_delimiters(ret)
+    return ret
 
 
 def add_docstring_one_shot_learning1(user):
@@ -78,13 +92,24 @@ Add a docstring to the function passed.
 The first comment should be in imperative mode and fit in a single line of less than 80 characters.
 To describe the parameters use the REST style, which requires each parameter to be prepended with :param
     """
-
     # If the first comment is not clear enough and needs more details then you can add another comment shorter than one 3 lines.
     # Do not change the code, but print it exactly as it is
     # Do not specify the types of the parameters.
     response = hopenai.get_completion(user, system=system)
-    print(hopenai.response_to_txt(response))
+    ret = hopenai.response_to_txt(response)
+    ret = remove_code_delimiters(ret)
+    return ret
 
+
+def add_type_hints(user):
+    system = """
+You are a proficient Python coder.
+Add type hints to the function passed.
+    """
+    response = hopenai.get_completion(user, system=system)
+    ret = hopenai.response_to_txt(response)
+    ret = remove_code_delimiters(ret)
+    return ret
 
 import ast
 import textwrap

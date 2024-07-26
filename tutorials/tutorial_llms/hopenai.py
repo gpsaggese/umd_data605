@@ -20,10 +20,12 @@ _LOG = logging.getLogger(__name__)
 
 _LOG.debug = _LOG.info
 
+_MODEL = "gpt-4o-mini"
+
 # #############################################################################
 
 
-def response_to_txt(response: Any) -> None:
+def response_to_txt(response: Any) -> str:
     if isinstance(response, openai.types.chat.chat_completion.ChatCompletion):
         return response.choices[0].message.content
     elif isinstance(response, openai.pagination.SyncCursorPage):
@@ -75,7 +77,7 @@ def get_edgar_example():
 
 def get_completion(user: str, *, system: str = "",
                    model: Optional[str] = None, **create_kwargs) -> str:
-    model = "gpt-4o-mini" if model is None else model
+    model = _MODEL if model is None else model
     client = OpenAI()
     completion = client.chat.completions.create(
         model=model,
@@ -166,7 +168,8 @@ def get_coding_style_assistant(
         vector_store_name: str,
         file_paths: List[str],
         *,
-        model: str = "gpt-4o") -> Assistant:
+        model: Optional[str] = None) -> Assistant:
+    model = _MODEL if model is None else model
     client = OpenAI()
     # TODO(gp): If the assistant already exists, return it.
     assistant = client.beta.assistants.create(

@@ -120,11 +120,14 @@ import snippets
 
 in_out = snippets.get_in_out_functions()
 
-idx = 6
+idx = 0
 print(in_out[idx][1])
 
-#snippets.add_docstring_one_shot_learning1(in_out[0][1])
-snippets.add_comments_one_shot_learning1(in_out[idx][1])
+ret = snippets.add_docstring_one_shot_learning1(in_out[idx][1])
+#ret = snippets.add_comments_one_shot_learning1(in_out[idx][1])
+print(ret)
+
+print(snippets.remove_code_delimiters(ret))
 
 print(snippets.print_in_out(in_out[7]))
 
