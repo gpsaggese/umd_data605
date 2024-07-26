@@ -254,20 +254,17 @@ def dassert_hasattr(obj, attr):
     )
 
 
-def assistant_to_info(assistant):
-    hdbg.dassert_isinstance(assistant, openai.types.beta.assistant.Assistant)
+def assistant_to_info(assistant: Assistant) -> Dict[str, Any]:
+    hdbg.dassert_isinstance(assistant, Assistant)
     keys = ["name", "created_at", "id", "instructions", "model"]
     assistant_info = _extract(assistant, keys)
-    # for key in keys:
-    #     dassert_hasattr(assistant, key)
-    #     assistant_info[key] = getattr(assistant, key)
     assistant_info["created_at"] = datetime.datetime.fromtimestamp(
         assistant_info["created_at"]
     )
     return assistant_info
 
 
-def assistants_to_str(assistants):
+def assistants_to_str(assistants: List[Assistant]) -> str:
     txt = []
     txt.append("Found %s assistants" % len(assistants))
     for assistant in assistants:
