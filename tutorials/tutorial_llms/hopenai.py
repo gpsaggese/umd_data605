@@ -94,6 +94,9 @@ def _extract(obj: Dict[str, Any], keys: List[str]) -> Dict[str, Any]:
 # #############################################################################
 
 
+import functools
+
+@functools.lru_cache(maxsize=1024)
 def get_completion(
     user: str,
     *,

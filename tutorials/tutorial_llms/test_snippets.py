@@ -86,7 +86,7 @@ Test.
         self.assert_equal(act, exp, fuzzy_match=True)
 
 
-class Test_get_in_out_functions1(hunit_test.TestCase):
+class Test_eval_prompt1(hunit_test.TestCase):
 
     def test1(self) -> None:
         function_tag = "code_snippets1"
@@ -94,9 +94,32 @@ class Test_get_in_out_functions1(hunit_test.TestCase):
         prompt_tag = "docstring"
         act = snippets.eval_prompt(function_tag, transform_tag, prompt_tag,
                              save_to_file=False)
-        print(act)
-        assert 0
+        self.assertEqual(len(act), 1)
+        act = str(act[0])
         # Check.
         exp = r'''
+Input:
+'
+def test(
+    dir_name: str,
+) -> str:
+    _ = dir_name, pattern
+    # Hello.
+    return "test"
+'
+Output:
+'
+def test(
+    dir_name: str,
+) -> str:
+    """
+    Test.
+
+    :param dir_name: path to the directory where to look for files
+    """
+    _ = dir_name, pattern
+    # Hello.
+    return "test"
+'
         '''
         self.assert_equal(act, exp, fuzzy_match=True)
