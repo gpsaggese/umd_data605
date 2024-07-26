@@ -1,6 +1,7 @@
 import hopenai
 import logging
 from typing import Any, Dict, List, Tuple, Optional
+from dataclasses import dataclass
 
 import helpers.hdbg as hdbg
 
@@ -19,44 +20,6 @@ def _extract(obj: Dict[str, Any], keys: List[str]) -> Dict[str, Any]:
         obj_tmp[key] = getattr(obj, key)
     return obj_tmp
     """
-    return code_snippet
-
-
-def get_code_snippet3() -> str:
-    """
-    Example of code with comments.
-    """
-    code_snippet = """
-def get_coding_style_assistant(
-        assistant_name: str,
-        instructions: str,
-        vector_store_name: str,
-        file_paths: List[str],
-        *,
-        model: str = "gpt-4o") -> Assistant:
-    client = OpenAI()
-    assistant = client.beta.assistants.create(
-        name=assistant_name,
-        instructions=instructions,
-        model=model,
-        tools=[{"type": "file_search"}],
-    )
-    _LOG.debug("Creating vector store ...")
-    # Create a vector store and upload the files to the vector store.
-    vector_store = client.beta.vector_stores.create(name=vector_store_name)
-    file_streams = [open(path, "rb") for path in file_paths]
-    _LOG.debug("Uploading vector store ...")
-    file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
-        vector_store_id=vector_store.id, files=file_streams
-    )
-    _LOG.debug("File_batch: %s", file_batch)
-    # Update the assistant.
-    assistant = client.beta.assistants.update(
-        assistant_id=assistant.id,
-        tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
-    )
-    return assistant
-"""
     return code_snippet
 
 
@@ -119,31 +82,43 @@ def split_code_by_function(code: str) -> List[str]:
     return function_snippets
 
 
-def get_functions(tag: str) -> List[str]:
-    # Read code.
-    if tag == "hdbg":
+def get_functions(function_tag: str) -> List[str]:
+    """
+    Read a set of functions and returned them as a list of strings.
+    """
+    # Read code based on the function function_tag.
+    if function_tag == "hdbg":
         txt = hio.from_file("helpers/hdbg.py")
-    elif tag == "code_snippets1":
+    elif function_tag == "code_snippets1":
+        # This contains a single function and it's used for testing.
         txt = hio.from_file("code_snippets1.txt")
-    elif tag == "code_snippets2":
+    elif function_tag == "code_snippets2":
+        # This contains a few functions and it's used for evaluating.
         txt = hio.from_file("code_snippets2.txt")
     else:
-        raise ValueError(f"Invalid tag='{tag}'")
-    #
+        raise ValueError(f"Invalid function_tag='{function_tag}'")
+    # Split in functions.
     functions = split_code_by_function(txt)
     return functions
 
 
 # #############################################################################
+# InOut
+# #############################################################################
 
 
-from dataclasses import dataclass
-
-
+# TODO(gp): TransformExample? IoaExample?
 @dataclass
 class InOut:
+    """
+    Represent an input / output example.
+    """
+    # Input (e.g., code without comments).
     in_: str
+    # Desired output (e.g., code with comments).
+    # TODO(gp): exp?
     out: str
+    # Actual output (e.g., code with comments from LLM).
     act: str
 
     def __str__(self) -> str:
@@ -163,6 +138,19 @@ def get_in_out_example(idx: int, func: str) -> str:
 
 
 def get_in_out_functions(function_tag: str, transform_tag: str) -> List[InOut]:
+    """
+    Generate a list of InOut instances by applying a transformation to a set of functions.
+
+    This function retrieves a list of functions based on the `function_tag`, applies
+    a transformation specified by `transform_tag` to each function, and encapsulates
+    the input and output in `InOut` instances. The transformed function
+    serves as the input, and the original function serves as the output.
+
+    :param function_tag: A tag specifying which functions to retrieve.
+    :param transform_tag: A tag specifying which transformation to apply to the functions.
+    :return: A list of InOut instances containing the input (transformed
+        function) and output (original function).
+    """
     # Get code.
     functions = get_functions(function_tag)
     # Pick transform function.
@@ -181,13 +169,10 @@ def get_in_out_functions(function_tag: str, transform_tag: str) -> List[InOut]:
     return in_outs
 
 
-def _functions_to_file(funcs: List[str], file_name: str) -> None:
-    hdbg.dassert_isinstance(funcs, list)
-    txt = "\n\n".join(funcs)
-    hio.to_file(file_name, txt)
-
-
-def in_outs_to_files(in_outs: List[InOut]) -> None:
+def _extract_values(in_outs: List[InOut]) -> Tuple[List[str], List[str], List[str]]:
+    """
+    Extract the input, output, and action from each InOut instance.
+    """
     hdbg.dassert_isinstance(in_outs, list)
     ins = []
     outs = []
@@ -196,21 +181,33 @@ def in_outs_to_files(in_outs: List[InOut]) -> None:
         ins.append(in_out.in_)
         outs.append(in_out.out)
         acts.append(in_out.act)
+    return acts, ins, outs
+
+
+def in_outs_to_files(in_outs: List[InOut]) -> None:
+    """
+    Save the input, output, and action of each InOut instance to separate files.
+
+    This function iterates over a list of InOut instances, extracting the input,
+    output, and action from each. These are then saved to 'in.txt', 'out.txt',
+    and 'act.txt' files respectively.
+
+    :param in_outs: A list of InOut instances to be processed
+    """
+    acts, ins, outs = _extract_values(in_outs)
     _LOG.info("Saving results ...")
+    def _functions_to_file(funcs: List[str], file_name: str) -> None:
+        hdbg.dassert_isinstance(funcs, list)
+        txt = "\n\n".join(funcs)
+        hio.to_file(file_name, txt)
+
     _functions_to_file(ins, "in.txt")
     _functions_to_file(outs, "out.txt")
     _functions_to_file(acts, "act.txt")
 
 
 def in_outs_to_str(in_outs: List[InOut]) -> str:
-    hdbg.dassert_isinstance(in_outs, list)
-    ins = []
-    outs = []
-    acts = []
-    for in_out in in_outs:
-        ins.append(in_out.in_)
-        outs.append(in_out.out)
-        acts.append(in_out.act)
+    acts, ins, outs = _extract_values(in_outs)
     ret = ""
     ret += "\n\n### in.txt ###\n"
     ret += "\n\n".join(ins)
@@ -219,6 +216,7 @@ def in_outs_to_str(in_outs: List[InOut]) -> str:
     ret += "\n\n### act.txt ###\n"
     ret += "\n\n".join(acts)
     return ret
+
 
 # #############################################################################
 # Prompts.
@@ -312,18 +310,35 @@ import tqdm
 
 def eval_prompt(function_tag: str, transform_tag: str, prompt_tag: str, *,
                 save_to_file: bool = True,
-                ) -> List[
-    InOut]:
+                ) -> List[InOut]:
+    """
+    Evaluate a given prompt by applying a transformation to a set of functions.
+
+    This function retrieves a list of functions based on the `function_tag`, applies
+    a transformation specified by `transform_tag` to each function, and then applies
+    a prompt specified by `prompt_tag` to the transformed function. The results are
+    encapsulated in InOut instances and returned as a list.
+
+    If `save_to_file` is True, the results are also saved to files.
+
+    :param function_tag: A tag specifying which functions to retrieve.
+    :param transform_tag: A tag specifying which transformation to apply to the functions.
+    :param prompt_tag: A tag specifying which prompt to apply to the transformed functions.
+    :param save_to_file: A boolean indicating whether to save the results to files.
+    :return: A list of InOut instances containing the input, output, and action for each function.
+    """
+    # Get the input / output examples.
     in_outs = get_in_out_functions(function_tag, transform_tag)
+    # Process examples one by one.
     _LOG.info("Processing %s examples", len(in_outs))
     in_outs_tmp = []
     for in_out in tqdm.tqdm(in_outs):
         txt = apply_prompt(prompt_tag, in_out.in_)
+        # Update the example.
         hdbg.dassert_ne(txt, "")
         in_out.act = txt
         in_outs_tmp.append(in_out)
+    # Save to files, if needed.
     if save_to_file:
         in_outs_to_files(in_outs_tmp)
     return in_outs_tmp
-
-

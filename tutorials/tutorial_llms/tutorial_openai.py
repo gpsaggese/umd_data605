@@ -131,22 +131,16 @@ print(ret)
 in_outs = snippets.get_in_out_functions("code_snippets1", "remove_docstring")
 snippets.in_out_to_files(in_outs)
 
-function_tag = "code_snippets1"
+# +
+function_tag = "code_snippets2"
 transform_tag = "remove_docstring"
 prompt_tag = "docstring"
 in_outs = snippets.eval_prompt(function_tag, transform_tag, prompt_tag) 
 
 print(snippets.in_outs_to_str(in_outs))
+# -
 
-import tqdm
-in_outs = snippets.get_in_out_functions(function_tag, transform_tag)
-for in_out in tqdm.tqdm(in_outs):
-    in_out.act = snippets.apply_prompt(prompt_tag, in_out.in_)
-    print(in_out.act)
-
-print(in_outs[0])
-
-in_out_to_files(in_out)
+snippets.in_out_to_files(in_outs)
 
 # # Assistant
 
