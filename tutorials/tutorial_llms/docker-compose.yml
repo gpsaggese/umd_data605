@@ -16,6 +16,8 @@ services:
       - ./neo4j_db/logs:/logs
       - ./neo4j_db/import:/var/lib/neo4j/import
       - ./neo4j_db/plugins:/plugins
+    networks:
+      - neo_net
 
   jupyterlab:
     image: gpsaggese/llms
@@ -24,4 +26,10 @@ services:
       # Mount jupyter notebook and data directory.
     volumes:
       - .:/curr_dir
+    entrypoint: /curr_dir/run_jupyter.sh
     user: root
+    networks:
+      - neo_net
+
+networks:
+  neo_net:
