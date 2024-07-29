@@ -10,25 +10,24 @@ def delete_all(driver):
 
 
 # Define a function to fetch nodes and relationships from Neo4j
-def fetch_graph_data(driver, query):
+def fetch_graph_data(session, query):
     nodes = []
     relationships = []
     
-    with driver.session() as session:
-        results = session.run(query)
-        
-        for record in results:
-            n = record['n']
-            m = record['m']
-            r = record['r']
-            
-            nodes.append((n.id, dict(n)))
-            nodes.append((m.id, dict(m)))
-            relationships.append((n.id, m.id, r.type))
+    results = session.run(query)
+
+    for record in results:
+        n = record['n']
+        m = record['m']
+        r = record['r']
+
+        nodes.append((n.id, dict(n)))
+        nodes.append((m.id, dict(m)))
+        relationships.append((n.id, m.id, r.type))
     return nodes, relationships
 
 
-def plot_graph(driver):
+def plot_graph(session):
     # Define the query to fetch nodes and relationships
     query = """
     MATCH (n)-[r]->(m)
@@ -37,7 +36,7 @@ def plot_graph(driver):
     """
 
     # Fetch the graph data
-    nodes, relationships = fetch_graph_data(driver, query)
+    nodes, relationships = fetch_graph_data(session, query)
 
     # Create a Pyvis Network graph
     #net = Network(notebook=True)
