@@ -206,7 +206,8 @@ def in_outs_to_files(in_outs: List[InOut]) -> None:
     _functions_to_file(acts, "act.txt")
 
 
-def in_outs_to_str(in_outs: List[InOut]) -> str:
+#def in_outs_to_str(in_outs: List[InOut]) -> str:
+def in_outs_to_str(in_outs):
     acts, ins, outs = _extract_values(in_outs)
     ret = ""
     ret += "\n\n### in.txt ###\n"
