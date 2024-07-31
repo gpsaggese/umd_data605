@@ -64,6 +64,7 @@ class Test_to_str1(hunit_test.TestCase):
             """
         self.assert_equal(act, exp, fuzzy_match=True)
         #
+        self.assertEqual(result[0][0]["node_count"], 2)
         driver.close()
 
     def test2(self) -> None:

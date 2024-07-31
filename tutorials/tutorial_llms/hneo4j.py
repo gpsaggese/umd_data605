@@ -3,6 +3,7 @@ from pyvis.network import Network
 
 
 import re
+import helpers.hdbg as hdbg
 import helpers.hprint as hprint
 
 from pprint import pformat
@@ -62,23 +63,58 @@ def type_to_str(obj):
 
 
 def to_str(obj, depth=0):
+    num_spaces = 2
     txt = ""
     if isinstance(obj, dict):
         import pprint
         txt = pprint.pformat(obj)
     if isinstance(obj, neo4j.graph.Node):
+        # <Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:31'
+        #   labels=frozenset({'Wine'})
+        #   properties={'vintage': 2015, 'name': 'Prancing Wolf', 'style': 'ice wine'}>
         txt = ""
-        assert len(obj.labels) == 1
-        txt += "label=%s\n" % (str(list(obj.labels)[0]))
-        #txt += "properties=%s" % (str(dict(zip(obj.keys(), obj.items()))))
-        txt += "properties=\n%s\n" % (to_str(dict(obj.items())))
+        #hdbg.dassert_eq(len(obj.labels()), 1, "%s", obj)
+        txt += " " * num_spaces + "label=%s\n" % (str(list(obj.labels)))
+        txt += " " * num_spaces + "properties=%s\n" % (to_str(dict(
+            obj.items())))
     if isinstance(obj, neo4j.Record):
+        # <Record n=<Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:31'
+        #   labels=frozenset({'Wine'})
+        #   properties={'vintage': 2015, 'name': 'Prancing Wolf', 'style': 'ice wine'}>>
+        #
+        # <Record name='Prancing Wolf' style='ice wine'>
         record = obj
-        assert len(record.keys()) == 1
-        key = record.keys()[0]
-        value = record[key]
-        txt = "record=%s" % to_str(value)
+        txt = []
+        txt.append("%s [" % len(obj))
+        for key in record.keys():
+            value = record[key]
+            txt.append("%s ->\n%s" % (to_str(key), to_str(value, depth=depth + 1)))
+        txt.append("]\n")
+        txt = "\n".join(txt)
     if isinstance(obj, neo4j.EagerResult):
+        # EagerResult(
+        #   records=[
+        #       <Record node_count=2>
+        #       ],
+        #   summary=<neo4j._work.summary.ResultSummary object at 0xffff5eb048e0>,
+        #   keys=['node_count'])
+        #
+        # EagerResult(
+        #   records=[
+        #       <Record n=<
+        #           Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:31'
+        #               labels=frozenset({'Wine'})
+        #               properties={'vintage': 2015, 'name': 'Prancing Wolf', 'style': 'ice wine'}
+        #           >>
+        #           ],
+        #   summary=<neo4j._work.summary.ResultSummary object at 0xffff5eb95930>,
+        #   keys=['n'])
+        #
+        # EagerResult(
+        #   records=[
+        #       <Record name='Prancing Wolf' style='ice wine'>],
+        #   summary=<neo4j._work.summary.ResultSummary object at 0xffff5eaa0eb0>,
+        #   keys=['name', 'style'])
         txt = ""
         # The result contains information about the query results and summary of the query.
         records, summary, keys = obj
@@ -97,7 +133,7 @@ def to_str(obj, depth=0):
     if isinstance(obj, (str, int, float, bool)):
         txt = "%s %s" % (type_to_str(obj), str(obj))
     if txt:
-        txt = hprint.indent(txt, num_spaces=depth * 4)
+        txt = hprint.indent(txt, num_spaces=depth * num_spaces)
         return txt
     raise ValueError("Invalid obj=%s of type=%s" % (obj, type(obj)))
 
