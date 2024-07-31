@@ -2,11 +2,48 @@ from neo4j import GraphDatabase
 from pyvis.network import Network
 
 
+def print_neo4j_version(driver):
+    with driver.session() as session:
+        result = session.run("CALL dbms.components() YIELD name, versions, edition RETURN name, versions, edition;")
+        for record in result:
+            print(f"Name: {record['name']}, Version: {record['versions']}, Edition: {record['edition']}")
+
+
+def print_graph_stats(driver):
+    # Get node count.
+    node_query = "MATCH (n) RETURN COUNT(n) AS node_count"
+    node_result = driver.execute_query(node_query)
+    # Note that `node_result.single()` doesn't work.
+    node_count = node_result[0][0]["node_count"]
+    print(f"Number of nodes: {node_count}")
+    # Get edge count.
+    edge_query = "MATCH ()--() RETURN COUNT(*) / 2 AS edge_count"
+    edge_result = driver.execute_query(edge_query)
+    edge_count = edge_result[0][0]["edge_count"]
+    print(f"Number of edges: {edge_count}")
+
+
 def delete_all(driver):
     # Delete everything.
     driver.execute_query(
         "MATCH(n) OPTIONAL MATCH (n)-[r]-() DELETE n, r"
     )
+
+
+def count_nodes(session):
+    # Count the number of nodes.
+    query = "MATCH(n) RETURN COUNT(n) AS node_count"
+    node_count_result = session.run(query)
+    node_count = node_count_result.single()["node_count"]
+    return node_count
+
+
+def count_nodes(session):
+    # Count the number of nodes.
+    query = "MATCH(n) RETURN COUNT(n) AS node_count"
+    node_count_result = session.run(query)
+    node_count = node_count_result.single()["node_count"]
+    return node_count
 
 
 # Define a function to fetch nodes and relationships from Neo4j
