@@ -2,6 +2,106 @@ from neo4j import GraphDatabase
 from pyvis.network import Network
 
 
+import re
+import helpers.hprint as hprint
+
+from pprint import pformat
+from typing import Any
+
+from pygments import highlight
+from pygments.formatters import Terminal256Formatter
+from pygments.lexers import PythonLexer
+
+import neo4j
+
+
+def to_bold(text):
+    return "\033[1m" + text + "\033[0m"
+
+
+def pformat_(obj: Any) -> str:
+    """
+    Pretty-print in color.
+    """
+    if hasattr(obj, "to_dict"):
+        obj = obj.to_dict()
+    res = highlight(pformat(obj), PythonLexer(), Terminal256Formatter())
+    res = res.rstrip("\n")
+    return res
+
+
+def to_str_(obj, name=""):
+    if name:
+        txt = "%s= %s %s" % (to_bold(name), type(obj), pformat_(obj))
+    else:
+        txt = "%s %s" % (type(obj), pformat_(obj))
+    return txt
+
+
+def print_(obj, name=""):
+    print(to_str_(obj, name))
+
+
+def print_result(result):
+    # The result contains information about the query results and summary of the query.
+    records, summary, keys = result
+    # `result.records` is the list of records returned by the query.
+    print_(records, "records")
+    print_(summary, "summary")
+    # `result.keys` is the list of keys returned by the query.
+    print_(keys, "keys")
+
+
+def type_to_str(obj):
+    type_str = str(type(obj))
+    # <class 'int'>
+    m = re.search("(.*)<class '(.*)'>(.*)", type_str)
+    if m:
+        return "%s<%s>%s" % (m.group(1), m.group(2), m.group(3))
+    return type_str
+
+
+def to_str(obj, depth=0):
+    txt = ""
+    if isinstance(obj, dict):
+        import pprint
+        txt = pprint.pformat(obj)
+    if isinstance(obj, neo4j.graph.Node):
+        txt = ""
+        assert len(obj.labels) == 1
+        txt += "label=%s\n" % (str(list(obj.labels)[0]))
+        #txt += "properties=%s" % (str(dict(zip(obj.keys(), obj.items()))))
+        txt += "properties=\n%s\n" % (to_str(dict(obj.items())))
+    if isinstance(obj, neo4j.Record):
+        record = obj
+        assert len(record.keys()) == 1
+        key = record.keys()[0]
+        value = record[key]
+        txt = "record=%s" % to_str(value)
+    if isinstance(obj, neo4j.EagerResult):
+        txt = ""
+        # The result contains information about the query results and summary of the query.
+        records, summary, keys = obj
+        # `result.records` is the list of records returned by the query.
+        txt += "records:\n" + to_str(records, depth=depth + 1)
+        #txt += to_str_(summary, "summary") + "\n"
+        # `result.keys` is the list of keys returned by the query.
+        txt += "keys:\n" + to_str(keys, depth=depth + 1)
+    if isinstance(obj, list):
+        txt = []
+        txt.append("%s [" % len(obj))
+        for obj_tmp in obj:
+            txt.append(to_str(obj_tmp, depth=depth + 1))
+        txt.append("]\n")
+        txt = "\n".join(txt)
+    if isinstance(obj, (str, int, float, bool)):
+        txt = "%s %s" % (type_to_str(obj), str(obj))
+    if txt:
+        txt = hprint.indent(txt, num_spaces=depth * 4)
+        return txt
+    raise ValueError("Invalid obj=%s of type=%s" % (obj, type(obj)))
+
+
 def print_neo4j_version(driver):
     with driver.session() as session:
         result = session.run("CALL dbms.components() YIELD name, versions, edition RETURN name, versions, edition;")

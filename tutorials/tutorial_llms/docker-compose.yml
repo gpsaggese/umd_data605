@@ -31,5 +31,16 @@ services:
     networks:
       - neo_net
 
+  bash:
+    image: gpsaggese/llms
+    volumes:
+      - .:/curr_dir
+    entrypoint: bash
+    user: root
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    networks:
+      - neo_net
+
 networks:
   neo_net:
