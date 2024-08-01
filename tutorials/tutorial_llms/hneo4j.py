@@ -65,32 +65,6 @@ def type_to_str(obj):
 def to_str(obj, depth=0):
     num_spaces = 2
     txt = ""
-    if isinstance(obj, dict):
-        import pprint
-        txt = pprint.pformat(obj)
-    if isinstance(obj, neo4j.graph.Node):
-        # <Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:31'
-        #   labels=frozenset({'Wine'})
-        #   properties={'vintage': 2015, 'name': 'Prancing Wolf', 'style': 'ice wine'}>
-        txt = ""
-        #hdbg.dassert_eq(len(obj.labels()), 1, "%s", obj)
-        txt += " " * num_spaces + "label=%s\n" % (str(list(obj.labels)))
-        txt += " " * num_spaces + "properties=%s\n" % (to_str(dict(
-            obj.items())))
-    if isinstance(obj, neo4j.Record):
-        # <Record n=<Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:31'
-        #   labels=frozenset({'Wine'})
-        #   properties={'vintage': 2015, 'name': 'Prancing Wolf', 'style': 'ice wine'}>>
-        #
-        # <Record name='Prancing Wolf' style='ice wine'>
-        record = obj
-        txt = []
-        txt.append("%s [" % len(obj))
-        for key in record.keys():
-            value = record[key]
-            txt.append("%s ->\n%s" % (to_str(key), to_str(value, depth=depth + 1)))
-        txt.append("]\n")
-        txt = "\n".join(txt)
     if isinstance(obj, neo4j.EagerResult):
         # EagerResult(
         #   records=[
@@ -123,6 +97,42 @@ def to_str(obj, depth=0):
         #txt += to_str_(summary, "summary") + "\n"
         # `result.keys` is the list of keys returned by the query.
         txt += "keys:\n" + to_str(keys, depth=depth + 1)
+    if isinstance(obj, neo4j.Record):
+        # <Record n=<Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:31'
+        #   labels=frozenset({'Wine'})
+        #   properties={'vintage': 2015, 'name': 'Prancing Wolf', 'style': 'ice wine'}>>
+        #
+        # <Record name='Prancing Wolf' style='ice wine'>
+        record = obj
+        txt = []
+        txt.append("%s [" % len(obj))
+        for key in record.keys():
+            value = record[key]
+            txt.append("%s ->\n%s" % (to_str(key), to_str(value, depth=depth + 1)))
+        txt.append("]\n")
+        txt = "\n".join(txt)
+    if isinstance(obj, neo4j.graph.Node):
+        # <Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:31'
+        #   labels=frozenset({'Wine'})
+        #   properties={'vintage': 2015, 'name': 'Prancing Wolf', 'style': 'ice wine'}>
+        txt = ""
+        txt += " " * num_spaces + "label=%s\n" % (str(list(obj.labels)))
+        txt += " " * num_spaces + "properties=%s\n" % (to_str(dict(
+            obj.items())))
+    if isinstance(obj, neo4j.graph.Relationship):
+        # <Relationship element_id='5:907b90c5-77b7-40ee-bd2b-900a55534cf9:48286'
+        #   nodes=(
+        #       <Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:38'
+        #           labels=frozenset() properties={}>,
+        #       <Node element_id='4:907b90c5-77b7-40ee-bd2b-900a55534cf9:37'
+        #           labels=frozenset() properties={}>)
+        #   type='reported_on' properties={}>
+        txt = ""
+        txt += " " * num_spaces + "start_node=%s" % (to_str(obj.start_node))
+        txt += " " * num_spaces + "end_node=%s" % (to_str(obj.start_node))
+        txt += " " * num_spaces + "type=%s" % (to_str(obj.type))
+        txt += " " * num_spaces + "properties=%s\n" % (to_str(dict(
+            obj.items())))
     if isinstance(obj, list):
         txt = []
         txt.append("%s [" % len(obj))
@@ -130,6 +140,9 @@ def to_str(obj, depth=0):
             txt.append(to_str(obj_tmp, depth=depth + 1))
         txt.append("]\n")
         txt = "\n".join(txt)
+    if isinstance(obj, dict):
+        import pprint
+        txt = pprint.pformat(obj)
     if isinstance(obj, (str, int, float, bool)):
         txt = "%s %s" % (type_to_str(obj), str(obj))
     if txt:
