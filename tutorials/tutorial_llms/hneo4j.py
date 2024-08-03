@@ -1,7 +1,6 @@
 from neo4j import GraphDatabase
 from pyvis.network import Network
 
-
 import re
 import helpers.hdbg as hdbg
 import helpers.hprint as hprint
@@ -94,7 +93,7 @@ def to_str(obj, depth=0):
         records, summary, keys = obj
         # `result.records` is the list of records returned by the query.
         txt += "records:\n" + to_str(records, depth=depth + 1)
-        #txt += to_str_(summary, "summary") + "\n"
+        # txt += to_str_(summary, "summary") + "\n"
         # `result.keys` is the list of keys returned by the query.
         txt += "keys:\n" + to_str(keys, depth=depth + 1)
     if isinstance(obj, neo4j.Record):
@@ -108,7 +107,8 @@ def to_str(obj, depth=0):
         txt.append("%s [" % len(obj))
         for key in record.keys():
             value = record[key]
-            txt.append("%s ->\n%s" % (to_str(key), to_str(value, depth=depth + 1)))
+            txt.append(
+                "%s ->\n%s" % (to_str(key), to_str(value, depth=depth + 1)))
         txt.append("]\n")
         txt = "\n".join(txt)
     if isinstance(obj, neo4j.graph.Node):
@@ -153,9 +153,11 @@ def to_str(obj, depth=0):
 
 def print_neo4j_version(driver):
     with driver.session() as session:
-        result = session.run("CALL dbms.components() YIELD name, versions, edition RETURN name, versions, edition;")
+        result = session.run(
+            "CALL dbms.components() YIELD name, versions, edition RETURN name, versions, edition;")
         for record in result:
-            print(f"Name: {record['name']}, Version: {record['versions']}, Edition: {record['edition']}")
+            print(
+                f"Name: {record['name']}, Version: {record['versions']}, Edition: {record['edition']}")
 
 
 def print_graph_stats(driver):
@@ -195,48 +197,74 @@ def count_nodes(session):
     return node_count
 
 
-# Define a function to fetch nodes and relationships from Neo4j
-def fetch_graph_data(session, query):
-    nodes = []
-    relationships = []
-    
-    results = session.run(query)
+import re
 
+
+def extract_chunks(text):
+    # The regular expression matches any substring starting with a $ and
+    # continues until the next $ followed by a whitespace or the end of the
+    # string.
+    pattern = r'\$(?:[^\$]*?)(?=\$\s|\Z)'
+    # Find all matching chunks.
+    # The re.DOTALL flag is used to make the dot . match all characters,
+    # including newline characters.
+    chunks = re.findall(pattern, text, re.DOTALL)
+    # Strip leading $ and whitespace characters.
+    chunks = [chunk.strip().replace("$ ", "") for chunk in chunks]
+    return chunks
+
+
+def execute_query(driver, query):
+    if isinstance(query, str):
+        driver.execute_query(query)
+    else:
+        for q in query:
+            driver.execute_query(q)
+
+
+def get_id(element_id):
+    # 4:907b90c5-77b7-40ee-bd2b-900a55534cf9:44
+    vals = element_id.split(":")
+    return vals[2]
+
+
+def fetch_graph_data(driver):
+    # Define the query to fetch nodes and relationships
+    query = "MATCH (n)-[r]->(m) RETURN n, r, m"
+    # LIMIT 100
+    results, _, _ = driver.execute_query(query)
+    # Parse the results.
+    nodes = {}
+    relationships = []
     for record in results:
         n = record['n']
         m = record['m']
         r = record['r']
-
-        nodes.append((n.id, dict(n)))
-        nodes.append((m.id, dict(m)))
-        relationships.append((n.id, m.id, r.type))
+        # Extract info.
+        n_id = get_id(n.element_id)
+        m_id = get_id(m.element_id)
+        # Add nodes.
+        if n_id not in nodes:
+            nodes[n_id] = dict(n)
+        if m_id not in nodes:
+            nodes[m_id] = dict(m)
+        relationships.append((n_id, m_id, r.type))
     return nodes, relationships
 
 
-def plot_graph(session):
-    # Define the query to fetch nodes and relationships
-    query = """
-    MATCH (n)-[r]->(m)
-    RETURN n, r, m
-    LIMIT 100
-    """
-
-    # Fetch the graph data
-    nodes, relationships = fetch_graph_data(session, query)
-
-    # Create a Pyvis Network graph
-    #net = Network(notebook=True)
-    net = Network(cdn_resources = "remote", directed = True, height = '500px',width = '100%',
-              notebook = True)
-
-    # Add nodes to the Pyvis graph
-    for node_id, node_data in nodes:
-        net.add_node(node_id, label=node_data.get('name', str(node_id)))
-
-    # Add edges to the Pyvis graph
+def plot_graph(driver):
+    # Fetch the graph data.
+    nodes, relationships = fetch_graph_data(driver)
+    # Create a Pyvis Network graph.
+    # net = Network(notebook=True)
+    net = Network(cdn_resources="remote", directed=True, height='500px',
+                  width='100%', notebook=True)
+    # Add nodes to the Pyvis graph.
+    for node_id, node_data in nodes.items():
+        net.add_node(node_id, label=node_data.get('name', str(node_id)),
+                     color="#00ff1e")
+    # Add edges to the Pyvis graph.
     for source, target, label in relationships:
-        net.add_edge(source, target, label=label)
+        net.add_edge(source, target, label=label, color="#162347")
     return net
 
-    # Show the graph
-    #net.show("graph.html")
