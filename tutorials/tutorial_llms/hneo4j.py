@@ -216,7 +216,8 @@ def extract_chunks(text):
 
 def execute_query(driver, query):
     if isinstance(query, str):
-        driver.execute_query(query)
+        res = driver.execute_query(query)
+        return res
     else:
         for q in query:
             driver.execute_query(q)
