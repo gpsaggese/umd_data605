@@ -1,26 +1,57 @@
-```
-# UMD DATA605 - Big Data Systems
-Course Intro
-Big Data
-Data Models
-### **Spring 2025**
-Dr. GP Saggese
-`gsaggese@umd.edu`
-TAs
-Krishna Pratardan Taduri, `kptaduri@umd.edu`
-Prahar Kaushikbhai Modi, `pmodi08@umd.edu`
-1
+// notes_to_pdf.py --input lectures_source/final_enhanced_markdown_lecture_1.txt --output tmp.pdf --type slides --skip_action cleanup_after --debug_on_error --toc_type navigation
+
+::: columns
+:::: {.column width=15%}
+![](lectures_source/UMD_Logo.png)
+::::
+:::: {.column width=75%}
+
+\vspace{0.4cm}
+\begingroup \large
+UMD DATA605 - Big Data Systems
+\endgroup
+::::
+:::
+
+\vspace{1cm}
+
+\begingroup \Large
+**Course Intro Big Data & Data Models**
+\endgroup
+
+::: columns
+:::: {.column width=75%}
+\vspace{1cm}
+
+**Instructor**: Dr. GP Saggese - `gsaggese@umd.edu`
+
+**TAs**:
+Krishna Pratardan Taduri, kptaduri@umd.edu
+Prahar Kaushikbhai Modi, pmodi08@umd.edu
+
 **v1.1**
+::::
+:::: {.column width=20%}
+
+::::
+:::
+
 
 # ##############################################################################
 # Why I Am Interested in Big Data
 # ##############################################################################
 
 * Why I Am Interested in Big Data
-
 - https://www.linkedin.com/in/gpsaggese/
   - Feel free to connect on LinkedIn to stay in touch
 
+3/58
+
+# ##############################################################################
+# Learning Outcomes
+# ##############################################################################
+
+* Learning Outcomes
 - Model and reason about data
 - Process and manipulate data in different ways
   - E.g., Python, Pandas
@@ -36,27 +67,32 @@ Prahar Kaushikbhai Modi, `pmodi08@umd.edu`
 - Contribute to an open-source project
 - Project: build a (little) system with Big Data technology
 
-# ##############################################################################
-# Learning Outcomes
-# ##############################################################################
+UMD DATA605
 
-* Learning Outcomes
+4/58
+
+![](images/lecture_1/lec_1_slide_4_image_1.png)
+![](images/lecture_1/lec_1_slide_4_image_2.png)
+![](images/lecture_1/lec_1_slide_4_image_3.png)
+![](images/lecture_1/lec_1_slide_4_image_4.png)
+![](images/lecture_1/lec_1_slide_4_image_5.png)
 
 # ##############################################################################
 # Tools We Will Learn To Use
 # ##############################################################################
 
 * Tools We Will Learn To Use
-
-- **Programming languages** 
+- **Programming languages**
   - Python
 - **Development tools**
+
   - Bash/Linux OS
   - Git (understand data model, branching)
   - GitHub (PRs, work with issues)
   - Jupyter notebooks
   - Docker
 - **Big data tools**
+
   - ETL pipelines
   - Relational DBs (PostgreSQL)
   - NoSQL DBs (HBase, MongoDB, Couchbase, Redis)
@@ -66,12 +102,15 @@ Prahar Kaushikbhai Modi, `pmodi08@umd.edu`
   - Cloud services (AWS)
 - **Tutorials** for all the tools we use for the class project
 
+UMD DATA605
+
+5/58
+
 # ##############################################################################
 # Todos
 # ##############################################################################
 
 * Todos
-
 - Studying the slides and the (free) materials is enough
 - DATA605 - ELMS/Canvas site
   - Make sure to enable notifications
@@ -87,12 +126,15 @@ Prahar Kaushikbhai Modi, `pmodi08@umd.edu`
 - Lessons are recorded
   - Still come to class!
 
+6/58
+
+UMD DATA605
+
 # ##############################################################################
 # Grading!
 # ##############################################################################
 
 * Grading!
-
   - Multiple choices quizzes for 40%
     - Start on the 3rd week of class
     - 3 quizzes, every 2 lessons
@@ -103,52 +145,83 @@ Prahar Kaushikbhai Modi, `pmodi08@umd.edu`
   - Review examples of complete projects
   - In class labs
 
+UMD DATA605
+
+7/58
+
 # ##############################################################################
 # Soft Skills to Succeed in the Workplace
 # ##############################################################################
 
 * Soft Skills to Succeed in the Workplace
-
 - Work in a team
 - Design software architecture (e.g., OOP, Agile, Design Patterns)
 - Comment your own code
 - Write external documentation (e.g., tutorials, manuals, how-tos)
 - Write code that other people can understand (including future-you)
-- Read other people’s code
+- Read other people's code
 - Follow code conventions (e.g., PEP8, Google Code)
 - Be clear in communications (e.g., in emails, Slack)
 - File a bug report
 - Reproduce (aka repro) a bug
 - Have a sense of CS constants
 - Have a sense of how an OS works (e.g., virtual memory, processes)
-- Goal: model the class project to prepare you for the workplace
+- **Goal**: model the class project to prepare you for the workplace
+
+8/58
+
+UMD DATA605
+
+ 
+
+# Content processing error - slide missing
+
+ 
+UMD DATA605 - Big Data Systems
+Course Intro
+**Big Data**
+Data Models
+
+9
+
+UMD DATA605
 
 # ##############################################################################
 # Data Science
 # ##############################################################################
 
 * Data Science
-
 - **Promises of data science** (DS)
-  - Give a competitive advantages
-  - Make better strategic and tactical business decisions
-  - Optimize business processes
+- Give a competitive advantages
+- Make better strategic and tactical business decisions
+- Optimize business processes
 - **Data science is not new**, it was called:
-  - Operation research (~1970-80s)
-  - Decision support, Business intelligence (~1990s)
-  - Predictive analytics (Early 2010s)
-  - ...
+- Operation research (~1970-80s)
+- Decision support, Business intelligence (~1990s)
+- Predictive analytics (Early 2010s)
+- ...
 - **What has changed**
-  - Now learning and applying DS is easy
+- Now learning and applying DS is easy**
+**
   - No need for hiring a consulting company
 - Tools are open-source
   - E.g., Python + pydata stack (numpy, scipy, Pandas, sklearn)
 - Large data sets available
 - Cheap computing (e.g., AWS, Google Cloud)
 
-- **“Data science is the number one catalyst for economic growth**”
+10/58
+
+UMD DATA605
+
+# ##############################################################################
+# Motivation: Data Overload
+# ##############################################################################
+
+* Motivation: Data Overload
+- **"Data science is the number one catalyst for economic growth**"
   - McKinsey, 2013
-- **Explosion of data in every domain**
+- **Explosion of data in every domain
+**
   - Sensing devices/networks monitor processes 24/7
     - E.g., temperature of your room, your vital signs, pollution in the air
   - Sophisticated smart-phones (80% of the world population)
@@ -156,27 +229,22 @@ Prahar Kaushikbhai Modi, `pmodi08@umd.edu`
   - Internet of Things (IoT): everything is connected to the internet
     - E.g., power supply, toasters
   - Datafication: turn all aspects of life into data
-    - E.g., what you like/enjoy turned into a stream of your "likes”
-- **Challenges**
+    - E.g., what you like/enjoy turned into a stream of your "likes"
+- **Challenges
+**
   - How to handle the increasing amount data?
   - How to extract actionable insights and scientific knowledge from data?
-```
 
-# ##############################################################################
-# Motivation: Data Overload
-# ##############################################################################
+UMD DATA605
 
-* Motivation: Data Overload
-
-\\copyright UMD DATA605
+11/58
 
 # ##############################################################################
 # Scale of Data Size
 # ##############################################################################
 
 * Scale of Data Size
-
-- **Megabyte** = 210 $\\approx$ 106 bytes
+- **Megabyte** = 210 approx 106 bytes
   - Typical English book
 - **Gigabyte** = 109 bytes = 1000 MB
   - 1/2 hour of video
@@ -185,36 +253,34 @@ Prahar Kaushikbhai Modi, `pmodi08@umd.edu`
   - Human genome: ~1TB
   - 100,000 photos
   - LHC generates 100TB of data per day
-  - \$50 to buy 1TB HDD, \$23/mo on AWS S3
+  - 50 to buy 1TB HDD, 23/mo on AWS S3
 - **Petabyte** = 1000 TB
   - 13 years of HD video
-  - \$250k/year on AWS S3
+  - 250k (USD) /year on AWS S3
 - **Exabyte** = 1M TB
   - Global yearly Internet traffic in 2004
 - **Zetabyte** = 1B TB = 1021 bytes
   - Global yearly Internet traffic in 2016
 - **Yottabytes** = 1024 bytes
-  - Yottabyte costs \$100T
+  - Yottabyte costs (USD) 100T
 - **Brontobytes** = 1027 bytes
 
-> *Note:* #
+12/58
 
 # ##############################################################################
-# Scale of Data Size
+# Scale of Data Size (1)
 # ##############################################################################
 
 * Scale of Data Size
+![](images/lecture_1/lec_1_slide_13_image_1.png)
 
-![lec_1_image_6](output/images/lecture_1/lec_1_image_6.png)
-
-> *Note:* #
+13/58
 
 # ##############################################################################
 # Constants Everybody Should Know
 # ##############################################################################
 
 * Constants Everybody Should Know
-
 From Latency Numbers Every Programmer Should Know (by year)
 - A CPU running at 3GHz executes an instruction every 0.3ns
 - L1 cache reference/register: 1ns
@@ -225,15 +291,20 @@ From Latency Numbers Every Programmer Should Know (by year)
 - SSD random read: 16us
 - Disk seek: 2ms
 - Packet round-trip from CA to Netherland: 150ms
-![lec_1_image_7](output/images/lecture_1/lec_1_image_7.jpg)
 
-> *Note:* There are 1e9 nanoseconds in a second
-In a year there are 32m seconds
-It’s a ~ a blink of an eye 300ms (3 blinks per seconds)
-If 1 second is 10 year, a nanosecond is one blink of an eye
-#
+![](images/lecture_1/lec_1_slide_14_image_1.png)
 
-- **Personalized marketing**
+14/58
+
+UMD DATA605
+
+# ##############################################################################
+# Big Data Applications
+# ##############################################################################
+
+* Big Data Applications
+- **Personalized marketing
+**
 - Target each consumer instead of the consumers at large
   - E.g., Amazon personalizes suggestions using signals from:
     - Your shopping history
@@ -245,18 +316,20 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
     - Social media, on-line reviews, blogs, surveys
   - Positive, negative, neutral feeling
 - E.g.,
-  - In 2022, \$600B spent on digital marketing
+  - In 2022, (USD)600B spent on digital marketing
   - 50 Stats Showing The Power Of Personalization
 
+UMD DATA605
+
+15/58
+
 # ##############################################################################
-# Big Data Applications
+# Big Data Applications (1)
 # ##############################################################################
 
 * Big Data Applications
-
-\\copyright UMD DATA605
-
-- **Mobile advertisement**
+- **Mobile advertisement
+**
 - Mobile phones are ubiquitous
   - 80% of world population has one
   - 6.5b smart phones
@@ -265,30 +338,35 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
   - Search history
   - Credit card transactions
 - E.g.,
-  - You’ve bought a new house
+  - You've bought a new house
   - You google questions about house renovations
   - You watch shows about renovations
   - Your phone tracks where you are
   - Google sends you coupons for the closest Home Depot
-  - “I feel like Google is following me”, “it’s like Facebook is reading my mind”
+  - "I feel like Google is following me", "it's like Facebook is reading my mind"
 
+UMD DATA605
+
+16/58
+ 
+
+ 
 # ##############################################################################
-# Big Data Applications
-# ##############################################################################
-
-* Big Data Applications
-
-\\copyright UMD DATA605
-
-# ##############################################################################
-# Big Data Applications: Biomedical Data
+# Big Data Applications (2)
 # ##############################################################################
 
 * Big Data Applications
+UMD DATA605
 
-\\copyright UMD DATA605
-![lec_1_image_8](output/images/lecture_1/lec_1_image_8.png)
+17/58
 
+![](images/lecture_1/lec_1_slide_17_image_1.png)
+
+# ##############################################################################
+# Big Data Applications (3)
+# ##############################################################################
+
+* Big Data Applications
 - **Biomedical data**
 - Personalized medicine
   - Patients can receive treatment tailored to them to maximize efficacy
@@ -300,14 +378,15 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
 - Health tech
   - Personal health trackers (e.g., smart rings, phones)
 
+UMD DATA605
+
+18/58
+
 # ##############################################################################
-# Big Data Applications: Smart Cities
+# Big Data Applications (4)
 # ##############################################################################
 
 * Big Data Applications
-
-\\copyright UMD DATA605
-
 - **Smart cities**
 - Interconnected mesh of sensors
   - E.g., traffic sensors, camera networks, satellites
@@ -317,15 +396,15 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
   - Optimal urban services
   - Maximize energy savings
 
-```text
-# Big Data Applications
+UMD DATA605
 
-* Big Data Applications
-
-\\copyright UMD DATA605
 19/58
 
+# ##############################################################################
+# Goal of Data Science
+# ##############################################################################
 
+* Goal of Data Science
 - **Goal**: from data to wisdom
   - Data (raw bytes)
   - Information (organized, structured)
@@ -333,17 +412,19 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
   - Wisdom (understanding)
 - Insights enable decisions and actions
 - Combine streams of big data to generate new data
-  - New data can be “big data” itself
+  - New data can be "big data" itself
 
-# Goal of Data Science
+UMD DATA605
 
-* Goal of Data Science
+![](images/lecture_1/lec_1_slide_20_image_1.png)
 
-\\copyright UMD DATA605
-![Goal of Data Science](output/images/lecture_1/lec_1_image_9.png)
 20/58
 
+# ##############################################################################
+# Four V's of Big Data
+# ##############################################################################
 
+* Four V's of Big Data
 - Characteristics of big data
 - **Volume**
   - Vast amount of data is generated
@@ -360,15 +441,17 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
   - Data needs to be valuable
   - Big data needs to benefit an organization
 
-# Four V’s of Big Data (Overview)
+UMD DATA605
 
-* Four V’s of Big Data
+![](images/lecture_1/lec_1_slide_21_image_1.png)
 
-\\copyright UMD DATA605
-![Four V's of Big Data](output/images/lecture_1/lec_1_image_10.png)
 21/58
 
+# ##############################################################################
+# Four V's of Big Data (1)
+# ##############################################################################
 
+* Four V's of Big Data
 - **Volume**
 - Exponentially increasing amount of data
 - Every day 2.5 exabytes (1m of TB) of data is generated
@@ -385,14 +468,15 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
   - Unstructured data (e.g., photos, videos)
 - Data comes in different formats (e.g., binary, CSV, XML, JSON)
 
-# Four V’s of Big Data (Detailed)
+UMD DATA605
 
-* Four V’s of Big Data
-
-\\copyright UMD DATA605
 22/58
 
+# ##############################################################################
+# Four V's of Big Data (2)
+# ##############################################################################
 
+* Four V's of Big Data
 - **Velocity**
 - Relates to the speed at which data is generated
   - E.g., sensors generate data streams
@@ -405,28 +489,33 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
 - What is an outlier?
 - How do you decide what data to trust?
 
-# Four V’s of Big Data (Sources)
+UMD DATA605
 
-* Four V’s of Big Data
-
-\\copyright UMD DATA605
 23/58
 
+# ##############################################################################
+# Sources of Big Data
+# ##############################################################################
 
+* Sources of Big Data
 - We can distinguish Big Data in terms of its source
   - **Machines**
   - **People**
   - **Organizations**
 
-# Sources of Big Data (General)
+UMD DATA605
 
-* Sources of Big Data
+![](images/lecture_1/lec_1_slide_24_image_1.png)
 
-\\copyright UMD DATA605
-![Sources of Big Data](output/images/lecture_1/lec_1_image_11.png)
 24/58
+ 
 
+ 
+# ##############################################################################
+# Sources of Big Data: Machines
+# ##############################################################################
 
+* Sources of Big Data: Machines
 - **Machines** generate data
   - Real-time sensors (e.g., sensors on Boeing 787)
   - Cars
@@ -436,43 +525,46 @@ If 1 second is 10 year, a nanosecond is one blink of an eye
 - **Pros**
   - Highly structured
 - **Cons**
-  - Can’t be easily moved, but need to be computed in-place or in centralized fashion
+  - Can't be easily moved, but need to be computed in-place or in centralized fashion
   - Streaming, not batch
 
-# Sources of Big Data: Machines (Specifics)
+UMD DATA605
 
-* Sources of Big Data: Machines
-
-\\copyright UMD DATA605
 25/58
 
-
-People and their activities generate data
-Social media (e.g., Instagram, Twitter, LinkedIn)
-Video sharing (e.g., YouTube, TikTok)
-Blogging and commenting on a website
-Internet searches
-Text messages (e.g., SMS, Whatsapp, Signal, Telegram)
-Personal documents (e.g., Google Docs, emails)
-Pros
-Allow personalization
-Highly valuable for business intelligence
-Cons
-Typically semi-structured or unstructured data
-Text, images, movies
-It takes an investment before you can reap the value
-Acquire $\\rightarrow$ Store $\\rightarrow$ Clean $\\rightarrow$ Retrieve $\\rightarrow$ Process $\\rightarrow$ Insights
-Surveillance capitalism
-
-# Sources of Big Data: People (Organizations)
+# ##############################################################################
+# Sources of Big Data: People
+# ##############################################################################
 
 * Sources of Big Data: People
+- **People** and their activities generate data
+  - Social media (e.g., Instagram, Twitter, LinkedIn)
+  - Video sharing (e.g., YouTube, TikTok)
+  - Blogging and commenting on a website
+  - Internet searches
+  - Text messages (e.g., SMS, Whatsapp, Signal, Telegram)
+  - Personal documents (e.g., Google Docs, emails)
+- **Pros**
+  - Allow personalization
+  - Highly valuable for business intelligence
+- **Cons**
+  - Typically semi-structured or unstructured data
+    - Text, images, movies
+  - It takes an investment before you can reap the value
+    - Acquire → Store → Clean → Retrieve → Process → Insights
+  - Surveillance capitalism
 
-\\copyright UMD DATA605
-![Sources of Big Data: People](output/images/lecture_1/lec_1_image_12.png)
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_26_image_1.png)
+
 26/58
 
+# ##############################################################################
+# Sources of Big Data: Orgs
+# ##############################################################################
 
+* Sources of Big Data: Orgs
 - **Organizations** generate data
   - Commercial transactions
   - Credit cards
@@ -485,36 +577,38 @@ Surveillance capitalism
 - **Cons**
   - Need to store every event in the past to predict the future
     - Missing opportunities
-  - Stored in “data silos” with different data models
+  - Stored in "data silos" with different data models
     - Each department has its own data system
     - Additional complexity
     - Data is outdated/not visible
     - Cloud computing helps (e.g., data lakes, data warehouses)
-```
+
+UMD DATA605
+
+27/58
 
 # ##############################################################################
-# Sources of Big Data: Orgs
+# Is Data Science Just Hype?
 # ##############################################################################
 
-# Sources of Big Data: Orgs
-
-\copyright{} UMD DATA605
-
+* Is Data Science Just Hype?
 - Big data (or data science)
-  - “Any process where interesting information is inferred from data”
-- Data scientist called the “sexiest job” of the 21st century
+  - "Any process where interesting information is inferred from data"
+- Data scientist called the "sexiest job" of the 21st century
   - The term has becoming very muddled at this point
 - **Is it all hype?**
 
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_28_image_1.png)
+
+28/58
+
 # ##############################################################################
-# Is Data Science Just Hype? (2)
+# Is Data Science Just Hype? (1)
 # ##############################################################################
 
-# Is Data Science Just Hype?
-
-\copyright{} UMD DATA605
-![lec_1_image_13](output/images/lecture_1/lec_1_image_13.png)
-
+* Is Data Science Just Hype?
 - **No**
   - Extracting insights and knowledge from data Is very important and will continue to increase in importance
   - Big data techniques are revolutionizing the world in many domains
@@ -527,57 +621,62 @@ Surveillance capitalism
   - Cloud computing (e.g., AWS) = much cheaper to analyze it
   - Often large-scale data + simple algorithms >> small data + complex algorithms
 
-# ##############################################################################
-# Is Data Science Just Hype? (3)
-# ##############################################################################
+UMD DATA605
 
-# Is Data Science Just Hype?
-
-\copyright{} UMD DATA605
+29/58
 
 # ##############################################################################
 # What was Cool in 2012?
 # ##############################################################################
 
-# What was Cool in 2012?
+* What was Cool in 2012?
+UMD DATA605
 
-\copyright{} UMD DATA605
-![lec_1_image_14](output/images/lecture_1/lec_1_image_14.png)
+![](images/lecture_1/lec_1_slide_30_image_1.png)
+
+30/58
 
 # ##############################################################################
 # What was Cool in 2017?
 # ##############################################################################
 
-# What was Cool in 2017?
+* What was Cool in 2017?
+UMD DATA605
 
-\copyright{} UMD DATA605
-![lec_1_image_15](output/images/lecture_1/lec_1_image_15.png)
+![](images/lecture_1/lec_1_slide_31_image_1.png)
+
+31/58
 
 # ##############################################################################
 # What was Cool in 2022?
 # ##############################################################################
 
-# What was Cool in 2022?
+* What was Cool in 2022?
+UMD DATA605
 
-\copyright{} UMD DATA605
-![lec_1_image_16](output/images/lecture_1/lec_1_image_16.png)
+![](images/lecture_1/lec_1_slide_32_image_1.png)
 
+32/58
+ 
+
+ 
 # ##############################################################################
 # What is Cool in 2023?
 # ##############################################################################
 
-# What is Cool in 2023?
+* What is Cool in 2023?
+UMD DATA605
 
-\copyright{} UMD DATA605
-![lec_1_image_17](output/images/lecture_1/lec_1_image_17.png)
+33/58
+
+![](images/lecture_1/lec_1_slide_33_image_1.png)
 
 # ##############################################################################
 # Key Shifts Before/After Big-Data
 # ##############################################################################
 
-# Key Shifts Before/After Big-Data
-
-- **Datasets: small, curated, clean $\\rightarrow$ large, uncurated, messy**
+* Key Shifts Before/After Big-Data
+- **Datasets: small, curated, clean → large, uncurated, messy**
   - Before:
     - Statistics based on small, carefully collected random samples
     - Costly and careful planning for experiments
@@ -586,9 +685,9 @@ Surveillance capitalism
     - Easily collect huge volume of data
     - Feed it into algorithms
     - Usually the signal is strong enough to overcome the noise
-- **Causation $\\rightarrow$ Correlation**
+- **Causation → Correlation**
   - Goal: figure out what caused what
-  - Causation very hard to figure out $\\rightarrow$ give up causation for correlation
+  - Causation very hard to figure out → give up causation for correlation
     - Finding out if two things are correlated is good enough
     - E.g., people buying diapers and beer together at the supermarket
 - **"Data-fication"**
@@ -596,16 +695,20 @@ Surveillance capitalism
   - E.g., "sitting posture" is data-fied by 100's of sensors placed in your seat
   - Your preference is data-fied into a stream of likes
 - From: Rise of Big Data, 2013
-\copyright{} UMD DATA605
 
+UMD DATA605
+
+34/58
+
+# ##############################################################################
 # Examples: Election Prediction
+# ##############################################################################
 
 * Examples: Election Prediction
-
 - Nate Silver and the 2012 Elections
   - 49 out of 50 in calling each state in 2008 US elections
   - 50 out of 50 in 2012 US elections
-  - Didn’t work that well in 2016, did it?
+  - Didn't work that well in 2016, did it?
 - Some reasons why he got things right
   - Many sources of data, irrespective of quality
   - Incorporation of historical accuracy
@@ -614,13 +717,18 @@ Surveillance capitalism
   - Monte-Carlo simulations to compute the probabilities of electoral college
   - Focus on probabilities instead of predictions
   - Great communication and presentation skills
-\copyright UMD DATA605
-![lec_1_image_18](output/images/lecture_1/lec_1_image_18.png)
 
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_35_image_1.png)
+
+35/58
+
+# ##############################################################################
 # Examples: Google Flu Trends
+# ##############################################################################
 
 * Examples: Google Flu Trends
-
 - 5% to 20% of US population contracts flu every year and 40k deaths
 - Earlier warnings allow prevention and control
 - Google Flu Trends
@@ -633,37 +741,60 @@ Surveillance capitalism
   - Google claimed 97% accuracy
   - Out of sample accuracy lower (overshot CDC data by 30%)
   - People search about flu without knowing how to diagnose flu
-    - E.g., people searching for “fever” and “cough”
+    - E.g., people searching for "fever" and "cough"
   - Google Flu Trends: The Limits of Big Data
-\copyright UMD DATA605
 
+UMD DATA605
+
+36/58
+
+# ##############################################################################
 # Data Scientist
+# ##############################################################################
 
 * Data Scientist
-
 - Very ambiguous and ill-defined term
 - From Drew Conway's Venn Diagram
-\copyright UMD DATA605
-![lec_1_image_19](output/images/lecture_1/lec_1_image_19.png)
 
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_37_image_1.png)
+
+37/58
+
+# ##############################################################################
 # Typical Data Scientist Workflow
+# ##############################################################################
 
 * Typical Data Scientist Workflow
-
 - From Data Science Workflow
-\copyright UMD DATA605
-![lec_1_image_20](output/images/lecture_1/lec_1_image_20.png)
 
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_38_image_1.jpeg)
+
+38/58
+
+# ##############################################################################
 # Where Data Scientist Spends Most Time
+# ##############################################################################
 
 * Where Data Scientist Spends Most Time
+UMD DATA605
 
-\copyright UMD DATA605
-![lec_1_image_21](output/images/lecture_1/lec_1_image_21.png)
+![](images/lecture_1/lec_1_slide_39_image_1.png)
+
 - 80-90% of the work is data cleaning and wrangling
 - 'Janitor Work' in Data Science
 - Research Directions in Data Wrangling
 
+39/58
+
+# ##############################################################################
+# **What a Data Scientist Should Know**
+# ##############################################################################
+
+* **What a Data Scientist Should Know**
 - From: How to hire a data scientist
 - **Data grappling skills**
   - How to move data around and manipulate it with some programming language
@@ -682,28 +813,33 @@ Surveillance capitalism
 - **Communication skills**
   - Tell the story, communicate the findings
 
-# What a Data Scientist Should Know
+UMD DATA605
 
-* What a Data Scientist Should Know
-
-\copyright UMD DATA605
 **DATA605**
 
-**UMD DATA605 - Big Data Systems**
+40/58
+ 
+
+# ##############################################################################
+# UMD DATA605 - Big Data Systems
+# ##############################################################################
+
+* UMD DATA605 - Big Data Systems
+[BOLD]UMD DATA605 - Big Data Systems[/BOLD]
 Course Intro
 Big data
-**Data Models**
+[BOLD]Data Models[/BOLD]
 
-> *Note:* \#
+41
 
+# ##############################################################################
 # Data Models
+# ##############################################################################
 
 * Data Models
-
 - **Data modeling**
   - = process of representing and capturing the structure and properties of real-world entities
-  - Process of abstraction: real-world $\\rightarrow$ representation**
-**
+  - Process of abstraction: real-world → representation**
 - **Data model**
   - = description of how data is *represented* (e.g., relational, key-value) and *accessed* (e.g., insert operations, how to query)
   - E.g., schema in a DB describes a specific collection of data, using a given data model
@@ -712,12 +848,16 @@ Big data
   - Allow to share data across programs, organizations, systems
   - Need to integrate information from multiple sources
   - Preprocess data to make access efficient (e.g., building an index on a data field)
-\copyright UMD DATA605
 
+UMD DATA605
+
+42/58
+
+# ##############################################################################
 # Multiple Layers of Data Modeling
+# ##############################################################################
 
 * Multiple Layers of Data Modeling
-
 - **Physical layer**
   - How is the data physically stored
   - How to represent complex data structures (e.g., B-trees for indexing)
@@ -729,15 +869,18 @@ Big data
 - **Views**
   - Restrict information flow
   - Security and/or ease-of-use
-\copyright UMD DATA605
-![lec_1_image_22](output/images/lecture_1/lec_1_image_22.png)
+
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_43_image_1.png)
+
+43/58
 
 # ##############################################################################
 # Data Models: Logical Layer
 # ##############################################################################
 
 * Data Models: Logical Layer
-
 - **Modeling constructs**
   - A collection of concepts used to represent the structure in the data
   - E.g.,
@@ -748,18 +891,21 @@ Big data
 - **Integrity constraints**
   - Ensure data integrity
     - Goal: avoid errors and data inconsistencies
-    - E.g., a field can’t be empty, is an integer
+    - E.g., a field can't be empty, is an integer
 - **Manipulation constructs**
   - E.g., insert, update, delete data
-\copyright UMD DATA605
-![lec_1_image_23](output/images/lecture_1/lec_1_image_23.png)
+
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_44_image_1.png)
+
+44/58
 
 # ##############################################################################
 # Examples of Data Models
 # ##############################################################################
 
 * Examples of Data Models
-
 - We will cover:
   - Relational model (SQL)
   - Entity-relationship (ER) model
@@ -775,14 +921,16 @@ Big data
   - Protocol Buffer
   - Avro/Thrift
   - Python Pickle
-\copyright UMD DATA605
+
+UMD DATA605
+
+45/58
 
 # ##############################################################################
 # Good Data Models
 # ##############################################################################
 
 * Good Data Models
-
 - We would like a data model to be:
   - Expressive
     - Capture real-world data well
@@ -794,17 +942,19 @@ Big data
     - Harder to use/to query
     - Less efficient (e.g., more memory, more time)
 - The evolution of data modeling tools is an attempt to capture the structure in the data
-  - Structured data $\\rightarrow$ Relational DBs
-  - Semi-structured web data $\\rightarrow$ XML, JSON
-  - Unstructured data $\\rightarrow$ NoSQL DBs
-\copyright UMD DATA605
+  - Structured data → Relational DBs
+  - Semi-structured web data → XML, JSON
+  - Unstructured data → NoSQL DBs
+
+UMD DATA605
+
+46/58
 
 # ##############################################################################
 # Data Independence
 # ##############################################################################
 
 * Data Independence
-
 - **Logical data independence**
   - Can change the representation of data without changing programs that operate on it
   - E.g., an API abstracting the backend
@@ -814,14 +964,16 @@ Big data
     - Partition/distribute/replicate the data
     - Compress the data
     - Sort the data
-\copyright UMD DATA605
+
+UMD DATA605
+
+47/58
 
 # ##############################################################################
 # Databases: A Brief History
 # ##############################################################################
 
 * Databases: A Brief History
-
 - **1960s: Early beginning**
   - Computers finally become attractive technology
   - Enterprises start adopting computers
@@ -837,14 +989,17 @@ Big data
     - How to access data?
     - Who controls the data?
       - E.g., integrity, security, privacy concerns
-\copyright UMD DATA605
 
+UMD DATA605
+
+48/58
+
+ 
 # ##############################################################################
-# Databases: A More Detailed History
+# Databases: A Brief History (1)
 # ##############################################################################
 
 * Databases: A Brief History
-
 - **1960s, Hierarchical and network model (before relational model)**
   - Both allowed connecting records of different types
   - E.g., connect accounts with customers
@@ -856,14 +1011,16 @@ Big data
 - Cons:
   - Hierarchical/network models exposed too much of the internal data (e.g., structures/pointers to the users)
   - Leaky abstraction
-\copyright UMD DATA605
+
+UMD DATA605
+
+49/58
 
 # ##############################################################################
-# Relational, Hierarchical, and Network Model
+# Relational, Hierarchical, Network model
 # ##############################################################################
 
 * Relational, Hierarchical, Network model
-
 - **Relational model**
   - Data is represented as tuples grouped in relations
   - Omnipresent SQL
@@ -876,17 +1033,20 @@ Big data
   - Data is organized in a graph
     - Each record can have multiple parent and child records
   - Resurgence in 2010s with graph DBs
-\copyright UMD DATA605
-![lec_1_image_24](output/images/lecture_1/lec_1_image_24.png)
-![lec_1_image_25](output/images/lecture_1/lec_1_image_25.png)
-![lec_1_image_26](output/images/lecture_1/lec_1_image_26.png)
+
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_50_image_1.png)
+![](images/lecture_1/lec_1_slide_50_image_2.png)
+![](images/lecture_1/lec_1_slide_50_image_3.png)
+
+50/58
 
 # ##############################################################################
-# Databases: An Extended History
+# Databases: A Brief History (2)
 # ##############################################################################
 
 * Databases: A Brief History
-
 - **1970s: Relational model**
   - Set theory, first-order predicate logic
     - Ted Codd developed the Relational Model
@@ -902,39 +1062,38 @@ Big data
   - INGRES (UC Berkeley), System R (IBM)
   - Didn't care about IMS compatibility (as IBM had to)
 - Many debates between Relational Model vs Network Model proponents
-\copyright UMD DATA605
 
-```markdown
+UMD DATA605
+
+51/58
+
 # ##############################################################################
 # Entity-Relationship Model
 # ##############################################################################
 
 * Entity-Relationship Model
-
 - 1976: Peter Chen proposed "Entity-Relationship Model"
 - Data model describing knowledge in terms of entities and relationships
 - **Entities** are physical or logical objects that can be uniquely identified
-  - “Nouns”
+  - "Nouns"
 - **Relationships** between entities
-  - “Verbs”
+  - "Verbs"
 - An ER model can be mapped onto a relational DB
-  - Entities, relationships $\\rightarrow$ tables
-\\copyright UMD DATA605
-![Entity Relationship Model](output/images/lecture_1/lec_1_image_27.png)
-![ER Diagram](output/images/lecture_1/lec_1_image_28.png)
-![ER Diagram with Attributes](output/images/lecture_1/lec_1_image_29.png)
+  - Entities, relationships → tables
 
-*Note:* Entities are nouns -- rectangles in diagram
-Relationships are verbs -- diamonds in diagram
-Both can have attributes -- circles in diagram
+UMD DATA605
 
-```markdown
+![](images/lecture_1/lec_1_slide_52_image_1.png)
+![](images/lecture_1/lec_1_slide_52_image_2.png)
+![](images/lecture_1/lec_1_slide_52_image_3.png)
+
+52/58
+
 # ##############################################################################
-# Databases: A Brief History - Relational Model
+# Databases: A Brief History (3)
 # ##############################################################################
 
 * Databases: A Brief History
-
 - **1980s: Widespread acceptance of relational model**
   - SQL emerged as a standard, in large part because of IBM's backing
   - Enriching the expressive power of relational model
@@ -947,15 +1106,16 @@ Both can have attributes -- circles in diagram
     - Allow user-defined types
     - Get many benefits of object-oriented while keeping the essence of relational model
   - No expressive difference from pure relational model
-\\copyright UMD DATA605
 
-```markdown
+UMD DATA605
+
+53/58
+
 # ##############################################################################
-# Object-Oriented Principles
+# Object-Oriented
 # ##############################################################################
 
 * Object-Oriented
-
 - OOP is a data model
   - Object behavior is described through data (stored as fields) and code (in the form of methods)
 - **Composition**
@@ -971,53 +1131,55 @@ Both can have attributes -- circles in diagram
 - **Encapsulation**
   - E.g., private vs public fields/members
   - Prevents external code from being concerned with inner workings of an object
-\\copyright UMD DATA605
 
-```markdown
+UMD DATA605
+
+54/58
+
 # ##############################################################################
-# Databases: A Brief History - XML
+# Databases: A Brief History (4)
 # ##############################################################################
 
 * Databases: A Brief History
-
 - **Late 90's-today**
 - Web/Internet emerges
 - XML: eXtensible Markup Language
   - Intended for *semi-structured* data
   - Tree-like structure
   - Flexible schema
-\\copyright UMD DATA605
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Edited by XMLSpy -->
-<CATALOG>
-  <CD>
-    <TITLE>Empire Burlesque</TITLE>
-    <ARTIST>Bob Dylan</ARTIST>
-    <COUNTRY>USA</COUNTRY>
-    <COMPANY>Columbia</COMPANY>
-    <PRICE>10.90</PRICE>
-    <YEAR>1985</YEAR>
-  </CD>
-  <CD>
-    <TITLE>Hide your heart</TITLE>
-    <ARTIST>Bonnie Tyler</ARTIST>
-    <COUNTRY>UK</COUNTRY>
-    <COMPANY>CBS Records</COMPANY>
-    <PRICE>9.90</PRICE>
-    <YEAR>1988</YEAR>
-  </CD>
-  ...
-</CATALOG>
+
+UMD DATA605
+
+```
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- Edited by XMLSpy -→
+ <CATALOG> 
+     <CD> 
+ 	<TITLE>Empire Burlesque</TITLE>
+      <ARTIST>Bob Dylan</ARTIST>
+ 	<COUNTRY>USA</COUNTRY> 	
+      <COMPANY>Columbia</COMPANY>
+      <PRICE>10.90</PRICE> 
+	<YEAR>1985</YEAR> 
+    </CD> 
+    <CD> 
+	<TITLE>Hide your heart</TITLE> 
+	<ARTIST>Bonnie Tyler</ARTIST>
+	<COUNTRY>UK</COUNTRY> 
+	<COMPANY>CBS Records</COMPANY> 
+	<PRICE>9.90</PRICE> 
+	<YEAR>1988</YEAR>
+     </CD>
+     ...
 ```
 
-```markdown
+55/58
+
 # ##############################################################################
-# Understanding Resource Description Framework (RDF)
+# Resource Description Framework
 # ##############################################################################
 
 * Resource Description Framework
-
 - Aka RDF
 - Key construct: a "subject-predicate-object" triple, e.g.
   - subject=sky
@@ -1027,9 +1189,12 @@ Both can have attributes -- circles in diagram
   - More general than a tree
 - Typically stored in:
   - Relational DBs
-  - Dedicated "triple-stores” DBs
-\\copyright UMD DATA605
-![RDF Example](output/images/lecture_1/lec_1_image_30.png)
+  - Dedicated "triple-stores" DBs
+
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_56_image_1.png)
+
 ```
 01    <http://example.org/bob#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
 02    <http://example.org/bob#me> <http://xmlns.com/foaf/0.1/knows> <http://example.org/alice#me> .
@@ -1040,32 +1205,33 @@ Both can have attributes -- circles in diagram
 07    <http://data.europeana.eu/item/04802/243FA8618938F4117025F17A8B813C5F9AA4D619> <http://purl.org/dc/terms/subject> <http://www.wikidata.org/entity/Q12418> .
 ```
 
-```markdown
+56/58
+
 # ##############################################################################
-# Exploring the Property Graph Model
+# Property Graph Model
 # ##############################################################################
 
 * Property Graph Model
-
 - Graph:
   - with vertices and edges
   - with properties associated with each edge and vertex
 - Typically stored in:
   - Relational DBs
   - Graph DBs
-\\copyright UMD DATA605
-![Property Graph Model](output/images/lecture_1/lec_1_image_31.png)
 
-```markdown
+UMD DATA605
+
+![](images/lecture_1/lec_1_slide_57_image_1.jpeg)
+
+57/58
+
 # ##############################################################################
-# Class Project: Getting Started
+# Class Project: TODOs
 # ##############################################################################
 
 * Class Project: TODOs
-
 - Clone Class GitHub repo
 - Next:
   - Dr Saggese + TA come up with list of projects
 
-*Note:* #
-```
+58/58
